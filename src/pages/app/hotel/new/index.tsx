@@ -5,9 +5,10 @@ import SimpleInput from "@/components/SimpleInput";
 import { extract_message } from "@/helpers/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-
+import Autocomplete from "react-google-autocomplete";
+import { GOOGLE_MAPS_KEY, type PlacesService } from "@/api/client";
 interface NewHotel {
   name: string;
   city: string;
@@ -24,7 +25,8 @@ interface NewHotel {
 }
 
 export default function index() {
-  const { register, handleSubmit } = useForm<Partial<NewHotel>>();
+  const { register, control, setValue, handleSubmit } =
+    useForm<Partial<NewHotel>>();
   const [images, setImages] = useState<FileList>();
   const onSubmit = async (data: Partial<NewHotel>) => {
     if (!images || images.length === 0) {
@@ -141,25 +143,31 @@ export default function index() {
           label="Country"
           placeholder="e.g. USA"
         />
-        <SimpleInput
+        {/*<SimpleInput
           {...register("address", { required: true })}
           label="Address"
           placeholder="e.g. 123 Main St"
-        />
-        <SimpleInput
-          {...register("latitude", { required: true, valueAsNumber: true })}
-          label="Latitude"
-          type="number"
-          step="any"
-          placeholder="e.g. 40.7128"
-        />
-        <SimpleInput
-          {...register("longitude", { required: true, valueAsNumber: true })}
-          label="Longitude"
-          type="number"
-          step="any"
-          placeholder="e.g. -74.0060"
-        />
+        />*/}
+
+        <div>
+          <div className="fieldset-label mb-2">Location</div>
+          <Autocomplete
+            className="input w-full"
+            apiKey={GOOGLE_MAPS_KEY}
+            onPlaceSelected={(place: PlacesService) => {
+              setValue("address", place.formatted_address);
+              setValue("latitude", place.geometry.location.lat());
+              setValue("longitude", place.geometry.location.lng());
+              // console.log([
+              //   place.geometry.location.lat(),
+              //   place.address_components,
+              //   place.formatted_address,
+              // ]);
+              // setValue("latitude",place.address_components.)
+            }}
+          />
+        </div>
+
         <SimpleInput
           {...register("description", { required: true })}
           label="Description"

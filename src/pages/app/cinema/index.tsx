@@ -5,10 +5,11 @@ import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 export default function index() {
   const props = usePagination();
+  const nav = useNavigate();
   const query = useQuery<ApiResponse<Cinema[]>>({
     queryKey: ["cinemas", props.page],
     queryFn: async () =>
@@ -31,7 +32,13 @@ export default function index() {
   const items = query.data.payload;
   return (
     <>
-      <SimpleHeader title={"Cinemas"} />
+      <SimpleHeader title={"Cinemas"}>
+        <>
+          <Link to="/app/cinema/new" className="btn btn-primary">
+            Create
+          </Link>
+        </>
+      </SimpleHeader>
       <div className="flex flex-col gap-2 ">
         {items.map((item) => (
           <Link

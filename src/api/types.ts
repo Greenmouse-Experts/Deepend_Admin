@@ -321,3 +321,19 @@ export interface Showtime {
   createdAt: string;
   updatedAt: string;
 }
+export interface StudioBookings {
+  id: string;
+  userId: string;
+  orderId: string;
+  equipmentId: string;
+  equipmentName: string;
+  equipmentImageUrl: string;
+  rentalPricePerDay: string;
+  address: string;
+  rentalStartDate: string;
+  rentalEndDate: string;
+  quantity: number;
+  totalPrice: string;
+  currency: string;
+  status: string;
+}

@@ -12,7 +12,13 @@ import { CalendarDays, Clock, DollarSign } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export default function ShowTimes({ id }: { id: string }) {
+export default function ShowTimes({
+  id,
+  cinemaId,
+}: {
+  id: string;
+  cinemaId?: string;
+}) {
   const query = useQuery<ApiResponse<Showtime[]>>({
     queryKey: ["movie-showtime", id],
     queryFn: async () => {
@@ -22,17 +28,89 @@ export default function ShowTimes({ id }: { id: string }) {
       return resp.data;
     },
   });
+  const mutate = useMutation({
+    mutationFn: (fn: Function) => fn(),
+    onSuccess: () => {
+      modal.closeModal();
 
+      query.refetch();
+    },
+  });
+  const add_showtime = async (data) => {
+    let resp = await apiClient.post("admins/movies/showtimes", {
+      ...data,
+    });
+    return resp.data;
+  };
+  const modal = useModal();
+  const form = useForm<Partial<Showtime>>();
   return (
     <>
-      <SuspensePageLayout query={query} showTitle={false}>
+      <SuspensePageLayout query={query} showTitle={false} headerActions={<></>}>
         {(data: ApiResponse<Showtime[]>) => {
           const showtimes = data.payload;
           //this isnt right, whoever updtes this later,im sorry
 
           return (
             <div className="space-y-4">
-              <div className="text-2xl font-bold fieldset-label">Showtimes</div>
+              <Modal ref={modal.ref}>
+                <form
+                  action=""
+                  className="space-y-4 pt-8"
+                  onSubmit={form.handleSubmit((data) => {
+                    console.log(data);
+                    const new_data = {
+                      ...data,
+                      movieId: id,
+                      cinemaHallId: cinemaId,
+                    };
+                    toast.promise(
+                      mutate.mutateAsync(() => add_showtime(new_data)),
+                      {
+                        loading: "Adding showtime...",
+                        success: "Showtime added successfully",
+                        error: extract_message,
+                      },
+                    );
+                  })}
+                >
+                  <SimpleTitle title="Add Showtime" />
+
+                  <SimpleInput
+                    label="TicketPrice"
+                    {...form.register("ticketPrice")}
+                    type="number"
+                  />
+                  <SimpleInput
+                    label="Show Date"
+                    type="date"
+                    {...form.register("showDate")}
+                  />
+                  <SimpleInput
+                    type="time"
+                    label="Show Time"
+                    {...form.register("showtime")}
+                  />
+                  <SimpleInput
+                    type={"number"}
+                    label="Total Seats"
+                    {...form.register("totalSeats")}
+                  />
+                  <button className="btn btn-primary btn-block">Save</button>
+                </form>
+              </Modal>
+              <div className="flex gap-2 justify-between">
+                <div className="text-2xl font-bold fieldset-label">
+                  Showtimes
+                </div>
+                <button
+                  onClick={() => modal.showModal()}
+                  className="btn btn-primary"
+                >
+                  Add ShowTime
+                </button>
+              </div>
+
               <ul className="menu w-full bg-base-300 rounded-box space-y-2">
                 {showtimes.map((showtime) => {
                   return (
@@ -102,8 +180,9 @@ const ShowtimeCard = ({
           action=""
           onSubmit={form.handleSubmit((data) => {
             toast.promise(
-              //@ts-ignore
               mutate.mutateAsync(() =>
+                //@ts-ignore
+
                 updateShowtime({
                   cinemaHallId: data.cinemaHallId,
                   movieId: data.movieId,

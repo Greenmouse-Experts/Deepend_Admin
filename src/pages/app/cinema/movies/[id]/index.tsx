@@ -65,7 +65,7 @@ export default function index() {
             </div>
             <div>
               <Snacks id={id} />
-              <ShowTimes id={id}></ShowTimes>
+              <ShowTimes id={id} cinemaId={movie.cinemaId}></ShowTimes>
             </div>
           </div>
         );

@@ -22,7 +22,9 @@ import {
   Hammer,
   CalendarDays,
   Hamburger,
-  ScreenShare, // Changed from Calendar to CalendarDays
+  ScreenShare,
+  ListCheck,
+  ListChecks, // Changed from Calendar to CalendarDays
 } from "lucide-react";
 import { useLogout } from "@/helpers/auth";
 import SimpleLoader from "../SimpleLoader";
@@ -60,6 +62,11 @@ const dash_links: {
         path: "/app/food/category",
         label: "Food Category",
         icon: Pizza,
+      },
+      {
+        path: "/app/food/orders",
+        label: "Food Orders",
+        icon: ListChecks,
       },
       {
         path: "/app/food/addons",

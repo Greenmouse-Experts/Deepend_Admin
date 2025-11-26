@@ -288,6 +288,18 @@ const apphotelideditindex = createRoute({
   ),
 );
 const appfood = createRoute({ getParentRoute: () => app, path: "food" });
+const appfoodorders = createRoute({
+  getParentRoute: () => appfood,
+  path: "orders",
+});
+const appfoodordersindex = createRoute({
+  getParentRoute: () => appfoodorders,
+  path: "/",
+}).lazy(() =>
+  import("./pages/app/food/orders/index").then((m) =>
+    createLazyRoute("/app/food/orders")({ component: m.default }),
+  ),
+);
 const appfoodnew = createRoute({ getParentRoute: () => appfood, path: "new" });
 const appfoodnewindex = createRoute({
   getParentRoute: () => appfoodnew,
@@ -655,6 +667,7 @@ const config = root.addChildren([
       ]),
     ]),
     appfood.addChildren([
+      appfoodorders.addChildren([appfoodordersindex]),
       appfoodnew.addChildren([appfoodnewindex]),
       appfoodindex,
       appfoodcategory.addChildren([

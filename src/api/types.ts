@@ -337,3 +337,20 @@ export interface StudioBookings {
   currency: string;
   status: string;
 }
+
+export interface EquipmentBooking {
+  id: string;
+  userId: string;
+  orderId: string;
+  equipmentId: string;
+  equipmentName: string;
+  equipmentImageUrl: string;
+  rentalPricePerDay: string;
+  address: string;
+  rentalStartDate: string;
+  rentalEndDate: string;
+  quantity: number;
+  totalPrice: string;
+  currency: string;
+  status: string;
+}

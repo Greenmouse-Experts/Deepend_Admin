@@ -132,7 +132,7 @@ export const StudioCard = ({
 
   const { mutateAsync } = useMutation({
     mutationFn: async (data: Partial<Studio>) => {
-      if (studio.isAvailable) {
+      if (!studio.isAvailable) {
         let resp = await apiClient.put(
           `admins/studios/${studio.id}/available`,
           data,
@@ -157,14 +157,10 @@ export const StudioCard = ({
     });
   };
   return (
-    <li className="card bg-base-100 shadow-xl">
+    <li className="card compact bg-base-100 shadow-xl">
       <div className="card-body">
-        <h2 className="card-title text-2xl font-bold">{studio.name}</h2>
-        <p className="text-base-content/80">Location: {studio.location}</p>
-        <p className="text-lg font-semibold">
-          Hourly Rate: ${studio.hourlyRate}
-        </p>
-        <div className="space-x-2">
+        <div className="flex items-center justify-between">
+          <h2 className="card-title text-xl font-bold">{studio.name}</h2>
           <input
             onClick={() => {
               toast.promise(() => mutateAsync({}), {
@@ -174,24 +170,26 @@ export const StudioCard = ({
               });
             }}
             type="checkbox"
-            className="checkbox checkbox-primary"
+            className="toggle toggle-primary"
             checked={studio.isAvailable}
+            aria-label="Toggle availability"
           />
-          <span>Available</span>
         </div>
-        <div className="card-actions justify-end mt-4">
+        <p className="text-base-content/80 text-sm">
+          Location: {studio.location}
+        </p>
+        <p className="text-base font-semibold">
+          Hourly Rate: ${studio.hourlyRate}
+        </p>
+        <div className="card-actions justify-end mt-2">
           <Link
-            to={"/app/studio/$id"}
-            params={{
-              //@ts-ignore
-              id: studio.id,
-            }}
-          ></Link>
-          <Link to={"/app/studio/" + studio.id} className="btn btn-accent">
+            to={"/app/studio/" + studio.id}
+            className="btn btn-sm btn-accent"
+          >
             View Availability
           </Link>
           <button
-            className="btn btn-info"
+            className="btn btn-sm btn-info"
             onClick={() => {
               showModal();
             }}
@@ -200,7 +198,7 @@ export const StudioCard = ({
             Edit
           </button>
           <button
-            className="btn btn-error"
+            className="btn btn-sm btn-error"
             onClick={() => {
               toast.promise(delete_mutation.mutateAsync, {
                 loading: "Deleting..." + studio.name,
@@ -216,7 +214,7 @@ export const StudioCard = ({
       </div>
       <Modal ref={ref}>
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="text-xl font-bold">Add new Studio</h2>
+          <h2 className="text-xl font-bold">Edit Studio</h2>
           <SimpleInput {...register("name")} label="Name" />
           <SimpleInput {...register("location")} label="Location" />
           <SimpleInput

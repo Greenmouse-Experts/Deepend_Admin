@@ -1,51 +1,116 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
-import type { StudioBooking, StudioBookings } from "@/api/types";
-import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import type { StudioBooking } from "@/api/types";
+import EmptyList from "@/components/EmptyList";
+import SimpleHeader from "@/components/SimpleHeader";
+import SimpleLoader from "@/components/SimpleLoader";
+import SimplePaginator from "@/components/SimplePaginator";
+import { usePagination } from "@/store/pagination";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-type selectedType = "ongoing" | "completed" | "cancelled";
+type status = "confirmed" | "cancelled" | "completed";
 export default function index() {
-  const [selected, setSelected] = useState<selectedType>("ongoing");
-  const query = useSuspenseQuery<ApiResponse<any[]>>({
-    queryKey: ["studio-bookings", selected],
+  const [status, setStatus] = useState<status>("confirmed");
+  const props = usePagination();
+  const query = useQuery<ApiResponse<StudioBooking[]>>({
+    queryKey: ["studio-bookings", status],
     queryFn: async () => {
-      let resp = await apiClient.get("admins/equipments/bookings", {
+      let resp = await apiClient.get(`admins/studios/bookings`, {
         params: {
-          status: selected,
+          status,
+          page: props.page,
+          limit: 10,
         },
       });
       return resp.data;
     },
   });
+  if (query.isLoading)
+    return (
+      <>
+        <SimpleHeader title={"Studio Bookings"} />
+
+        <SimpleLoader />
+      </>
+    );
   return (
-    <SuspensePageLayout query={query as any} title={"Studio Booknigs"}>
-      {(data: ApiResponse<StudioBookings[]>) => {
-        return (
-          <div className="bg-base-300 p-4 rounded-md">
-            <ul className="menu bg-base-200 w-full rounded-box">
-              {data.payload.map((booking: StudioBookings) => (
-                <li key={booking.id}>
-                  <a>
-                    <div className="flex flex-col">
-                      <span className="font-bold">
-                        {booking.rentalStartDate} - {booking.rentalEndDate}
-                      </span>
-                      <span className="text-sm">User ID: {booking.userId}</span>
-                      <span className="text-sm">
-                        Equipment: {booking.equipmentName}
-                      </span>
-                      <span className="text-sm">Status: {booking.status}</span>
-                      <span className="text-sm">
-                        Total Price: {booking.totalPrice} {booking.currency}
-                      </span>
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
+    <div>
+      <SimpleHeader title={"Studio Bookings"} />
+      <div className="tabs">
+        <a
+          className={`tab tab-lg tab-lifted ${
+            status === "confirmed" ? "tab-active" : ""
+          }`}
+          onClick={() => setStatus("confirmed")}
+        >
+          Confirmed
+        </a>
+
+        <a
+          className={`tab tab-lg tab-lifted ${
+            status === "cancelled" ? "tab-active" : ""
+          }`}
+          onClick={() => setStatus("cancelled")}
+        >
+          Cancelled
+        </a>
+        <a
+          className={`tab tab-lg tab-lifted ${
+            status === "completed" ? "tab-active" : ""
+          }`}
+          onClick={() => setStatus("completed")}
+        >
+          Completed
+        </a>
+      </div>
+      <div className="flex flex-col gap-4 p-4">
+        {query.data?.payload.map((booking) => (
+          <div key={booking.id} className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title text-xl font-bold">
+                Booking ID:{" "}
+                <span className="text-primary-content">{booking.id}</span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                <p>
+                  <strong>User ID:</strong> {booking.userId}
+                </p>
+                <p>
+                  <strong>Booking Date:</strong> {booking.bookingDate}
+                </p>
+                <p>
+                  <strong>Start Time:</strong> {booking.startTime}
+                </p>
+                <p>
+                  <strong>End Time:</strong> {booking.endTime}
+                </p>
+                <p>
+                  <strong>Total Price:</strong> ${booking.totalPrice}
+                </p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span
+                    className={`badge ${
+                      booking.status === "confirmed"
+                        ? "badge-success"
+                        : booking.status === "pending"
+                          ? "badge-warning"
+                          : booking.status === "cancelled"
+                            ? "badge-error"
+                            : "badge-info"
+                    }`}
+                  >
+                    {booking.status}
+                  </span>
+                </p>
+              </div>
+            </div>
           </div>
-        );
-      }}
-    </SuspensePageLayout>
+        ))}
+        <EmptyList list={query.data?.payload || []} />
+        <div className="mt-4">
+          <SimplePaginator {...props} />
+        </div>
+      </div>
+    </div>
   );
 }

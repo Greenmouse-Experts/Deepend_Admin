@@ -6,6 +6,7 @@ import SimpleLoader from "@/components/SimpleLoader";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import HotelRooms from "../_components/HotelRooms";
+import HotelAmenities from "../_components/HotelAmenities";
 
 export default function index() {
   const { id } = useParams({
@@ -75,19 +76,11 @@ export default function index() {
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-semibold mb-2">
-              Amenities: {item.amenities.length}
-            </h2>
-            <ul className="grid  grid-cols-2 md:grid-cols-4 gap-2 p-4 bg-base-300 rounded-md">
-              {item.amenities.map((amenity) => (
-                <li key={amenity.id} className="flex items-center gap-2 ">
-                  <div className="size-8 bg-white rounded-lg p-2">
-                    <img src={amenity.icon} alt="" />
-                  </div>
-                  {amenity.name}
-                </li>
-              ))}
-            </ul>
+            <HotelAmenities
+              refetch={query.refetch}
+              id={item.id}
+              amenities={item.amenities}
+            />
           </div>
         </div>
 

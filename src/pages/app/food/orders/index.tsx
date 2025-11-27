@@ -14,7 +14,7 @@ export default function index() {
   const [status, setStatus] = useState<selectedType>("delivered");
 
   const query = useQuery<ApiResponse>({
-    queryKey: ["food-orders"],
+    queryKey: ["food-orders", status],
     queryFn: async () => {
       let resp = await apiClient.get("admins/foods/orders", {
         params: {

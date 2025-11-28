@@ -1,4 +1,5 @@
 import apiClient from "@/api/apiClient";
+import { uploadToCloudinary } from "@/api/cloud";
 import type { AdvertBanner } from "@/api/types";
 import Modal from "@/components/dialogs-modals/SimpleModal";
 import SimpleCarousel from "@/components/SimpleCarousel";

@@ -14,6 +14,7 @@ export default function DashUserLists() {
       const response = await apiClient.get("admins/users", {
         params: {
           page: 1,
+          limit: 5,
         },
       });
       return response.data;
@@ -29,25 +30,32 @@ export default function DashUserLists() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      {users.payload.map((user, index) => (
-        <div key={user.id} className="card card-compact bg-base-100 shadow-md">
-          <div className="card-body p-4">
-            <h2 className="card-title text-lg">
-              {index + 1}. {user.firstName} {user.lastName}
-            </h2>
-            <p className="text-sm">
-              <strong>Email:</strong> {user.email}
-            </p>
-            <p className="text-sm">
-              <strong>Phone:</strong> {user.phone}
-            </p>
-            <p className="text-sm">
-              <strong>Role:</strong> {user.role}
-            </p>
-          </div>
-        </div>
-      ))}
+    <div className="overflow-x-auto">
+      <table className="table table-zebra w-full">
+        {/* head */}
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.payload.map((user, index) => (
+            <tr key={user.id}>
+              <th>{index + 1}</th>
+              <td>
+                {user.firstName} {user.lastName}
+              </td>
+              <td>{user.email}</td>
+              <td>{user.phone}</td>
+              <td>{user.role}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

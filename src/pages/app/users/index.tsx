@@ -1,10 +1,10 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
 import type { User } from "@/api/types";
 import QueryPageLayout from "@/components/layout/QueryPageLayout";
-import SimpleHeader from "@/components/SimpleHeader";
 import { useQuery } from "@tanstack/react-query";
 import SimplePaginator from "@/components/SimplePaginator";
 import { usePagination } from "@/store/pagination";
+import CustomTable from "@/components/tables/CustomTable";
 
 export default function index() {
   const props = usePagination();
@@ -21,6 +21,21 @@ export default function index() {
     },
   });
   const items = query.data?.payload;
+
+  const columns = [
+    { key: "id", label: "ID" },
+    { key: "firstName", label: "First Name" },
+    { key: "lastName", label: "Last Name" },
+    { key: "email", label: "Email" },
+    { key: "phone", label: "Phone" },
+    { key: "role", label: "Role" },
+    {
+      key: "emailVerified",
+      label: "Verified",
+      render: (value: boolean) => (value ? "Yes" : "No"),
+    },
+  ];
+
   return (
     <QueryPageLayout
       query={query}
@@ -30,34 +45,7 @@ export default function index() {
         </span>
       }
     >
-      <div className="overflow-x-auto">
-        <table className="table table-zebra w-full">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Role</th>
-              <th>Verified</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items?.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
-                <td>{user.email}</td>
-                <td>{user.phone}</td>
-                <td>{user.role}</td>
-                <td>{user.emailVerified ? "Yes" : "No"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <CustomTable data={items} columns={columns} />
       <div className="mt-4">
         <SimplePaginator {...props} />
       </div>

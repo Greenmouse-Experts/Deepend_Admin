@@ -28,7 +28,7 @@ export default function CustomTable(props: CustomTableProps) {
   return (
     <div>
       <div className=" relative overflow-x-scroll">
-        <table className="table   w-full text-xs">
+        <table className="table bg-base-100 shadow   w-full text-xs">
           <thead className="">
             <tr className=" rounded-2xl bg-base-200/50">
               {props.columns &&

@@ -14,7 +14,7 @@ export default function index() {
       const response = await apiClient.get("admins/users", {
         params: {
           page: props.page,
-          limit: 10,
+          limit: 20,
         },
       });
       return response.data;

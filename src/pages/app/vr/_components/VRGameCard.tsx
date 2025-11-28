@@ -95,6 +95,11 @@ export default function VRGameCard({
                     className="dropdown-content ring ring-current/20 menu bg-base-100 rounded-box z-90 w-52 p-2 shadow-sm"
                   >
                     <li>
+                      <Link to={"/app/vr/games/" + game.id}>
+                        <Eye size={16} /> View
+                      </Link>
+                    </li>
+                    <li>
                       <a
                         onClick={() => {
                           toast.promise(
@@ -119,12 +124,6 @@ export default function VRGameCard({
                   </ul>
                 </div>
               </div>
-              <Link
-                to={"/app/vr/games/" + game.id}
-                className="btn btn-primary  btn-circle btn-md rounded-full hover:scale-105 transition-transform duration-300"
-              >
-                <Eye />
-              </Link>
             </div>
           </div>
         </div>

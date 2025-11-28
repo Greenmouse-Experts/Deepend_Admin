@@ -2,7 +2,7 @@ import apiClient from "@/api/apiClient";
 import type { Vrgame } from "@/api/types";
 import { extract_message } from "@/helpers/auth";
 import { Link } from "@tanstack/react-router";
-import { Delete, Edit, Eye, Menu, Trash } from "lucide-react";
+import { Eye, Menu, Trash } from "lucide-react";
 import { toast } from "sonner";
 
 export default function VRGameCard({
@@ -12,6 +12,24 @@ export default function VRGameCard({
   game: Vrgame;
   refetch?: () => any;
 }) {
+  const handleAvailabilityToggle = async () => {
+    toast.promise(
+      async () => {
+        const state = game.isAvailable ? "unavailable" : "available";
+        const resp = await apiClient.put(
+          "admins/vrgames/" + game.id + "/" + state,
+        );
+        refetch();
+        return resp.data;
+      },
+      {
+        loading: "Updating availability...",
+        success: extract_message,
+        error: extract_message,
+      },
+    );
+  };
+
   return (
     <>
       <div
@@ -26,14 +44,22 @@ export default function VRGameCard({
             alt={game.name}
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute top-3 right-3 flex flex-col gap-2">
+          <div className="absolute top-3 right-3 flex items-center gap-2">
             <div className="badge badge-lg badge-primary rounded-full px-4 py-3 text-sm font-bold shadow-lg">
               {game.ageRating}+
             </div>
-            <div
-              className={`badge badge-lg rounded-full px-4 py-3 text-sm font-bold shadow-lg ${game.isAvailable ? "badge-success" : "badge-error"}`}
-            >
-              {game.isAvailable ? "Available" : "Unavailable"}
+            <div className="form-control">
+              <label className="label cursor-pointer gap-2 bg-base-100/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+                <span className="label-text text-sm font-bold">
+                  {game.isAvailable ? "Available" : "Unavailable"}
+                </span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-success"
+                  checked={game.isAvailable}
+                  onChange={handleAvailabilityToggle}
+                />
+              </label>
             </div>
           </div>
         </figure>
@@ -69,6 +95,14 @@ export default function VRGameCard({
                     className="dropdown-content ring ring-current/20 menu bg-base-100 rounded-box z-90 w-52 p-2 shadow-sm"
                   >
                     <li>
+                      <Link
+                        to={"/app/vr/games/" + game.id}
+                        className="btn btn-ghost w-full justify-start"
+                      >
+                        <Eye size={16} /> View
+                      </Link>
+                    </li>
+                    <li>
                       <a
                         onClick={() => {
                           toast.promise(
@@ -90,41 +124,9 @@ export default function VRGameCard({
                         <Trash size={16} /> Delete
                       </a>
                     </li>
-                    <li>
-                      <a
-                        onClick={() => {
-                          toast.promise(
-                            async () => {
-                              let state = "available";
-                              if (game.isAvailable == true) {
-                                state = "unavailable";
-                              }
-                              let resp = await apiClient.put(
-                                "admins/vrgames/" + game.id + "/" + state,
-                              );
-                              refetch();
-                              return resp.data;
-                            },
-                            {
-                              loading: "loading",
-                              success: extract_message,
-                              error: extract_message,
-                            },
-                          );
-                        }}
-                      >
-                        <Edit size={16} /> Avaliability
-                      </a>
-                    </li>
                   </ul>
                 </div>
               </div>
-              <Link
-                to={"/app/vr/games/" + game.id}
-                className="btn btn-primary  btn-circle btn-md rounded-full hover:scale-105 transition-transform duration-300"
-              >
-                <Eye />
-              </Link>
             </div>
           </div>
         </div>

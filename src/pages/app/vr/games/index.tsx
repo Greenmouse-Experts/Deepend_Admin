@@ -23,7 +23,7 @@ export default function index() {
 
   return (
     <SuspensePageLayout
-      query={query}
+      query={query as any}
       title={"VR Games"}
       headerActions={
         <>
@@ -33,7 +33,7 @@ export default function index() {
         </>
       }
     >
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-2">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2">
         {query.data.payload.map((game) => (
           <VRGameCard game={game} key={game.id} refetch={query.refetch} />
         ))}

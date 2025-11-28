@@ -1,7 +1,19 @@
+import apiClient from "@/api/apiClient";
 import type { FoodProps } from "@/api/types";
+import { extract_message } from "@/helpers/auth";
+import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export default function FoodCard({ item }: { item: FoodProps }) {
+  const toggle_status = async () => {
+    const status = item.isAvailable ? "unavailable" : "available";
+    let resp = await apiClient.put(`admins/foods/${item.id}/${status}`);
+    return resp.data;
+  };
+  const mutate = useMutation({
+    mutationFn: toggle_status,
+  });
   return (
     <div
       key={item.id}
@@ -24,11 +36,23 @@ export default function FoodCard({ item }: { item: FoodProps }) {
           <span className="text-lg font-extrabold text-primary">
             ${item.price}
           </span>
-          <span
-            className={`badge ${item.isAvailable ? "badge-success" : "badge-error"} badge-outline`}
-          >
-            {item.isAvailable ? "Available" : "Unavailable"}
-          </span>
+          <div className="form-control">
+            <label className="label cursor-pointer gap-2">
+              <span className="label-text">Available</span>
+              <input
+                type="checkbox"
+                className="toggle toggle-success"
+                checked={item.isAvailable}
+                onChange={() =>
+                  toast.promise(mutate.mutate(), {
+                    loading: "Updating status...",
+                    success: "Status updated successfully!",
+                    error: extract_message,
+                  })
+                }
+              />
+            </label>
+          </div>
         </div>
         <div className="card-actions justify-end mt-4">
           <Link

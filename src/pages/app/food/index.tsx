@@ -44,7 +44,7 @@ export default function index() {
       </div>
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {items?.map((item) => {
-          return <FoodCard item={item} key={item.id} />;
+          return <FoodCard refetch={query.refetch} item={item} key={item.id} />;
         })}
       </div>
       <SimplePaginator {...props} />

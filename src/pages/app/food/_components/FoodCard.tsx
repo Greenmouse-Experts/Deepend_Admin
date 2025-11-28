@@ -5,7 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-export default function FoodCard({ item }: { item: FoodProps }) {
+export default function FoodCard({
+  item,
+  refetch,
+}: {
+  item: FoodProps;
+  refetch: () => any;
+}) {
   const toggle_status = async () => {
     const status = item.isAvailable ? "unavailable" : "available";
     let resp = await apiClient.put(`admins/foods/${item.id}/${status}`);
@@ -13,6 +19,10 @@ export default function FoodCard({ item }: { item: FoodProps }) {
   };
   const mutate = useMutation({
     mutationFn: toggle_status,
+    onSuccess: () => {
+      refetch();
+      toast.success("Status updated successfully");
+    },
   });
   return (
     <div
@@ -44,7 +54,7 @@ export default function FoodCard({ item }: { item: FoodProps }) {
                 className="toggle toggle-success"
                 checked={item.isAvailable}
                 onChange={() =>
-                  toast.promise(mutate.mutate(), {
+                  toast.promise(mutate.mutateAsync(), {
                     loading: "Updating status...",
                     success: "Status updated successfully!",
                     error: extract_message,

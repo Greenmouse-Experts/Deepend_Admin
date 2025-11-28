@@ -32,7 +32,12 @@ export default function index() {
     {
       key: "emailVerified",
       label: "Verified",
-      render: (value: boolean) => (value ? "Yes" : "No"),
+      render: (value: boolean) =>
+        value ? (
+          <span className="badge badge-success badge-sm">Yes</span>
+        ) : (
+          <span className="badge badge-error badge-sm">No</span>
+        ),
     },
   ];
 

@@ -1,4 +1,5 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
+import type { Cinema } from "@/api/types";
 import Modal from "@/components/dialogs-modals/SimpleModal";
 import SimpleInput from "@/components/SimpleInput";
 import { extract_message } from "@/helpers/auth";
@@ -19,8 +20,43 @@ export default function Halls({ cinemaID }) {
     },
     enabled: !!cinemaID,
   });
-  const modal = useModal();
+  const { data: allHalls } = useQuery<
+    ApiResponse<{ name: string; id: string }[]>
+  >({
+    queryKey: ["all-cinemas-halls"],
+    queryFn: async () =>
+      (
+        await apiClient.get("admins/cinemas/halls", {
+          params: {
+            page: 1,
+            limit: 100,
+          },
+        })
+      ).data,
+  });
+
+  const addHallModal = useModal();
+  const appendHallModal = useModal();
   const form = useForm<Partial<{ name: string; cinemaId: string }>>();
+
+  const appendHallMutation = useMutation({
+    mutationFn: async (hallId: any) => {
+      const response = await apiClient.post("admins/cinemas/halls", {
+        cinemaId: cinemaID,
+        name: hallId.name,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Hall appended successfully!");
+      query.refetch();
+      appendHallModal.closeModal();
+    },
+    onError: (error) => {
+      toast.error(extract_message(error));
+    },
+  });
+
   if (query.isLoading)
     return (
       <div className="card bg-base-200 shadow-xl p-4">
@@ -38,18 +74,30 @@ export default function Halls({ cinemaID }) {
       </div>
     );
   let items = query.data?.payload || [];
+  let availableHalls =
+    allHalls?.payload?.filter(
+      (hall) => !items.some((item) => item.id === hall.id),
+    ) || [];
 
   return (
     <>
       <div className="card  shadow-xl space-y-4">
         <div className="overflow-auto items-center flex ">
           <h2 className="text-lg ">Halls ({items.length})</h2>
-          <button
-            onClick={() => modal.showModal()}
-            className="btn btn-primary ml-auto"
-          >
-            Add Hall
-          </button>
+          <div className="ml-auto space-x-2">
+            <button
+              onClick={() => appendHallModal.showModal()}
+              className="btn btn-secondary"
+            >
+              Append Hall
+            </button>
+            <button
+              onClick={() => addHallModal.showModal()}
+              className="btn btn-primary"
+            >
+              Add Hall
+            </button>
+          </div>
         </div>
         {items.length > 0 ? (
           <ul className="space-y-4 bg-base-300 p-4 rounded-md menu w-full">
@@ -63,7 +111,7 @@ export default function Halls({ cinemaID }) {
           </p>
         )}
       </div>
-      <Modal ref={modal.ref}>
+      <Modal ref={addHallModal.ref}>
         <form
           action=""
           className="space-y-4"
@@ -74,7 +122,8 @@ export default function Halls({ cinemaID }) {
                   ...data,
                   cinemaId: cinemaID,
                 });
-                window.location.reload();
+                query.refetch();
+                addHallModal.showModal();
                 return resp.data;
               },
               {
@@ -94,41 +143,74 @@ export default function Halls({ cinemaID }) {
           <button className="btn btn-block btn-primary">Add Hall</button>
         </form>
       </Modal>
+
+      <Modal ref={appendHallModal.ref}>
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">Append Existing Hall</h2>
+          {availableHalls.length > 0 ? (
+            <ul className="menu bg-base-200 w-full rounded-box">
+              {availableHalls.map((hall) => (
+                <li key={hall.id}>
+                  <a
+                    onClick={() => appendHallMutation.mutate(hall)}
+                    className="flex justify-between items-center"
+                  >
+                    {hall.name}
+                    {appendHallMutation.isPending &&
+                      appendHallMutation.variables === hall.id && (
+                        <span className="loading loading-spinner loading-sm"></span>
+                      )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-base-content/70">
+              No other halls available to append.
+            </p>
+          )}
+        </div>
+      </Modal>
     </>
   );
 }
 
 const HallCard = ({
   item,
+  cinemaId,
 }: {
   item: { id: string; name: string };
   cinemaId?: string;
 }) => {
   const edit_mutation = useMutation({
     mutationFn: async (data: any) => {
-      let resp = await apiClient.post("admins/cinemas/halls", {
+      let resp = await apiClient.put(`admins/cinemas/halls/${item.id}`, {
         name: data.name,
-        cinemaId: data.cinemaId,
+        cinemaId: cinemaId, // Ensure cinemaId is passed for the update
       });
-      window.location.reload();
       return resp.data;
     },
     onSuccess: () => {
-      window.location.reload();
+      toast.success("Hall updated successfully!");
+      window.location.reload(); // Consider using query.refetch() instead of full reload
+    },
+    onError: (error) => {
+      toast.error(extract_message(error));
     },
   });
   const delete_mutation = useMutation({
     mutationFn: async (data: any) => {
       let resp = await apiClient.delete(
         `admins/cinemas/${data.cinemaId}/halls/${data.id}`,
-        {
-          method: "DELETE",
-        },
       );
       return resp.data;
     },
     onSuccess: () => {
-      window.location.reload();
+      toast.success("Hall deleted successfully!");
+      window.location.reload(); // Consider using query.refetch() instead of full reload
+    },
+    onError: (error) => {
+      toast.error(extract_message(error));
     },
   });
   const form = useForm({
@@ -169,11 +251,17 @@ const HallCard = ({
               type="button"
               disabled={delete_mutation.isPending}
               onClick={() => {
-                toast.promise(delete_mutation.mutateAsync(item), {
-                  loading: "Deleting...",
-                  success: "Deleted!",
-                  error: extract_message,
-                });
+                toast.promise(
+                  delete_mutation.mutateAsync({
+                    id: item.id,
+                    cinemaId: cinemaId,
+                  }),
+                  {
+                    loading: "Deleting...",
+                    success: "Deleted!",
+                    error: extract_message,
+                  },
+                );
               }}
               className="btn btn-soft btn-sm btn-error"
             >

@@ -31,9 +31,9 @@ export default function DashUserLists() {
 
   return (
     <div className="overflow-x-auto">
-      <table className="table table-zebra w-full">
+      <table className="table table-zebra w-full bg-base-100 rounded-box">
         {/* head */}
-        <thead>
+        <thead className="bg-primary/10 rounded-t-box">
           <tr>
             <th></th>
             <th>Name</th>

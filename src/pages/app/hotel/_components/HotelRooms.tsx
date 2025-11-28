@@ -31,6 +31,7 @@ export default function HotelRooms({
   const { id } = useParams({
     from: "/app/hotel/$id",
   });
+
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (data: Hotel["rooms"][number]) => {
       const new_data = {
@@ -167,7 +168,7 @@ function HotelRoomCard({
 }: {
   room: Hotel["rooms"][number];
   onEdit: (room: Hotel["rooms"][number]) => void;
-  refetch;
+  refetch: () => void;
   hotelId: string;
 }) {
   const delete_mutate = useMutation({
@@ -179,6 +180,25 @@ function HotelRoomCard({
     },
     onSuccess: () => {
       refetch();
+    },
+  });
+
+  const availability_mutate = useMutation({
+    mutationFn: async () => {
+      const status = room.isAvailable ? "unavailable" : "available";
+      let resp = await apiClient.put(
+        `admins/hotels/${hotelId}/rooms/${room.id}/${status}`,
+      );
+      return resp.data;
+    },
+    onSuccess: () => {
+      refetch();
+      toast.success(
+        `Room set to ${room.isAvailable ? "unavailable" : "available"}`,
+      );
+    },
+    onError: (error) => {
+      toast.error(extract_message(error));
     },
   });
 
@@ -233,16 +253,22 @@ function HotelRoomCard({
           </div>
         </div>
         <div className="card-actions justify-end mt-6">
-          <button
-            onClick={() => onEdit(room)}
-            className="btn btn-info btn-block"
-          >
+          <button onClick={() => onEdit(room)} className="btn btn-info btn-sm">
             Edit
+          </button>
+          <button
+            disabled={availability_mutate.isPending}
+            onClick={() => availability_mutate.mutate()}
+            className={`btn btn-sm ${
+              room.isAvailable ? "btn-warning" : "btn-success"
+            }`}
+          >
+            {room.isAvailable ? "Set Unavailable" : "Set Available"}
           </button>
           <button
             disabled={delete_mutate.isPending}
             onClick={() => handleDeleteRoom(room.id)}
-            className="btn btn-error btn-block"
+            className="btn btn-error btn-sm"
           >
             Delete
           </button>

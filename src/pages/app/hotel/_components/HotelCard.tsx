@@ -22,7 +22,31 @@ export default function HotelCard({
       refetch();
     },
   });
+  const {
+    mutate: toggleAvailabilityMutate,
+    isPending: isTogglingAvailability,
+  } = useMutation({
+    mutationFn: async () => {
+      const status = hotel.isAvailable ? "unavailable" : "available";
+      let resp = await apiClient.put(`admins/hotels/${hotel.id}/${status}`);
+      return resp.data;
+    },
+    onSuccess: () => {
+      refetch();
+      toast.success("Availability updated successfully!");
+    },
+    onError: (error) => {
+      toast.error(extract_message(error));
+    },
+  });
 
+  const toggle = () => {
+    toast.promise(toggleAvailabilityMutate(), {
+      loading: "Updating availability...",
+      success: "Availability updated successfully!",
+      error: extract_message,
+    });
+  };
   return (
     <div key={hotel.id} className="card  bg-base-100 shadow-xl">
       <div className="h-[400px]">
@@ -41,7 +65,7 @@ export default function HotelCard({
         <p className="text-sm text-base-content/80">{hotel.description}</p>
         <div className="flex flex-col    gap-4 text-sm">
           <div>
-            <h2 className="fieldset-label">Address:</h2>
+            <h2 className="fieldset-legend">Address:</h2>
             <p className="px-2  mt-2 bg-base-200 p-2">
               {" "}
               {hotel.address}, {hotel.city}, {hotel.state}, {hotel.country}
@@ -50,16 +74,16 @@ export default function HotelCard({
           <div>
             <strong>Rating:</strong> {hotel.rating} / 5
           </div>
-          <p>
+          <div className="flex items-center gap-2">
             <strong>Available:</strong>{" "}
-            <span
-              className={`badge ${
-                hotel.isAvailable ? "badge-success" : "badge-error"
-              } badge-sm`}
-            >
-              {hotel.isAvailable ? "Yes" : "No"}
-            </span>
-          </p>
+            <input
+              type="checkbox"
+              className="toggle toggle-success toggle-sm"
+              checked={hotel.isAvailable}
+              onChange={toggle}
+              disabled={isTogglingAvailability}
+            />
+          </div>
         </div>
         <div>
           <h2>Rooms: {hotel.rooms.length}</h2>

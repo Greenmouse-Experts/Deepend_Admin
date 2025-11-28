@@ -19,40 +19,45 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export default function Banner(banner: AdvertBanner) {
-  const mutation = useMutation({
-    mutationFn: async (fn: any) => await fn(),
-    onSuccess: () => {
-      //@ts-ignore
-      banner.refetch();
-      modal.closeModal();
-    },
-  });
-  const delete_item = async () => {
-    let resp = await apiClient.delete(`admins/advert-banners/${banner.id}`);
-    //@ts-ignore
-    banner.refetch();
-    return resp.data;
-  };
-  const change_status = async () => {
-    const new_status = banner.isPublished ? "unpublish" : "publish";
-    let resp = await apiClient.put(
-      `admins/advert-banners/${banner.id}/` + new_status,
-    );
-    //@ts-ignore
-    banner.refetch();
-    return resp.data;
-  };
+interface BannerCardProps {
+  banner: AdvertBanner;
+  refetch: () => void;
+}
+
+function BannerCard({ banner, refetch }: BannerCardProps) {
   const modal = useModal();
   const form = useForm<Partial<AdvertBanner>>({
     defaultValues: banner,
   });
   const props = useImages(banner.imageUrls);
-  const action = async (data: Partial<AdvertBanner>) => {
-    console.log(props.images);
+
+  const mutation = useMutation({
+    mutationFn: async (fn: () => Promise<any>) => await fn(),
+    onSuccess: () => {
+      refetch();
+      modal.closeModal();
+    },
+    onError: (error) => {
+      toast.error(extract_message(error));
+    },
+  });
+
+  const delete_item = async () => {
+    await apiClient.delete(`admins/advert-banners/${banner.id}`);
+    refetch();
+    return "Banner deleted successfully!";
+  };
+
+  const change_status = async () => {
+    const new_status = banner.isPublished ? "unpublish" : "publish";
+    await apiClient.put(`admins/advert-banners/${banner.id}/` + new_status);
+    refetch();
+    return `Banner ${new_status}ed successfully!`;
+  };
+
+  const update_banner_action = async (data: Partial<AdvertBanner>) => {
     let imageUrls = [...props.images];
-    if (props.newImages) {
-      //@ts-expect-error
+    if (props.newImages && props.newImages.length > 0) {
       const newImages = await uploadToCloudinary(props.newImages);
       imageUrls = [...imageUrls, ...newImages];
     }
@@ -61,12 +66,10 @@ export default function Banner(banner: AdvertBanner) {
       linkUrl: data.linkUrl,
       imageUrls: imageUrls,
     } satisfies Partial<AdvertBanner>;
-    const resp = await apiClient.put(
-      `admins/advert-banners/${banner.id}`,
-      payload,
-    );
-    return resp.data;
+    await apiClient.put(`admins/advert-banners/${banner.id}`, payload);
+    return "Banner updated successfully!";
   };
+
   return (
     <>
       <div
@@ -107,8 +110,8 @@ export default function Banner(banner: AdvertBanner) {
                   onClick={() => {
                     toast.promise(mutation.mutateAsync(change_status), {
                       loading: "Changing...",
-                      success: extract_message,
-                      error: extract_message,
+                      success: (message) => message,
+                      error: (error) => extract_message(error),
                     });
                   }}
                 >
@@ -138,10 +141,10 @@ export default function Banner(banner: AdvertBanner) {
                 </li>
                 <li
                   onClick={() => {
-                    toast.promise(delete_item, {
+                    toast.promise(mutation.mutateAsync(delete_item), {
                       loading: "Deleting...",
-                      success: "Deleted!",
-                      error: extract_message,
+                      success: (message) => message,
+                      error: (error) => extract_message(error),
                     });
                   }}
                 >
@@ -183,11 +186,11 @@ export default function Banner(banner: AdvertBanner) {
           className="space-y-4 gap-4"
           onSubmit={form.handleSubmit((data) => {
             toast.promise(
-              mutation.mutateAsync(() => action(data)),
+              mutation.mutateAsync(() => update_banner_action(data)),
               {
                 loading: "Updating...",
-                success: "Updated!",
-                error: extract_message,
+                success: (message) => message,
+                error: (error) => extract_message(error),
               },
             );
           })}
@@ -208,4 +211,8 @@ export default function Banner(banner: AdvertBanner) {
       </Modal>
     </>
   );
+}
+
+export default function Banner(banner: AdvertBanner & { refetch: () => void }) {
+  return <BannerCard banner={banner} refetch={banner.refetch} />;
 }

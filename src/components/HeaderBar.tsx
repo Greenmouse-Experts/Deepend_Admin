@@ -24,7 +24,7 @@ export default function HeaderBar() {
   });
   return (
     <div className="h-20 p-6 flex justify-end items-center bg-base-100 shadow-md">
-      <div className="mr-auto md:hidden">
+      <div className="mr-auto lg:hidden">
         <SideBarMenu />
       </div>
       <div className="flex items-center space-x-4">

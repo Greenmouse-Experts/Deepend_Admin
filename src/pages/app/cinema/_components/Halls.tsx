@@ -48,13 +48,10 @@ export default function Halls({ cinemaID }) {
       return response.data;
     },
     onSuccess: () => {
-      toast.success("Hall appended successfully!");
       query.refetch();
       appendHallModal.closeModal();
     },
-    onError: (error) => {
-      toast.error(extract_message(error));
-    },
+    onError: (error) => {},
   });
 
   if (query.isLoading)
@@ -152,7 +149,13 @@ export default function Halls({ cinemaID }) {
               {availableHalls.map((hall) => (
                 <li key={hall.id}>
                   <a
-                    onClick={() => appendHallMutation.mutate(hall)}
+                    onClick={() =>
+                      toast.promise(appendHallMutation.mutateAsync(hall), {
+                        loading: "Appending hall...",
+                        success: "Hall appended successfully!",
+                        error: extract_message,
+                      })
+                    }
                     className="flex justify-between items-center"
                   >
                     {hall.name}

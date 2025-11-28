@@ -3,7 +3,6 @@ import type { User } from "@/api/types";
 import QueryPageLayout from "@/components/layout/QueryPageLayout";
 import SimpleHeader from "@/components/SimpleHeader";
 import { useQuery } from "@tanstack/react-query";
-import UserCard from "./_components/UserCard";
 import SimplePaginator from "@/components/SimplePaginator";
 import { usePagination } from "@/store/pagination";
 
@@ -31,10 +30,33 @@ export default function index() {
         </span>
       }
     >
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-2">
-        {items?.map((user) => {
-          return <UserCard key={user.id} user={user} />;
-        })}
+      <div className="overflow-x-auto">
+        <table className="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role</th>
+              <th>Verified</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items?.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.firstName}</td>
+                <td>{user.lastName}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.role}</td>
+                <td>{user.emailVerified ? "Yes" : "No"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       <div className="mt-4">
         <SimplePaginator {...props} />

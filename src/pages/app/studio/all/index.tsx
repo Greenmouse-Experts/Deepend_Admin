@@ -161,19 +161,23 @@ export const StudioCard = ({
       <div className="card-body">
         <div className="flex items-center justify-between">
           <h2 className="card-title text-xl font-bold">{studio.name}</h2>
-          <input
-            onClick={() => {
-              toast.promise(() => mutateAsync({}), {
-                loading: "Updating availability...",
-                success: extract_message,
-                error: extract_message,
-              });
-            }}
-            type="checkbox"
-            className="toggle toggle-primary"
-            checked={studio.isAvailable}
-            aria-label="Toggle availability"
-          />
+          <div className="space-x-2">
+            {" "}
+            <span className="">Available</span>
+            <input
+              onClick={() => {
+                toast.promise(() => mutateAsync({}), {
+                  loading: "Updating availability...",
+                  success: extract_message,
+                  error: extract_message,
+                });
+              }}
+              type="checkbox"
+              className="toggle toggle-primary"
+              checked={studio.isAvailable}
+              aria-label="Toggle availability"
+            />
+          </div>
         </div>
         <p className="text-base-content/80 text-sm">
           Location: {studio.location}

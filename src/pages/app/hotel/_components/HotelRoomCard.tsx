@@ -152,17 +152,25 @@ export default function HotelRoomCard({
               ) : (
                 <XCircle className="w-5 h-5 text-error" />
               )}
-              <p>
+              <p className="flex items-center gap-2">
                 Available:{" "}
                 <span className="font-semibold">
                   {room.isAvailable ? "Yes" : "No"}
                 </span>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-sm toggle-success"
+                  checked={room.isAvailable}
+                  onChange={() => availability_mutate.mutate()}
+                  disabled={availability_mutate.isPending}
+                />
               </p>
             </div>
           </div>
           <div className="card-actions justify-end mt-6">
             <button
               onClick={() => {
+                props.setPrev(null);
                 console.log(props.images);
                 props.setPrev([...room.imageUrls]);
 
@@ -172,15 +180,7 @@ export default function HotelRoomCard({
             >
               Edit
             </button>
-            <button
-              disabled={availability_mutate.isPending}
-              onClick={() => availability_mutate.mutate()}
-              className={`btn btn-sm ${
-                room.isAvailable ? "btn-warning" : "btn-success"
-              }`}
-            >
-              {room.isAvailable ? "Set Unavailable" : "Set Available"}
-            </button>
+            {/* Removed the old availability button */}
             <button
               disabled={delete_mutate.isPending}
               onClick={() => handleDeleteRoom(room.id)}

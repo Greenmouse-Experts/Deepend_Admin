@@ -3,11 +3,13 @@ import type { HotelInfo } from "@/api/types";
 import SimpleCarousel from "@/components/SimpleCarousel";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleLoader from "@/components/SimpleLoader";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import HotelRooms from "../_components/HotelRooms";
 import HotelAmenities from "../_components/HotelAmenities";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
+import { toast } from "sonner";
+import { extract_message } from "@/helpers/auth";
 
 export default function index() {
   const { id } = useParams({
@@ -19,6 +21,17 @@ export default function index() {
     queryFn: async () => {
       let resp = await apiClient.get("admins/hotels/" + id);
       return resp.data;
+    },
+  });
+
+  const toggleAvailabilityMutation = useMutation({
+    mutationFn: async (isAvailable: boolean) => {
+      const status = isAvailable ? "available" : "unavailable";
+      let resp = await apiClient.put(`admins/hotels/${id}/${status}`);
+      return resp.data;
+    },
+    onSuccess: () => {
+      query.refetch();
     },
   });
 
@@ -109,15 +122,25 @@ export default function index() {
                             <span className="font-semibold mr-2">
                               Available:
                             </span>
-                            <span
-                              className={`badge ${
-                                item.isAvailable
-                                  ? "badge-success"
-                                  : "badge-error"
-                              } text-white`}
-                            >
-                              {item.isAvailable ? "Yes" : "No"}
-                            </span>
+                            <input
+                              type="checkbox"
+                              className="toggle toggle-success toggle-sm"
+                              checked={item.isAvailable}
+                              onChange={() =>
+                                toast.promise(
+                                  toggleAvailabilityMutation.mutateAsync(
+                                    !item.isAvailable,
+                                  ),
+                                  {
+                                    loading: "Updating availability...",
+                                    success:
+                                      "Availability updated successfully!",
+                                    error: extract_message,
+                                  },
+                                )
+                              }
+                              disabled={toggleAvailabilityMutation.isPending}
+                            />
                           </div>
                         </div>
                       </div>

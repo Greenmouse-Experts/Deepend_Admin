@@ -1,4 +1,5 @@
 import { XCircle } from "lucide-react";
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 
 interface UpdateImagesProps {
@@ -12,9 +13,13 @@ export default function UpdateImages({
   setNew,
   setPrev,
 }: UpdateImagesProps) {
+  const id = nanoid();
   const [prevImages, setPrevImages] = useState<{ url: string; path: string }[]>(
     images || [],
   );
+  useEffect(() => {
+    setPrev(images);
+  }, [images]);
   const [newImages, setNewImages] = useState<FileList | []>([]);
   useEffect(() => {
     if (newImages.length > 0) {
@@ -50,7 +55,7 @@ export default function UpdateImages({
             accept="image/*"
             className="hidden"
             name=""
-            id="new-images"
+            id={id}
             onChange={(e) => {
               const files = e.target.files;
               //@ts-ignore
@@ -58,7 +63,7 @@ export default function UpdateImages({
             }}
           />
           <label
-            htmlFor="new-images"
+            htmlFor={id}
             className="flex-1 p-2 grid place-items-center text-xl font-bold"
           >
             <span>Upload Image</span>

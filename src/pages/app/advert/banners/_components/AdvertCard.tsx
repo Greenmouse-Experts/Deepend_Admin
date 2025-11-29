@@ -93,29 +93,28 @@ function BannerCard({ banner, refetch }: BannerCardProps) {
           <div className="flex justify-between items-start">
             <h2 className="card-title text-lg font-semibold">{banner.name}</h2>
             <div className="dropdown dropdown-end dropdown-top">
-              <button
-                disabled={mutation.isPending}
+              <div
                 tabIndex={0}
                 role="button"
                 className="btn btn-ghost btn-sm btn-circle"
                 aria-label="Actions"
               >
                 <MoreVertical size={20} />
-              </button>
+              </div>
               <ul
                 tabIndex={0}
-                className="dropdown-content ring ring-current/20 z-[1] menu p-2 shadow-xl bg-base-100 rounded-box w-52"
+                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
               >
-                <li
-                  onClick={() => {
-                    toast.promise(mutation.mutateAsync(change_status), {
-                      loading: "Changing...",
-                      success: (message) => message,
-                      error: (error) => extract_message(error),
-                    });
-                  }}
-                >
-                  <a
+                <li>
+                  <button
+                    disabled={mutation.isPending}
+                    onClick={() => {
+                      toast.promise(mutation.mutateAsync(change_status), {
+                        loading: "Changing...",
+                        success: (message) => message,
+                        error: (error) => extract_message(error),
+                      });
+                    }}
                     className={
                       banner.isPublished ? "text-warning" : "text-success"
                     }
@@ -126,32 +125,36 @@ function BannerCard({ banner, refetch }: BannerCardProps) {
                       <ToggleRight size={20} />
                     )}
                     {banner.isPublished ? "Unpublish" : "Publish"}
-                  </a>
+                  </button>
                 </li>
-                <li
-                  onClick={() => {
-                    props.setPrev(banner.imageUrls);
-                    modal.showModal();
-                  }}
-                >
-                  <a className="text-info">
+                <li>
+                  <button
+                    disabled={mutation.isPending}
+                    onClick={() => {
+                      props.setPrev(banner.imageUrls);
+                      modal.showModal();
+                    }}
+                    className="text-info"
+                  >
                     <Pencil size={20} />
                     Edit
-                  </a>
+                  </button>
                 </li>
-                <li
-                  onClick={() => {
-                    toast.promise(mutation.mutateAsync(delete_item), {
-                      loading: "Deleting...",
-                      success: (message) => message,
-                      error: (error) => extract_message(error),
-                    });
-                  }}
-                >
-                  <a className="text-error">
+                <li>
+                  <button
+                    disabled={mutation.isPending}
+                    onClick={() => {
+                      toast.promise(mutation.mutateAsync(delete_item), {
+                        loading: "Deleting...",
+                        success: (message) => message,
+                        error: (error) => extract_message(error),
+                      });
+                    }}
+                    className="text-error"
+                  >
                     <Trash2 size={20} />
                     Delete
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>

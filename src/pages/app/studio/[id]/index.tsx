@@ -100,7 +100,7 @@ export default function index() {
   return (
     <>
       <SimpleHeader title={"Studio Availability"}>
-        <>
+        <div className="flex gap-2">
           {Object.keys(selected).length > 0 && (
             <button
               onClick={() => {
@@ -111,26 +111,26 @@ export default function index() {
                 });
               }}
               disabled={isPending}
-              className="btn btn-error"
+              className="btn btn-error btn-sm"
             >
-              Delete Selected
+              Delete Selected ({Object.keys(selected).length})
             </button>
           )}
           <button
             onClick={() => showModal()}
             disabled={isPending}
-            className="btn btn-primary"
+            className="btn btn-primary btn-sm"
           >
             Add Availability
           </button>
-        </>
+        </div>
       </SimpleHeader>
       <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">
           Availability for Studio {id}
         </h2>
         {query.data && query.data.payload.length > 0 ? (
-          <ul className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {query.data.payload.map((availability) => (
               <AvailablityCard
                 card={availability}
@@ -141,14 +141,25 @@ export default function index() {
                 getDayName={getDayName}
               />
             ))}
-          </ul>
+          </div>
         ) : (
-          <p>No availability found for this studio.</p>
+          <div className="flex items-center justify-center h-48 bg-base-200 rounded-lg shadow-inner">
+            <p className="text-lg text-gray-600">
+              No availability found for this studio. Click "Add Availability" to
+              get started!
+            </p>
+          </div>
         )}
       </div>
       <Modal ref={ref}>
-        <form action="" className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="text-xl font-bold">Add Availability</h2>
+        <form
+          action=""
+          className="space-y-6 p-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <h2 className="text-2xl font-bold text-gray-800">
+            Add New Availability
+          </h2>
           <LocalSelect
             label="Day of Week"
             options={daysOfWeek}
@@ -164,16 +175,26 @@ export default function index() {
             {...register("startTime")}
             label="Start Time"
             type="time"
+            className="input input-bordered w-full"
           />
-          <SimpleInput {...register("endTime")} label="End Time" type="time" />
-          <button className="btn btn-primary btn-block" type="submit">
-            Submit
+          <SimpleInput
+            {...register("endTime")}
+            label="End Time"
+            type="time"
+            className="input input-bordered w-full"
+          />
+          <button
+            className="btn btn-primary btn-block text-lg py-3"
+            type="submit"
+          >
+            Save Availability
           </button>
         </form>
       </Modal>
     </>
   );
 }
+
 const AvailablityCard = ({
   card,
   isSelected,

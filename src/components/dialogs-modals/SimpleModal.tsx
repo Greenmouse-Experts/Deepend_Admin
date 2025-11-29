@@ -29,7 +29,7 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
     return (
       <dialog ref={modalRef} className="modal">
         <Toaster theme="dark" richColors />
-        <div className="modal-box max-w-2xl">
+        <div className="modal-box max-w-2xl max-h-[90vh]">
           <form method="dialog" className="absolute right-4 top-4">
             <button
               className="btn btn-sm btn-circle btn-ghost"

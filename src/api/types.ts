@@ -354,3 +354,33 @@ export interface EquipmentBooking {
   currency: string;
   status: string;
 }
+
+export interface MovieBooking {
+  ticketId: string;
+  userId: string;
+  orderId: string;
+  movieId: string;
+  movieName: string;
+  movieImageUrl: string;
+  cinemaHallId: string;
+  genre: string;
+  cinemaHallName: string;
+  location: string;
+  ticketPrice: string;
+  ticketQuantity: number;
+  showDate: string;
+  showtime: string;
+  totalPrice: string;
+  purchaseDate: string;
+  isUsed: boolean;
+  verifiedAt: string | null;
+  verifiedBy: string | null;
+  snackAddOns: {
+    snackId: number;
+    snackName: string;
+    snackPrice: string;
+    snackQuantity: number;
+  }[];
+  currency: string;
+  status: string;
+}

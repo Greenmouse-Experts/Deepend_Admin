@@ -126,7 +126,7 @@ export default function index() {
         </div>
       </SimpleHeader>
       <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+        <h2 className="text-2xl font-bold mb-6 ">
           Availability for Studio {id}
         </h2>
         {query.data && query.data.payload.length > 0 ? (

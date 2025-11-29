@@ -163,7 +163,9 @@ export default function HotelRoomCard({
           <div className="card-actions justify-end mt-6">
             <button
               onClick={() => {
-                props.setPrev(room.imageUrls);
+                console.log(props.images);
+                props.setPrev([...room.imageUrls]);
+
                 modal.showModal();
               }}
               className="btn btn-info btn-sm"

@@ -18,7 +18,8 @@ export default function UpdateImages({
     images || [],
   );
   useEffect(() => {
-    setPrev(images);
+    setPrevImages(images);
+    // console.log("images", images);
   }, [images]);
   const [newImages, setNewImages] = useState<FileList | []>([]);
   useEffect(() => {
@@ -28,9 +29,9 @@ export default function UpdateImages({
       setNew([]); // Ensure setNew is called with an empty array if newImages becomes empty
     }
   }, [newImages, setNew]);
-  useEffect(() => {
-    setPrev(prevImages); // Always call setPrev with the current prevImages
-  }, [prevImages, setPrev]);
+  // useEffect(() => {
+  //   setPrev(prevImages); // Always call setPrev with the current prevImages
+  // }, [prevImages, setPrev]);
 
   const removeNewImage = (indexToRemove: number) => {
     if (newImages) {

@@ -67,7 +67,7 @@ export default function HotelRooms({
         >
           Add Room
         </button>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
           {item.map((room) => (
             <HotelRoomCard
               key={room.id}

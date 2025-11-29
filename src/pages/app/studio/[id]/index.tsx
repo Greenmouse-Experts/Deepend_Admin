@@ -11,6 +11,7 @@ import Modal from "@/components/dialogs-modals/SimpleModal";
 import SimpleInput from "@/components/SimpleInput";
 import { toast } from "sonner";
 import { extract_message } from "@/helpers/auth";
+import LocalSelect from "@/components/LocalSelect";
 
 interface Selected {
   [key: string]: StudioAvailability;
@@ -54,7 +55,8 @@ export default function index() {
     });
   };
   const { ref, showModal, closeModal } = useModal();
-  const { register, handleSubmit } = useForm<Partial<StudioAvailability>>();
+  const { register, handleSubmit, setValue, watch } =
+    useForm<Partial<StudioAvailability>>();
   const onSubmit = (data: Partial<StudioAvailability>) => {
     toast.promise(
       async () => {
@@ -80,6 +82,21 @@ export default function index() {
         <SimpleLoader />
       </>
     );
+
+  const daysOfWeek = [
+    { id: 0, name: "Sunday" },
+    { id: 1, name: "Monday" },
+    { id: 2, name: "Tuesday" },
+    { id: 3, name: "Wednesday" },
+    { id: 4, name: "Thursday" },
+    { id: 5, name: "Friday" },
+    { id: 6, name: "Saturday" },
+  ];
+
+  const getDayName = (dayOfWeek: number) => {
+    return daysOfWeek.find((day) => day.id === dayOfWeek)?.name || "Unknown";
+  };
+
   return (
     <>
       <SimpleHeader title={"Studio Availability"}>
@@ -121,6 +138,7 @@ export default function index() {
                 isSelected={!!selected[availability.id]}
                 onSelect={handleSelect}
                 refetch={query.refetch}
+                getDayName={getDayName}
               />
             ))}
           </ul>
@@ -131,7 +149,17 @@ export default function index() {
       <Modal ref={ref}>
         <form action="" className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <h2 className="text-xl font-bold">Add Availability</h2>
-          <SimpleInput {...register("dayOfWeek")} label="Day of Week" />
+          <LocalSelect
+            label="Day of Week"
+            options={daysOfWeek}
+            value={watch("dayOfWeek") ?? ""}
+            onChange={(value) => setValue("dayOfWeek", parseInt(value))}
+            render={(item: { id: number; name: string }) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            )}
+          />
           <SimpleInput
             {...register("startTime")}
             label="Start Time"
@@ -151,11 +179,13 @@ const AvailablityCard = ({
   isSelected,
   onSelect,
   refetch,
+  getDayName,
 }: {
   card: StudioAvailability;
   isSelected: boolean;
   onSelect: (availability: StudioAvailability) => void;
   refetch: () => void;
+  getDayName: (dayOfWeek: number) => string;
 }) => {
   return (
     <li
@@ -168,7 +198,7 @@ const AvailablityCard = ({
     >
       <div className="card-body p-6">
         <h3 className="card-title text-xl font-semibold mb-2">
-          Day of Week: {card.dayOfWeek}
+          Day of Week: {getDayName(card.dayOfWeek)}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-base-content/80">
           <p>

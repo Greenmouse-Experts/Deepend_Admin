@@ -29,14 +29,14 @@ export default function Stats() {
     {
       title: "Total Users",
       color: "#a16207",
-      icon: <Users className="h-4 w-4 text-muted-foreground" />,
+      Icon: Users,
       subtitle: "Total registered users",
       main: isLoading ? "..." : (dashstats?.userTotal.toLocaleString() ?? "0"),
     },
     {
       title: "Food Subscribers",
       color: "green",
-      icon: <ForkKnifeCrossedIcon className="h-4 w-4 text-muted-foreground" />,
+      Icon: ForkKnifeCrossedIcon,
       subtitle: "Users subscribed to food service",
       main: isLoading
         ? "..."
@@ -45,7 +45,7 @@ export default function Stats() {
     {
       title: "Hotel Subscribers",
       color: "#0e7490",
-      icon: <Hotel className="h-4 w-4 text-muted-foreground" />,
+      Icon: Hotel,
       subtitle: "Users subscribed to hotel service",
       main: isLoading
         ? "..."
@@ -54,7 +54,7 @@ export default function Stats() {
     {
       title: "Movie Subscribers",
       color: "mediumpurple",
-      icon: <MonitorPlay className="h-4 w-4 text-muted-foreground" />,
+      Icon: MonitorPlay,
       subtitle: "Users subscribed to movie service",
       main: isLoading
         ? "..."
@@ -63,7 +63,7 @@ export default function Stats() {
     {
       title: "VR Game Subscribers",
       color: "blue",
-      icon: <Gamepad2 className="h-4 w-4 text-muted-foreground" />,
+      Icon: Gamepad2,
       subtitle: "Users subscribed to VR game service",
       main: isLoading
         ? "..."
@@ -72,7 +72,7 @@ export default function Stats() {
     {
       title: "Equipment Subscribers",
       color: "brown",
-      icon: <Wrench className="h-4 w-4 text-muted-foreground" />,
+      Icon: Wrench,
       subtitle: "Users subscribed to equipment rental",
       main: isLoading
         ? "..."
@@ -81,7 +81,7 @@ export default function Stats() {
     {
       title: "Studio Subscribers",
       color: "#c2410c",
-      icon: <Ticket className="h-4 w-4 text-muted-foreground" />,
+      Icon: Ticket,
       subtitle: "Users subscribed to studio booking",
       main: isLoading
         ? "..."

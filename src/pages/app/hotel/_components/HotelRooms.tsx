@@ -34,7 +34,7 @@ export default function HotelRooms({
     mutationFn: async (data: Partial<Hotel["rooms"][number]>) => {
       if (props.newImages) {
         let uploads = await uploadToCloudinary(props.newImages as any);
-        data["imageUrls"] = [...props.images, ...uploads];
+        data["imageUrls"] = [...uploads];
       }
       let resp = await apiClient.post(`admins/hotels/${id}/rooms`, data);
       return resp.data;

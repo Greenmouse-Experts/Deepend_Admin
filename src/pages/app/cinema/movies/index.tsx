@@ -40,7 +40,7 @@ export default function index() {
       </SimpleHeader>
       <ul className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
         {items.map((item) => (
-          <MovieCard key={item.id} item={item} />
+          <MovieCard refetch={query.refetch} key={item.id} item={item} />
         ))}
       </ul>
     </>

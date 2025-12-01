@@ -14,17 +14,19 @@ export default function SimplePaginator({
   hasMore = true,
 }: PaginationProps) {
   return (
-    <div className="flex items-center justify-center space-x-2">
+    <div className="join grid grid-cols-3">
       <button
-        className="btn btn-outline"
+        className="join-item btn btn-accent"
         onClick={decrementPage}
         disabled={page === 1}
       >
         Previous
       </button>
-      <span className="text-lg font-semibold">Page {page}</span>
+      <button className="join-item btn btn-outline" disabled>
+        Page {page}
+      </button>
       <button
-        className="btn btn-outline"
+        className="join-item btn btn-accent"
         onClick={incrementPage}
         disabled={!hasMore}
       >

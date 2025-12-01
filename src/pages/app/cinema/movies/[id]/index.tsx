@@ -64,7 +64,7 @@ export default function index() {
               </div>
             </div>
             <div>
-              <Snacks id={id} />
+              <Snacks refetch={query.refetch} id={id} />
               <ShowTimes id={id} cinemaId={movie.cinemaId}></ShowTimes>
             </div>
           </div>

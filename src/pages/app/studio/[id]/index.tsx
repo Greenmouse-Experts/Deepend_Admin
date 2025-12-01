@@ -199,45 +199,70 @@ const AvailablityCard = ({
   card,
   isSelected,
   onSelect,
-  refetch,
   getDayName,
 }: {
   card: StudioAvailability;
   isSelected: boolean;
   onSelect: (availability: StudioAvailability) => void;
-  refetch: () => void;
+  refetch: () => void; // refetch is declared but its value is never read.
   getDayName: (dayOfWeek: number) => string;
 }) => {
+  const formatTime = (timeString: string) => {
+    const [hours, minutes] = timeString.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes);
+    return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  };
+
   return (
-    <li
-      className={`card bg-base-100 shadow-lg border ${
+    <div
+      className={`card bg-gradient-to-br from-base-100 to-base-200 shadow-xl transition-all duration-200 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl ${
         isSelected
-          ? "border-primary ring ring-primary ring-offset-base-100 ring-offset-2"
-          : "border-base-200"
+          ? "border-2 border-primary ring-4 ring-primary ring-offset-2 ring-offset-base-100"
+          : "border border-base-300"
       } cursor-pointer`}
       onClick={() => onSelect(card)}
     >
       <div className="card-body p-6">
-        <h3 className="card-title text-xl font-semibold mb-2">
-          Day of Week: {getDayName(card.dayOfWeek)}
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-base-content/80">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="card-title text-2xl font-extrabold text-primary">
+            {getDayName(card.dayOfWeek)}
+          </h3>
+          <div
+            className={`badge ${
+              isSelected ? "badge-primary" : "badge-outline"
+            } badge-lg`}
+          >
+            {isSelected ? "Selected" : "Select"}
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <p className="text-sm font-semibold text-base-content/70">
+            Time Slot
+          </p>
+          <p className="text-3xl font-bold text-base-content">
+            {formatTime(card.startTime)} - {formatTime(card.endTime)}
+          </p>
+        </div>
+
+        <div className="divider my-0"></div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-base-content/60 mt-4">
           <p>
-            <span className="font-medium">Start Time:</span> {card.startTime}
+            <span className="font-medium">Created:</span>{" "}
+            {new Date(card.createdAt).toLocaleDateString()}
+            {" at "}
+            {new Date(card.createdAt).toLocaleTimeString()}
           </p>
           <p>
-            <span className="font-medium">End Time:</span> {card.endTime}
-          </p>
-          <p>
-            <span className="font-medium">Created At:</span>{" "}
-            {new Date(card.createdAt).toLocaleString()}
-          </p>
-          <p>
-            <span className="font-medium">Updated At:</span>{" "}
-            {new Date(card.updatedAt).toLocaleString()}
+            <span className="font-medium">Updated:</span>{" "}
+            {new Date(card.updatedAt).toLocaleDateString()}
+            {" at "}
+            {new Date(card.updatedAt).toLocaleTimeString()}
           </p>
         </div>
       </div>
-    </li>
+    </div>
   );
 };

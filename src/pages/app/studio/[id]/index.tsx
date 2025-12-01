@@ -194,7 +194,6 @@ export default function index() {
     </>
   );
 }
-
 const AvailablityCard = ({
   card,
   isSelected,
@@ -216,7 +215,7 @@ const AvailablityCard = ({
 
   return (
     <div
-      className={`card bg-gradient-to-br from-base-100 to-base-200 shadow-xl transition-all duration-200 ease-in-out transform hover:-translate-y-1 hover:shadow-2xl ${
+      className={`card bg-gradient-to-br from-base-100 to-base-200 shadow-xl ${
         isSelected
           ? "border-2 border-primary ring-4 ring-primary ring-offset-2 ring-offset-base-100"
           : "border border-base-300"

@@ -78,7 +78,7 @@ export default function SimpleSelect<T>(props: SimpleSelect<T>) {
         }}
         className="select w-full"
       >
-        {items.map((item, idx) => props.render(item))}
+        {items.map((item, idx) => props.render(item, idx))}
         <>
           <option value="null">All </option>
         </>

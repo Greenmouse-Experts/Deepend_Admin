@@ -8,3 +8,9 @@ export const useImages = (prevImages?: { url: string; path: string }[]) => {
   }, [images]);
   return { images, setPrev, newImages, setNew };
 };
+
+export const useImage = (prevImage: { url; path }) => {
+  const [images, setPrev] = useState(prevImage);
+  const [newImages, setNew] = useState<any | File>();
+  return { images, setPrev, newImages, setNew };
+};

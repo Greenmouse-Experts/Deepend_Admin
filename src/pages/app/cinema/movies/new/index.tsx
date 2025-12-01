@@ -1,189 +1,108 @@
-import SimpleInput from "@/components/SimpleInput";
-import SimpleTitle from "@/components/SimpleTitle";
-import { useForm, Controller } from "react-hook-form";
-import SimpleSelect from "@/components/SimpleSelect";
-import { type Cinema, type MovieObject } from "@/api/types";
-import SimpleTextArea from "@/components/SimpleTextArea";
-import ImageUpload from "@/components/uploaders/ImageUpload";
-import { useImage } from "@/helpers/images";
-import { useMutation } from "@tanstack/react-query";
 import apiClient, { type ApiResponse } from "@/api/apiClient";
 import { uploadSingleToCloudinary } from "@/api/cloud";
-import { toast } from "sonner";
+import type { MovieCinema } from "@/api/types";
+import SimpleInput from "@/components/SimpleInput";
+import SimpleSelect from "@/components/SimpleSelect";
+import SimpleTextArea from "@/components/SimpleTextArea";
+import SimpleTitle from "@/components/SimpleTitle";
+import ImageUpload from "@/components/uploaders/ImageUpload";
 import { extract_message } from "@/helpers/auth";
+import { useImage } from "@/helpers/images";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-type FormType = Omit<
-  MovieObject,
-  | "id"
-  | "createdAt"
-  | "updatedAt"
-  | "genres"
-  | "posterUrl"
-  | "posterPath"
-  | "trailerUrl"
-  | "trailerPath"
-> & {
-  cinemaId: string;
-  genres: string[];
-  posterUrl?: string;
-  posterPath?: string;
-  trailerUrl?: string;
-  trailerPath?: string;
-};
-
+interface MovieType extends Omit<MovieCinema, "id"> {
+  //
+}
 export default function index() {
-  const form = useForm<FormType>();
+  const form = useForm<MovieType>();
   const nav = useNavigate();
-  const {
-    images: posterImage,
-    setPrev: setPrevPosterImage,
-    newImages: newPosterImage,
-    setNew: setNewPosterImage,
-  } = useImage(undefined);
-  const {
-    images: trailerImage,
-    setPrev: setPrevTrailerImage,
-    newImages: newTrailerImage,
-    setNew: setNewTrailerImage,
-  } = useImage(undefined);
-
-  const mutate = useMutation({
-    mutationFn: async (data: FormType) => {
-      let posterUploadResult = { url: "", path: "" };
-      let trailerUploadResult = { url: "", path: "" };
-
-      if (newPosterImage) {
-        posterUploadResult = await uploadSingleToCloudinary(newPosterImage);
-      } else if (posterImage) {
-        posterUploadResult = posterImage;
+  const { mutateAsync } = useMutation({
+    mutationFn: async (data: any) => {
+      if (!trailer_props.newImage || !poster_props.newImage) {
+        throw new Error("Please upload both trailer and poster images");
       }
-
-      if (newTrailerImage) {
-        trailerUploadResult = await uploadSingleToCloudinary(newTrailerImage);
-      } else if (trailerImage) {
-        trailerUploadResult = trailerImage;
-      }
-
-      const movieData = {
+      const trailer = await uploadSingleToCloudinary(trailer_props.newImage);
+      const poster = await uploadSingleToCloudinary(poster_props.newImage);
+      const new_data: MovieCinema = {
         ...data,
-        posterUrl: posterUploadResult.url,
-        posterPath: posterUploadResult.path,
-        trailerUrl: trailerUploadResult.url,
-        trailerPath: trailerUploadResult.path,
+        posterPath: poster.path,
+        trailerPath: trailer.path,
+        posterUrl: poster.url,
+        trailerUrl: trailer.url,
       };
-      let resp = await apiClient.post("admins/movies", movieData);
+      let resp = await apiClient.post("admins/movies", new_data);
       return resp.data;
     },
-    onSuccess: (data: ApiResponse) => {
-      form.reset();
-      nav({ to: "/app/cinema/movies/" + data.payload.id });
-      setPrevPosterImage(undefined);
-      setNewPosterImage(undefined);
-      setPrevTrailerImage(undefined);
-      setNewTrailerImage(undefined);
-    },
-    onError: (error) => {
-      console.error("Error creating movie:", error);
+    onSuccess: (data: ApiResponse<{ id: string }>) => {
+      nav({
+        to: `/app/cinema/movies/${data.payload.id}`,
+      });
     },
   });
-
-  const onSubmit = async (data: FormType) => {
-    toast.promise(() => mutate.mutateAsync(data), {
-      loading: "loading",
-      success: "success",
-      error: extract_message,
-    });
-  };
-
+  const trailer_props = useImage(null);
+  const poster_props = useImage(null);
   return (
     <div>
-      <SimpleTitle title="New Movie" />
-      <div className="p-6">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <Controller
-            name="cinemaId"
-            control={form.control}
-            rules={{ required: "Cinema is required" }}
-            render={({ field }) => (
-              <SimpleSelect<Cinema>
-                label="Cinema"
-                route="/admins/cinemas"
-                value={field.value}
-                onChange={field.onChange}
-                render={(item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                )}
-              />
-            )}
-          />
-          <SimpleInput
-            label="Title"
-            {...form.register("title", { required: "Title is required" })}
-            placeholder="Movie Title"
-          />
+      <SimpleTitle title="Add Cinema" />
+      <FormProvider {...form}>
+        <form
+          className="py-4 space-y-6"
+          onSubmit={form.handleSubmit((data) => {
+            console.log(data);
+            toast.promise(mutateAsync(data), {
+              loading: "loading",
+              success: "success",
+              error: extract_message,
+            });
+          })}
+        >
+          <div>
+            <h2 className="fieldset-label">Poster</h2>
+            <ImageUpload {...poster_props}></ImageUpload>
+          </div>
+          <div>
+            <h2 className="fieldset-label">Trailer</h2>
+            <ImageUpload {...trailer_props}></ImageUpload>
+          </div>
+          <SimpleSelect
+            label="Cinema"
+            value={form.getValues("cinemaId")}
+            // value={field.value}
+            onChange={(value) => form.setValue("cinemaId", value)}
+            route="admins/cinemas"
+            render={(item: any, index) => {
+              if (index === 0) {
+                form.setValue("cinemaId", item.id);
+                return <option value={item.id}>{item.name}</option>;
+              }
+              return <option value={item.id}> {item.name}</option>;
+            }}
+          ></SimpleSelect>
+          <SimpleInput label="Title" {...form.register("title")} />
           <SimpleTextArea
             label="Description"
-            {...form.register("description", {
-              required: "Description is required",
-            })}
-            placeholder="Movie Description"
+            {...form.register("description")}
           />
+          <SimpleInput label="Cast" {...form.register("cast")} />
           <SimpleInput
-            label="Cast"
-            {...form.register("cast", {
-              required: "Cast is required",
-            })}
-            placeholder="Actor 1, Actor 2, ..."
-          />
-          <SimpleInput
-            label="Duration (minutes)"
+            label="Duration (Minutes)"
             type="number"
-            {...form.register("durationMinutes", {
-              required: "Duration is required",
-              valueAsNumber: true,
-            })}
-            placeholder="e.g., 120"
+            {...form.register("durationMinutes", { valueAsNumber: true })}
           />
           <SimpleInput
             label="Age Rating"
             type="number"
-            {...form.register("ageRating", {
-              required: "Age rating is required",
-              // valueAsNumber: true,
-            })}
-            placeholder="e.g., 13"
+            {...form.register("ageRating", { valueAsNumber: true })}
           />
-          <div>
-            <label className="mb-2 fieldset-label">Poster Image</label>
-            <ImageUpload
-              image={posterImage}
-              setNew={setNewPosterImage}
-              setPrev={setPrevPosterImage}
-            />
-          </div>
-          <div>
-            <label className="mb-2 fieldset-label">Trailer Image</label>
-            <ImageUpload
-              image={trailerImage}
-              setNew={setNewTrailerImage}
-              setPrev={setPrevTrailerImage}
-            />
-          </div>
-          {/* Add genre selection here, possibly using a multi-select or multiple SimpleSelect components */}
-          <div className="form-control mt-6">
-            <button
-              type="submit"
-              className="btn btn-primary btn-block"
-              disabled={mutate.isPending}
-            >
-              Create Movie
-            </button>
-          </div>
+
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
         </form>
-      </div>
+      </FormProvider>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function ImageUpload({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
+      <div className="grid  gap-4">
         <div className="h-40 flex flex-col justify-center items-center border-2 border-dashed border-base-300 rounded-lg p-4 hover:border-primary transition-colors duration-200">
           <input
             type="file"

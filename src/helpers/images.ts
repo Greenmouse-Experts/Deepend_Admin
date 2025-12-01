@@ -10,7 +10,7 @@ export const useImages = (prevImages?: { url: string; path: string }[]) => {
 };
 
 export const useImage = (prevImage: { url; path }) => {
-  const [images, setPrev] = useState(prevImage);
-  const [newImages, setNew] = useState<any | File>();
-  return { images, setPrev, newImages, setNew };
+  const [image, setPrev] = useState(prevImage);
+  const [newImage, setNew] = useState<any | File>();
+  return { image, setPrev, newImage, setNew };
 };

@@ -163,7 +163,7 @@ const SnackCard = (snack: {
         disabled={mutation.isPending}
         className="btn btn-error btn-sm"
       >
-        Delete
+        remove
       </button>
     </div>
   );

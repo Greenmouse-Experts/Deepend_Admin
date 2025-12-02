@@ -2,6 +2,7 @@ import type { ApiResponse } from "@/api/apiClient";
 import apiClient from "@/api/apiClient";
 import type { Showtime } from "@/api/types";
 import Modal from "@/components/dialogs-modals/SimpleModal";
+import EmptyList from "@/components/EmptyList";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleInput from "@/components/SimpleInput";
 import SimpleTitle from "@/components/SimpleTitle";
@@ -112,6 +113,8 @@ export default function ShowTimes({
               </div>
 
               <ul className="menu w-full bg-base-300 rounded-box space-y-2">
+                <EmptyList list={showtimes} />
+
                 {showtimes.map((showtime) => {
                   return (
                     <>

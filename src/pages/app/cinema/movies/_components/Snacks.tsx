@@ -1,6 +1,7 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
 import ModalSelector from "@/components/dialogs-modals/ModalSelector";
 import Modal from "@/components/dialogs-modals/SimpleModal";
+import EmptyList from "@/components/EmptyList";
 import SuspenseCompLayout from "@/components/layout/SuspenseComponentLayout";
 import { extract_message } from "@/helpers/auth";
 import useSelect from "@/helpers/selectors";
@@ -98,6 +99,7 @@ export default function Snacks({
                 </div>
               </div>
               <ul className="space-y-3 p-4 bg-base-300 w-full">
+                <EmptyList list={data?.payload} />
                 {data?.payload?.map((snack) => {
                   return (
                     <>

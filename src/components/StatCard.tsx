@@ -18,7 +18,7 @@ export default function StatCard(props: StatCardProps) {
         background: props.color,
       }}
     >
-      <div>
+      <div className="flex-1">
         {" "}
         <div className="flex items-center justify-between">
           <h2 className="text-2xl text-wrap break-words font-bold">
@@ -30,7 +30,15 @@ export default function StatCard(props: StatCardProps) {
           <p className="fieldset-label text-sm font-bold">{props.subtitle}</p>
         </div>
       </div>
-      <div className="">{<Icon className="!size-10" />}</div>
+      <div className="">
+        {
+          <Icon
+            className="
+        !size-6
+        md:!size-10"
+          />
+        }
+      </div>
     </div>
   );
 }

@@ -40,7 +40,7 @@ export default function index() {
         throw new Error("No images selected");
       }
       const images = await uploadToCloudinary(img_props.newImages as any);
-      data["images"] = images; // Changed imageUrls to images as per Studio interface
+      data["imageUrls"] = images; // Changed imageUrls to images as per Studio interface
       let resp = await apiClient.post("admins/studios", data);
       return resp.data;
     },

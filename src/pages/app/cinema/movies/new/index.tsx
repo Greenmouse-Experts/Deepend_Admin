@@ -59,13 +59,15 @@ export default function index() {
             });
           })}
         >
-          <div>
-            <h2 className="fieldset-label">Poster</h2>
-            <ImageUpload {...poster_props}></ImageUpload>
-          </div>
-          <div>
-            <h2 className="fieldset-label">Trailer</h2>
-            <ImageUpload {...trailer_props}></ImageUpload>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+            <div>
+              <h2 className="fieldset-label">Poster</h2>
+              <ImageUpload {...poster_props}></ImageUpload>
+            </div>
+            <div>
+              <h2 className="fieldset-label">Trailer</h2>
+              <ImageUpload {...trailer_props}></ImageUpload>
+            </div>
           </div>
           <SimpleSelect
             label="Cinema"

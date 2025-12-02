@@ -199,7 +199,7 @@ export const StudioCard = ({
       }
       <div className="card-body">
         <div className="flex items-center justify-between">
-          <h2 className="card-title text-xl font-bold">{studio.name}</h2>
+          <h2 className="card-title text-lg font-bold">{studio.name}</h2>
           <div className="space-x-2 flex items-center">
             <span className="">Available</span>
             <input

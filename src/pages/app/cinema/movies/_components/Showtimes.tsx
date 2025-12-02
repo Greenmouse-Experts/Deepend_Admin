@@ -112,7 +112,7 @@ export default function ShowTimes({
                 </button>
               </div>
 
-              <ul className="menu w-full bg-base-300 rounded-box space-y-2">
+              <ul className="menu w-full bg-base-300 p-4 rounded-box space-y-2">
                 <EmptyList list={showtimes} />
 
                 {showtimes.map((showtime) => {

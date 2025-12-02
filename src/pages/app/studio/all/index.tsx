@@ -200,7 +200,7 @@ export const StudioCard = ({
       <div className="card-body">
         <div className="flex items-center justify-between">
           <h2 className="card-title text-lg font-bold">{studio.name}</h2>
-          <div className="space-x-2 flex items-center">
+          <div className="space-x-2 flex items-center text-xs">
             <span className="">Available</span>
             <input
               onClick={() => {
@@ -211,7 +211,7 @@ export const StudioCard = ({
                 });
               }}
               type="checkbox"
-              className="toggle toggle-primary"
+              className="toggle toggle-primary toggle-xs"
               checked={studio.isAvailable}
               aria-label="Toggle availability"
             />

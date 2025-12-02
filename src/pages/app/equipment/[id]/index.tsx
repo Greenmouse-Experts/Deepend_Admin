@@ -53,7 +53,7 @@ const Page = ({ item }: { item: RentalEquipment }) => {
           <span>{item.address}</span>
         </div>
         <div className="flex items-center space-x-2">
-          <DollarSign size={20} />
+          {/*<DollarSign size={20} />*/}
           <span>Price:</span>
           <span>{item.rentalPricePerDay} / day</span>
         </div>

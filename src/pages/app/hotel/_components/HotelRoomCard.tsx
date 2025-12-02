@@ -134,7 +134,7 @@ export default function HotelRoomCard({
           </p>
           <div className="space-y-2 text-xs">
             <div className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-primary" />
+              {/*<DollarSign className="w-5 h-5 text-primary" />*/}
               <p>
                 Price per night:{" "}
                 <span className="font-semibold">${room.pricePerNight}</span>

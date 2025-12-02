@@ -240,7 +240,7 @@ const ShowtimeCard = ({
           <div className="space-y-2 dropdown ">
             <span className="flex items-center">
               Price:
-              <DollarSign className="h-5 w-5 mr-2" />
+              {/*<DollarSign className="h-5 w-5 mr-2" />*/}
               {showtime.ticketPrice}
             </span>
             <div className="label-text">ShowTime: {showtime.showtime}</div>

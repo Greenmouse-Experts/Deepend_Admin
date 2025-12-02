@@ -157,7 +157,7 @@ const SnackCard = ({
             <div className="font-medium">{snack.name}</div>
           </div>
           <div className="flex items-center gap-1">
-            <DollarSign size={16} />
+            {/*<DollarSign size={16} />*/}
             <div>{snack.price}</div>
           </div>
         </div>

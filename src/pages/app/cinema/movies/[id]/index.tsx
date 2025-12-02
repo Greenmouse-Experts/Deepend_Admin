@@ -123,10 +123,10 @@ export default function index() {
                 />
               </div>
               <div className="-mt-4 z-20 flex flex-col md:flex-row gap-2">
-                <div className="flex-1 max-w-2xs mx-auto md:mx-0">
+                <div className="flex-1 max-h-[520px] max-w-2xs bg-red-200 mx-auto md:mx-0">
                   <img
                     src={movie.posterUrl}
-                    className="max-w-2xs aspect-[9/12]"
+                    className="size-full max-h-[520px] object-cover "
                     alt=""
                   />
                 </div>

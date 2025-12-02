@@ -132,7 +132,7 @@ export default function index() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="flex items-center gap-3">
-              <DollarSign className="text-primary" size={28} />
+              {/*<DollarSign className="text-primary" size={28} />*/}
               <span className="text-xl font-semibold text-primary">Price:</span>
               <span className="text-3xl font-bold text-accent">
                 ${parseFloat(food.price).toFixed(2)}

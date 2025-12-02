@@ -19,6 +19,8 @@ import { toast } from "sonner";
 
 export default function index() {
   const props = usePagination();
+  const img_props = useImages();
+
   const query = useQuery<ApiResponse<Studio[]>>({
     queryKey: ["all-studios", props.page],
     queryFn: async () => {
@@ -64,7 +66,6 @@ export default function index() {
       </>
     );
   }
-  const img_props = useImages();
 
   const items = query.data?.payload;
   return (

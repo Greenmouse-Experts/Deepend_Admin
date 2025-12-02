@@ -9,7 +9,7 @@ import Banner from "./_components/AdvertCard";
 export default function index() {
   const props = usePagination();
   const query = useQuery<ApiResponse<AdvertBanner[]>>({
-    queryKey: ["advert-banners", props.page],
+    queryKey: ["advert-banners-admin", props.page],
     queryFn: async () => {
       let resp = await apiClient.get("admins/advert-banners", {
         params: {
@@ -29,7 +29,6 @@ export default function index() {
             {banners.length > 0 ? (
               <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
                 {banners.map((banner) => (
-                  //@ts-expect-error
                   <Banner {...banner} refetch={query.refetch} />
                 ))}
               </div>

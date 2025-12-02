@@ -1,9 +1,11 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
 import type { StudioBooking } from "@/api/types";
 import EmptyList from "@/components/EmptyList";
+import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import SimpleTitle from "@/components/SimpleTitle";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -28,13 +30,12 @@ export default function index() {
     return (
       <>
         <SimpleHeader title={"Studio Bookings"} />
-
         <SimpleLoader />
       </>
     );
   return (
     <div>
-      <SimpleHeader title={"Studio Bookings"} />
+      <SimpleTitle title={"Studio Bookings"} />
       <div className="tabs">
         <a
           className={`tab tab-lg tab-lifted ${
@@ -70,49 +71,59 @@ export default function index() {
         </a>
       </div>
       <div className="flex flex-col gap-4 p-4">
-        {query.data?.payload.map((booking) => (
-          <div key={booking.id} className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title text-xl font-bold">
-                Booking ID:{" "}
-                <span className="text-primary-content">{booking.id}</span>
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                <p>
-                  <strong>User ID:</strong> {booking.userId}
-                </p>
-                <p>
-                  <strong>Booking Date:</strong> {booking.bookingDate}
-                </p>
-                <p>
-                  <strong>Start Time:</strong> {booking.startTime}
-                </p>
-                <p>
-                  <strong>End Time:</strong> {booking.endTime}
-                </p>
-                <p>
-                  <strong>Total Price:</strong> ${booking.totalPrice}
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span
-                    className={`badge ${
-                      booking.status === "confirmed"
-                        ? "badge-success"
-                        : booking.status === "pending"
-                          ? "badge-warning"
-                          : booking.status === "cancelled"
-                            ? "badge-error"
-                            : "badge-info"
-                    }`}
-                  >
-                    {booking.status}
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+        <SuspensePageLayout query={query}>
+          {(data) => {
+            return (
+              <>
+                {data.payload.map((booking) => (
+                  <div key={booking.id} className="card bg-base-100 shadow-xl">
+                    <div className="card-body">
+                      <h2 className="card-title text-xl font-bold">
+                        Booking ID:{" "}
+                        <span className="text-primary-content">
+                          {booking.id}
+                        </span>
+                      </h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                        <p>
+                          <strong>User ID:</strong> {booking.userId}
+                        </p>
+                        <p>
+                          <strong>Booking Date:</strong> {booking.bookingDate}
+                        </p>
+                        <p>
+                          <strong>Start Time:</strong> {booking.startTime}
+                        </p>
+                        <p>
+                          <strong>End Time:</strong> {booking.endTime}
+                        </p>
+                        <p>
+                          <strong>Total Price:</strong> ${booking.totalPrice}
+                        </p>
+                        <p>
+                          <strong>Status:</strong>{" "}
+                          <span
+                            className={`badge ${
+                              booking.status === "confirmed"
+                                ? "badge-success"
+                                : booking.status === "pending"
+                                  ? "badge-warning"
+                                  : booking.status === "cancelled"
+                                    ? "badge-error"
+                                    : "badge-info"
+                            }`}
+                          >
+                            {booking.status}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            );
+          }}
+        </SuspensePageLayout>
         <EmptyList list={query.data?.payload || []} />
         <div className="mt-4">
           <SimplePaginator {...props} />

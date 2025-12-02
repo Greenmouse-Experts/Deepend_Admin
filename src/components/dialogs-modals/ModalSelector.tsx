@@ -29,9 +29,9 @@ export default function ModalSelector(props: ModalSelectorProps) {
   if (query.isLoading) return <div>Loading...</div>;
   if (query.isError) return <div>Error...</div>;
   return (
-    <div className="p-4 space-y-6 mt-3">
+    <div className="py-4 space-y-6 mt-3">
       <div className="rounded-md bg-base-300">
-        <ul className="space-y-2">
+        <ul className="space-y-2 p-2">
           {query.data?.payload?.map((item) => (
             <li>{props.render(item)}</li>
           ))}

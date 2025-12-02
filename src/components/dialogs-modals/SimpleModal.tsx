@@ -30,8 +30,8 @@ const Modal = forwardRef<ModalHandle, ModalProps>(
     return (
       <dialog ref={modalRef} className="modal modal-middle sm:modal-middle">
         <Toaster theme="dark" richColors />
-        <div className="modal-box max-w-2xl max-h-[90vh] p-6 rounded-lg shadow-xl relative">
-          <form method="dialog" className="absolute right-2 top-2">
+        <div className="modal-box max-w-2xl flex flex-col max-h-[90vh] p-6 rounded-lg shadow-xl relative">
+          <form method="dialog" className="  float-right ml-auto">
             <button
               className="btn btn-sm btn-circle btn-ghost text-gray-500 hover:text-gray-700"
               onClick={() => modalRef.current?.close()}

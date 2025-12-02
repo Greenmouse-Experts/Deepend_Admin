@@ -1,11 +1,15 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
+import { uploadToCloudinary } from "@/api/cloud";
 import type { Studio } from "@/api/types";
 import Modal from "@/components/dialogs-modals/SimpleModal";
+import SimpleCarousel from "@/components/SimpleCarousel";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleInput from "@/components/SimpleInput";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import UpdateImages from "@/components/UpdateImages";
 import { extract_message } from "@/helpers/auth";
+import { useImages } from "@/helpers/images";
 import { useModal } from "@/store/modals";
 import { usePagination } from "@/store/pagination";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -30,6 +34,11 @@ export default function index() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
+      if (!img_props.newImages || img_props.newImages.length === 0) {
+        throw new Error("No images selected");
+      }
+      const images = await uploadToCloudinary(img_props.newImages as any);
+      data["images"] = images; // Changed imageUrls to images as per Studio interface
       let resp = await apiClient.post("admins/studios", data);
       return resp.data;
     },
@@ -55,6 +64,7 @@ export default function index() {
       </>
     );
   }
+  const img_props = useImages();
 
   const items = query.data?.payload;
   return (
@@ -65,7 +75,7 @@ export default function index() {
         </button>
       </SimpleHeader>
       <div className="">
-        <ul className="space-y-4">
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {items?.map((studio) => (
             <StudioCard
               refetch={query.refetch}
@@ -81,6 +91,7 @@ export default function index() {
       <Modal ref={ref}>
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <h2 className="text-xl font-bold">Add new Studio</h2>
+          <UpdateImages {...img_props} />
           <SimpleInput {...register("name")} label="Name" />
           <SimpleInput {...register("location")} label="Location" />
           <SimpleInput
@@ -111,15 +122,23 @@ export const StudioCard = ({
       refetch();
     },
   });
-  const { register, handleSubmit } = useForm({
+  const props = useImages(studio.imageUrls); // Initialize with existing images
+
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
       name: studio.name,
       location: studio.location,
       hourlyRate: studio.hourlyRate,
     },
   });
+
   const edit_mutation = useMutation({
     mutationFn: async (data: Partial<Studio>) => {
+      const imagesToUpload = props.newImages;
+      if (imagesToUpload && imagesToUpload.length > 0) {
+        const uploadedImages = await uploadToCloudinary(imagesToUpload as any);
+        data.imageUrls = uploadedImages;
+      }
       let resp = await apiClient.put(`admins/studios/${studio.id}`, data);
       return resp.data;
     },
@@ -158,26 +177,45 @@ export const StudioCard = ({
   };
   return (
     <li className="card compact bg-base-100 shadow-xl">
+      {
+        <figure className="h-48">
+          {studio.imageUrls.length > 0 ? (
+            <SimpleCarousel>
+              {props.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.url}
+                  alt={studio.name}
+                  className="w-full h-48 object-cover"
+                />
+              ))}
+            </SimpleCarousel>
+          ) : (
+            <div className="h-full w-full grid place-items-center bg-base-300">
+              No Images
+            </div>
+          )}
+        </figure>
+      }
       <div className="card-body">
         <div className="flex items-center justify-between">
           <h2 className="card-title text-xl font-bold">{studio.name}</h2>
-          <div className="space-x-2">
-            {" "}
-            <span className="">Available</span>
-            <input
-              onClick={() => {
-                toast.promise(() => mutateAsync({}), {
-                  loading: "Updating availability...",
-                  success: extract_message,
-                  error: extract_message,
-                });
-              }}
-              type="checkbox"
-              className="toggle toggle-primary"
-              checked={studio.isAvailable}
-              aria-label="Toggle availability"
-            />
-          </div>
+        </div>
+        <div className="space-x-2 flex items-center">
+          <span className="">Available</span>
+          <input
+            onClick={() => {
+              toast.promise(() => mutateAsync({}), {
+                loading: "Updating availability...",
+                success: extract_message,
+                error: extract_message,
+              });
+            }}
+            type="checkbox"
+            className="toggle toggle-primary"
+            checked={studio.isAvailable}
+            aria-label="Toggle availability"
+          />
         </div>
         <p className="text-base-content/80 text-sm">
           Location: {studio.location}
@@ -186,39 +224,57 @@ export const StudioCard = ({
           Hourly Rate: ${studio.hourlyRate}
         </p>
         <div className="card-actions justify-end mt-2">
-          <Link
-            to={"/app/studio/" + studio.id}
-            className="btn btn-sm btn-accent"
-          >
-            View Availability
-          </Link>
-          <button
-            className="btn btn-sm btn-info"
-            onClick={() => {
-              showModal();
-            }}
-            disabled={edit_mutation.isPending}
-          >
-            Edit
-          </button>
-          <button
-            className="btn btn-sm btn-error"
-            onClick={() => {
-              toast.promise(delete_mutation.mutateAsync, {
-                loading: "Deleting..." + studio.name,
-                success: extract_message,
-                error: extract_message,
-              });
-            }}
-            disabled={delete_mutation.isPending}
-          >
-            Delete
-          </button>
+          <div className="dropdown dropdown-end dropdown-top">
+            <div tabIndex={0} role="button" className="btn btn-sm  btn-accent">
+              Actions
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <Link to={"/app/studio/" + studio.id}>View Availability</Link>
+              </li>
+              <li>
+                <button
+                  className="btn-ghost"
+                  onClick={() => {
+                    reset({
+                      name: studio.name,
+                      location: studio.location,
+                      hourlyRate: studio.hourlyRate,
+                    });
+                    props.setPrev(studio.imageUrls); // Set existing images for the editor
+                    showModal();
+                  }}
+                  disabled={edit_mutation.isPending}
+                >
+                  Edit
+                </button>
+              </li>
+              <li>
+                <button
+                  className="btn-ghost text-error"
+                  onClick={() => {
+                    toast.promise(delete_mutation.mutateAsync, {
+                      loading: "Deleting..." + studio.name,
+                      success: extract_message,
+                      error: extract_message,
+                    });
+                  }}
+                  disabled={delete_mutation.isPending}
+                >
+                  Delete
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <Modal ref={ref}>
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <h2 className="text-xl font-bold">Edit Studio</h2>
+          <UpdateImages {...props} />
           <SimpleInput {...register("name")} label="Name" />
           <SimpleInput {...register("location")} label="Location" />
           <SimpleInput

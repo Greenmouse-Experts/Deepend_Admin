@@ -77,6 +77,18 @@ export default function MovieCard({
               <button onClick={handleView}>View</button>
             </li>
             <li>
+              <button
+                onClick={() =>
+                  navigate({
+                    to: `/app/cinema/movies/${item.id}/edit`,
+                  })
+                }
+              >
+                Edit
+              </button>
+            </li>
+
+            <li>
               <button onClick={handleDelete} className="text-error">
                 Delete
               </button>

@@ -64,6 +64,10 @@ export interface Studio {
   isAvailable: boolean;
   createdAt: string;
   updatedAt: string;
+  imageUrls: {
+    url: string;
+    path: string;
+  }[];
 }
 
 export interface StudioAvailability {

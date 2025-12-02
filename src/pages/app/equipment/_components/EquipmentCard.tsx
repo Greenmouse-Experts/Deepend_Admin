@@ -2,6 +2,7 @@ import apiClient from "@/api/apiClient";
 import type { RentalEquipment } from "@/api/types";
 import { extract_message } from "@/helpers/auth";
 import { Link } from "@tanstack/react-router";
+import { Menu } from "lucide-react";
 import { toast } from "sonner";
 
 export default function EquipmentCard({
@@ -65,40 +66,52 @@ export default function EquipmentCard({
             </div>
           </div>
         </div>
-        <div className="card-actions justify-end mt-auto flex-wrap gap-2">
-          <Link
-            to={`/app/equipment/${itm.id}/edit`}
-            className="btn btn-accent btn-sm flex-grow sm:flex-grow-0"
-          >
-            Edit
-          </Link>
-          <button
-            className="btn btn-error btn-sm flex-grow sm:flex-grow-0"
-            onClick={() => {
-              toast.promise(
-                async () => {
-                  let resp = await apiClient.delete(
-                    `admins/equipments/${itm.id}`,
-                  );
-                  refetch();
-                  return resp.data;
-                },
-                {
-                  loading: "Deleting " + itm.name + "...",
-                  success: extract_message,
-                  error: extract_message,
-                },
-              );
-            }}
-          >
-            Delete
-          </button>
-          <Link
-            className="btn btn-info btn-sm flex-grow sm:flex-grow-0"
-            to={`/app/equipment/${itm.id}`}
-          >
-            Details
-          </Link>
+        <div className="card-actions justify-end mt-auto">
+          <div className="dropdown dropdown-top dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-sm btn-primary btn-square"
+            >
+              <Menu />
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+            >
+              <li>
+                <Link to={`/app/equipment/${itm.id}/edit`} className="">
+                  Edit
+                </Link>
+              </li>
+              <li>
+                <button
+                  className=""
+                  onClick={() => {
+                    toast.promise(
+                      async () => {
+                        let resp = await apiClient.delete(
+                          `admins/equipments/${itm.id}`,
+                        );
+                        refetch();
+                        return resp.data;
+                      },
+                      {
+                        loading: "Deleting " + itm.name + "...",
+                        success: extract_message,
+                        error: extract_message,
+                      },
+                    );
+                  }}
+                >
+                  Delete
+                </button>
+              </li>
+              <li>
+                <Link to={`/app/equipment/${itm.id}`}>Details</Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

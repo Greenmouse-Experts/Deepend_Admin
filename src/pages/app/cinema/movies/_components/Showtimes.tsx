@@ -5,6 +5,7 @@ import Modal from "@/components/dialogs-modals/SimpleModal";
 import EmptyList from "@/components/EmptyList";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleInput from "@/components/SimpleInput";
+import SimpleSelect from "@/components/SimpleSelect";
 import SimpleTitle from "@/components/SimpleTitle";
 import { extract_message } from "@/helpers/auth";
 import { useModal } from "@/store/modals";
@@ -63,7 +64,6 @@ export default function ShowTimes({
                     const new_data = {
                       ...data,
                       movieId: id,
-                      cinemaHallId: cinemaId,
                     };
                     toast.promise(
                       mutate.mutateAsync(() => add_showtime(new_data)),
@@ -76,7 +76,21 @@ export default function ShowTimes({
                   })}
                 >
                   <SimpleTitle title="Add Showtime" />
-
+                  <SimpleSelect
+                    value={form.getValues("cinemaHallId")}
+                    route={`admins/cinemas/${cinemaId}/halls`}
+                    onChange={(e) => form.setValue("cinemaHallId", e)}
+                    render={(item: any, idx) => {
+                      if (idx == 0) {
+                        form.setValue("cinemaHallId", item.id);
+                      }
+                      return (
+                        <option value={item.id} key={idx}>
+                          {item.name}
+                        </option>
+                      );
+                    }}
+                  />
                   <SimpleInput
                     label="TicketPrice"
                     {...form.register("ticketPrice")}

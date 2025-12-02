@@ -6,7 +6,7 @@ export default function GameAvail({ gameId }: { gameId: string }) {
     queryKey: ["vr-game-avail", gameId],
     queryFn: async () => {
       const response = await apiClient(`admin/vr/games/${gameId}/availability`);
-      const data = await response.json();
+      const data = await response.data;
       return data;
     },
   });

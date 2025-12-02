@@ -3,6 +3,7 @@ import type { Vrgame } from "@/api/types";
 import QueryPageLayout from "@/components/layout/QueryPageLayout";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
+import GamePurchases from "./_components/GamePurchases";
 
 export default function index() {
   const { gameId } = useParams({ strict: false });
@@ -167,13 +168,19 @@ export default function index() {
                   </p>
                 </div>
                 <div className="card-actions justify-end mt-6">
-                  <button className="btn btn-outline">Go Back</button>
+                  <button
+                    onClick={() => window.history.back()}
+                    className="btn btn-outline"
+                  >
+                    Go Back
+                  </button>
                   <Link to="edit" className="btn btn-primary">
                     Edit Details
                   </Link>
                 </div>
               </div>
             </div>
+            <GamePurchases gameId={gameId} />
           </div>
         </>
       )}

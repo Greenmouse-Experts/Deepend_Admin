@@ -7,7 +7,7 @@ import SimpleSelect from "@/components/SimpleSelect";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EquipmentCard from "./_components/EquipmentCard";
 
 export default function index() {
@@ -16,7 +16,7 @@ export default function index() {
   const query = useQuery<ApiResponse<RentalEquipment[]>>({
     queryKey: ["vr", props.page, cat],
     queryFn: async () => {
-      const params: Record<string, any> = { page: props.page };
+      const params: Record<string, any> = { page: props.page, categoryId: cat };
       // only include categoryId if cat is not null
       // remove null/undefined keys from params
       Object.keys(params).forEach((key) => {
@@ -29,6 +29,9 @@ export default function index() {
       return resp.data;
     },
   });
+  useEffect(() => {
+    console.log(cat);
+  }, [cat]);
   const item = query.data?.payload;
   return (
     <QueryPageLayout

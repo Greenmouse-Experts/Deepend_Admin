@@ -36,6 +36,9 @@ export default function index() {
       title={"Equipment Rental Items"}
       headerActions={
         <>
+          <Link href="new" className="btn btn-primary">
+            Add Equipment
+          </Link>
           <SimpleSelect
             onChange={setCat}
             route="admins/equipments/categories"

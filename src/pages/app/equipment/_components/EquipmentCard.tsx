@@ -12,67 +12,68 @@ export default function EquipmentCard({
   refetch: () => any;
 }) {
   return (
-    <div className="card w-full  bg-base-100 shadow-xl p-4 flex flex-col gap-4">
-      <figure className="w-full h-[200px]">
+    <div className="card w-full bg-base-100 shadow-xl overflow-hidden flex flex-col h-full">
+      <figure className="w-full h-[200px] relative">
         {itm.imageUrls && itm.imageUrls.length > 0 ? (
           <img
             src={itm.imageUrls[0].url}
             alt={itm.name}
-            className="h-full w-full object-cover rounded-lg"
+            className="h-full w-full object-cover"
           />
         ) : (
           <img
             src="https://picsum.photos/400/225"
             alt="Placeholder"
-            className="h-full w-full object-cover rounded-lg"
+            className="h-full w-full object-cover"
           />
         )}
+        <div className="absolute top-3 right-3">
+          {itm.isAvailable ? (
+            <div className="badge badge-success ">Available</div>
+          ) : (
+            <div className="badge badge-error ">Unavailable</div>
+          )}
+        </div>
       </figure>
-      <div className="flex flex-col justify-between">
+      <div className="card-body p-4 flex flex-col justify-between flex-grow">
         <div>
-          <div className="space-y-4 mb-2">
-            <div className="flex justify-between items-center ">
-              <h2 className="card-title text-lg line-clamp-2">{itm.name}</h2>
+          <div className="flex justify-between items-start mb-2">
+            <h2 className="card-title text-lg line-clamp-2 flex-grow pr-2">
+              {itm.name}
+            </h2>
+            <div className="badge badge-info badge-outline text-xs">
+              {itm.category.name}
             </div>
-            {itm.isAvailable ? (
-              <div className="badge badge-success badge-outline badge-sm">
-                Available
-              </div>
-            ) : (
-              <div className="badge badge-error badge-outline badge-sm">
-                Unavailable
-              </div>
-            )}
           </div>
           <p className="text-sm text-base-content/80 line-clamp-2 mb-3">
             {itm.description}
           </p>
-          <div className="flex flex-col gap-1 text-xs">
+          <div className="grid grid-cols-2 gap-y-1 gap-x-4 text-sm mb-4">
             <div className="flex justify-between items-center">
-              <span className="font-medium">Price per day:</span>
-              <span>${itm.rentalPricePerDay}</span>
+              <span className="font-medium text-base-content/70">
+                Price/day:
+              </span>
+              <span className="font-semibold text-primary">
+                ${itm.rentalPricePerDay}
+              </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-medium">Quantity:</span>
-              <span>{itm.quantityAvailable}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Category:</span>
-              <div className="badge badge-info badge-outline badge-xs">
-                {itm.category.name}
-              </div>
+              <span className="font-medium text-base-content/70">
+                Quantity:
+              </span>
+              <span className="font-semibold">{itm.quantityAvailable}</span>
             </div>
           </div>
         </div>
-        <div className="card-actions justify-end mt-3">
+        <div className="card-actions justify-end mt-auto flex-wrap gap-2">
           <Link
             to={`/app/equipment/${itm.id}/edit`}
-            className="btn btn-accent btn-sm"
+            className="btn btn-accent btn-sm flex-grow sm:flex-grow-0"
           >
             Edit
           </Link>
           <button
-            className="btn btn-error btn-sm"
+            className="btn btn-error btn-sm flex-grow sm:flex-grow-0"
             onClick={() => {
               toast.promise(
                 async () => {
@@ -83,7 +84,7 @@ export default function EquipmentCard({
                   return resp.data;
                 },
                 {
-                  loading: "Deleting..." + itm.name,
+                  loading: "Deleting " + itm.name + "...",
                   success: extract_message,
                   error: extract_message,
                 },
@@ -92,8 +93,11 @@ export default function EquipmentCard({
           >
             Delete
           </button>
-          <Link className="btn btn-info btn-sm" to={`/app/equipment/${itm.id}`}>
-            View Details
+          <Link
+            className="btn btn-info btn-sm flex-grow sm:flex-grow-0"
+            to={`/app/equipment/${itm.id}`}
+          >
+            Details
           </Link>
         </div>
       </div>

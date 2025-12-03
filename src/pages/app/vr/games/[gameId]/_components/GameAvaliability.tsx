@@ -55,7 +55,7 @@ export default function GameAvail({ gameId }: { gameId: string }) {
   const getDayName = (dayOfWeek: number) => {
     return daysOfWeek.find((day) => day.id === dayOfWeek)?.name || "Unknown";
   };
-  const { mutateAsync } = useMutation({ mutationFn: (fn) => fn() });
+  // const { mutateAsync } = useMutation({ mutationFn: (fn: any) => fn() });
   const onSubmit = (data: Partial<StudioAvailability>) => {
     toast.promise(
       async () => {
@@ -74,8 +74,27 @@ export default function GameAvail({ gameId }: { gameId: string }) {
       },
     );
   };
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async () => {
+      const values = Object.keys(selected);
+      // console.log(values, selected);
+
+      let resp = await apiClient.delete(
+        `admins/vrgames/${gameId}/availability`,
+        {
+          data: {
+            availabilityIds: values,
+          },
+        },
+      );
+      return resp.data;
+    },
+    onSuccess: () => {
+      query.refetch();
+    },
+  });
   const remove_selected = async () => {
-    let resp = await apiClient.delete("");
+    toast.promise(mutateAsync);
   };
   return (
     <div>
@@ -94,10 +113,15 @@ export default function GameAvail({ gameId }: { gameId: string }) {
         </button>
         {Object.keys(selected).length > 0 && (
           <button
+            disabled={isPending}
             className="btn btn-error"
             onClick={() => {
-              toast.info("awaiting endpoint");
-              setSelected({});
+              toast.promise(mutateAsync, {
+                loading: "deleting",
+                success: "success",
+                error: extract_message,
+              });
+              // toast.info("awaiting endpoint");
             }}
           >
             Delete

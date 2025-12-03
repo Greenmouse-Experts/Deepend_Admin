@@ -71,6 +71,7 @@ export default function GameAvail({ gameId }: { gameId: string }) {
   return (
     <div>
       <SimpleTitle
+        //@ts-ignore
         title={<span className="text-base">Game Availability</span>}
       />
       <SuspenseCompLayout query={query}>

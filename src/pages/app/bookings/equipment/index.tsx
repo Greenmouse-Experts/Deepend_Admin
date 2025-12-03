@@ -41,7 +41,7 @@ export default function index() {
           const data = resp.payload;
           return (
             <>
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,auto))]">
+              <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(250px,auto))]">
                 {data.map((item) => {
                   let statusBadgeClass = "";
                   switch (item.status.toLowerCase()) {

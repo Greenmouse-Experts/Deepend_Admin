@@ -4,6 +4,7 @@ import QueryPageLayout from "@/components/layout/QueryPageLayout";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import GamePurchases from "./_components/GamePurchases";
+import GameAvail from "./_components/GameAvaliability";
 
 export default function index() {
   const { gameId } = useParams({ strict: false });
@@ -180,7 +181,10 @@ export default function index() {
                 </div>
               </div>
             </div>
-            <GamePurchases gameId={gameId} />
+            <section className="space-y-4 mt-8">
+              <GameAvail gameId={gameId} />
+              <GamePurchases gameId={gameId} />
+            </section>
           </div>
         </>
       )}

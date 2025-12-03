@@ -7,7 +7,7 @@ import SimpleInput from "@/components/SimpleInput";
 import SimpleTitle from "@/components/SimpleTitle";
 import { extract_message } from "@/helpers/auth";
 import { useModal } from "@/store/modals";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -27,7 +27,7 @@ export default function GameAvail({ gameId }: { gameId: string }) {
   const query = useQuery<ApiResponse<any[]>>({
     queryKey: ["vr-game-avail", gameId],
     queryFn: async () => {
-      const response = await apiClient(`admin/vr/games/${gameId}/availability`);
+      const response = await apiClient(`/vrgames/${gameId}/availability`);
       const data = await response.data;
       return data;
     },
@@ -45,11 +45,17 @@ export default function GameAvail({ gameId }: { gameId: string }) {
     });
   };
   const modal = useModal();
-  const { register, handleSubmit, setValue, watch } =
-    useForm<Partial<StudioAvailability>>();
+  const { register, handleSubmit, setValue, watch } = useForm<
+    Partial<StudioAvailability>
+  >({
+    defaultValues: {
+      dayOfWeek: 1,
+    },
+  });
   const getDayName = (dayOfWeek: number) => {
     return daysOfWeek.find((day) => day.id === dayOfWeek)?.name || "Unknown";
   };
+  const { mutateAsync } = useMutation({ mutationFn: (fn) => fn() });
   const onSubmit = (data: Partial<StudioAvailability>) => {
     toast.promise(
       async () => {
@@ -68,19 +74,43 @@ export default function GameAvail({ gameId }: { gameId: string }) {
       },
     );
   };
+  const remove_selected = async () => {
+    let resp = await apiClient.delete("");
+  };
   return (
     <div>
-      <SimpleTitle
-        //@ts-ignore
-        title={<span className="text-base">Game Availability</span>}
-      />
+      <div className="flex gap-2">
+        <SimpleTitle
+          //@ts-ignore
+          title={<span className="text-base">Game Availability</span>}
+        />
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            modal.showModal();
+          }}
+        >
+          Add
+        </button>
+        {Object.keys(selected).length > 0 && (
+          <button
+            className="btn btn-error"
+            onClick={() => {
+              toast.info("awaiting endpoint");
+              setSelected({});
+            }}
+          >
+            Delete
+          </button>
+        )}
+      </div>
       <SuspenseCompLayout query={query}>
         {(data: ApiResponse) => {
           let resp = data.payload;
           return (
             <>
               <div className="container mx-auto p-4">
-                {query.data && query.data.payload.length > 0 ? (
+                {resp.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {query.data.payload.map((availability) => (
                       <AvailablityCard
@@ -108,9 +138,7 @@ export default function GameAvail({ gameId }: { gameId: string }) {
                   className="space-y-6 p-4"
                   onSubmit={handleSubmit(onSubmit)}
                 >
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    Add New Availability
-                  </h2>
+                  <h2 className="text-2xl font-bold ">Add New Availability</h2>
                   <LocalSelect
                     label="Day of Week"
                     options={daysOfWeek}

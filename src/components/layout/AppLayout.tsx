@@ -237,10 +237,10 @@ export default function AppLayout(props: PropsWithChildren) {
                   ),
                 )}
                 <li className="mt-auto">
-                  <a>
+                  <Link to="/app/settings">
                     {" "}
                     <Settings size="18px" /> Settings
-                  </a>
+                  </Link>
                 </li>
                 <li className="">
                   <a onClick={() => logout()}>

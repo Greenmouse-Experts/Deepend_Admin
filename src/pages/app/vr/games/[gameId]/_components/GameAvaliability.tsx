@@ -206,43 +206,47 @@ const AvailablityCard = ({
       } cursor-pointer`}
       onClick={() => onSelect(card)}
     >
-      <div className="card-body p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="card-title text-2xl font-extrabold text-primary">
+      <div className="card-body p-4">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="card-title text-xl font-extrabold text-primary">
             {getDayName(card.dayOfWeek)}
           </h3>
           <div
             className={`badge ${
               isSelected ? "badge-primary" : "badge-outline"
-            } badge-lg`}
+            } badge-md`}
           >
             {isSelected ? "Selected" : "Select"}
           </div>
         </div>
 
-        <div className="mb-4">
-          <p className="text-sm font-semibold text-base-content/70">
-            Time Slot
-          </p>
-          <p className="text-3xl font-bold text-base-content">
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-base-content/70">Time</p>
+          <p className="text-2xl font-bold text-base-content">
             {formatTime(card.startTime)} - {formatTime(card.endTime)}
           </p>
         </div>
 
         <div className="divider my-0"></div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-base-content/60 mt-4">
+        <div className="grid grid-cols-1 gap-1 text-xs text-base-content/60 mt-2">
           <p>
             <span className="font-medium">Created:</span>{" "}
             {new Date(card.createdAt).toLocaleDateString()}
             {" at "}
-            {new Date(card.createdAt).toLocaleTimeString()}
+            {new Date(card.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
           <p>
             <span className="font-medium">Updated:</span>{" "}
             {new Date(card.updatedAt).toLocaleDateString()}
             {" at "}
-            {new Date(card.updatedAt).toLocaleTimeString()}
+            {new Date(card.updatedAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </p>
         </div>
       </div>

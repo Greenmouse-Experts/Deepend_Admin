@@ -152,6 +152,9 @@ export default function index() {
         <div>
           <div className="fieldset-label mb-2">Location</div>
           <Autocomplete
+            options={{
+              types: ["address"], // Restrict to street addresses
+            }}
             className="input w-full"
             apiKey={GOOGLE_MAPS_KEY}
             onPlaceSelected={(place: PlacesService) => {

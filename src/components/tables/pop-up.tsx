@@ -96,12 +96,8 @@ export default function PopUp(props: {
             {/*<div className="flex flex-col gap-1">*/}
             {props?.actions?.map((action) => (
               <li>
-                <a>
-                  <button
-                    key={action.key}
-                    className=""
-                    onClick={() => action.action(props.item)}
-                  >
+                <a onClick={() => action.action(props.item)}>
+                  <button key={action.key} className="">
                     {action.label}
                   </button>
                 </a>

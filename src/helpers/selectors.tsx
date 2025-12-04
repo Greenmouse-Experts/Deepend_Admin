@@ -11,6 +11,7 @@ export default function useSelect() {
       [item.id]: item,
     }));
   };
+
   const remove = (id: string) => {
     setSelected((prev) => {
       const newSelected = { ...prev };
@@ -18,5 +19,10 @@ export default function useSelect() {
       return newSelected;
     });
   };
-  return { selected, setSelected, mapped, add_to, remove };
+
+  const clear = () => {
+    setSelected({});
+  };
+
+  return { selected, setSelected, mapped, add_to, remove, clear };
 }

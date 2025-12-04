@@ -126,6 +126,7 @@ const SelectAddon = ({
                 name=""
                 id=" "
                 className="select w-full"
+                defaultValue={0}
               >
                 {resp.map((item) => {
                   return (
@@ -134,6 +135,7 @@ const SelectAddon = ({
                     </option>
                   );
                 })}
+                <option value={0}>None</option>
               </select>
             </div>
             <SubCategory id={id} modalProps={modalProps} refetch={refetch} />
@@ -186,7 +188,9 @@ const SubCategory = ({
       refetch();
     },
   });
-  useEffect(() => {}, [id]);
+  useEffect(() => {
+    select.clear();
+  }, [id]);
   const add_to = async () => {
     let resp = await apiClient.post(`admins/foods/${foodID}/addons`, {
       addons: [

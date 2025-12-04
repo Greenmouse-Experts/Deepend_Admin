@@ -71,7 +71,7 @@ export default function PopUp(props: {
   return (
     <>
       <div
-        data-theme="nord"
+        data-theme="deepend"
         ref={setReferenceElement}
         onClick={openPopup}
         className="btn btn-circle btn-ghost "
@@ -81,7 +81,7 @@ export default function PopUp(props: {
       <Portal>
         {isOpen && (
           <div
-            data-theme="nord"
+            data-theme="deepend"
             ref={(el) => {
               setPopperElement(el);
               popupRef.current = el;

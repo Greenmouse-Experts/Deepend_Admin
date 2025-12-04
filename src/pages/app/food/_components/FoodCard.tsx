@@ -44,7 +44,7 @@ export default function FoodCard({
         </p>
         <div className="flex justify-between items-center mt-4">
           <span className="text-lg font-extrabold text-primary">
-            ${item.price}
+            NGN {item.price}
           </span>
           <div className="form-control">
             <label className="label cursor-pointer gap-2">

@@ -215,7 +215,11 @@ const SubCategory = ({
           <section className="flex flex-col gap-2">
             <div className="flex gap-2 flex-wrap">
               {selected_items.map((item) => (
-                <div key={item.id} className="badge badge-sm badge-primary">
+                <div
+                  key={item.id}
+                  className="badge badge-sm badge-primary cursor-pointer"
+                  onClick={() => select.remove(item.id)}
+                >
                   {item.name}
                 </div>
               ))}

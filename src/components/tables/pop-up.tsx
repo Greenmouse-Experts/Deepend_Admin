@@ -80,31 +80,35 @@ export default function PopUp(props: {
       </div>
       <Portal>
         {isOpen && (
-          <div
+          <ul
             data-theme="deepend"
             ref={(el) => {
               setPopperElement(el);
               popupRef.current = el;
             }}
-            className="shadow-lg border border-current/20 rounded-xl bg-base-100 z-50 p-2"
+            className="shadow-lg menu border border-current/20 rounded-xl bg-base-100 z-50 p-2"
             style={{
               ...styles.popper,
               width: "150px",
             }}
             {...attributes.popper}
           >
-            <div className="flex flex-col gap-1">
-              {props?.actions?.map((action) => (
-                <button
-                  key={action.key}
-                  className="btn btn-ghost  btn-sm"
-                  onClick={() => action.action(props.item)}
-                >
-                  {action.label}
-                </button>
-              ))}
-            </div>
-          </div>
+            {/*<div className="flex flex-col gap-1">*/}
+            {props?.actions?.map((action) => (
+              <li>
+                <a>
+                  <button
+                    key={action.key}
+                    className=""
+                    onClick={() => action.action(props.item)}
+                  >
+                    {action.label}
+                  </button>
+                </a>
+              </li>
+            ))}
+            {/*</div>*/}
+          </ul>
         )}
       </Portal>
     </>

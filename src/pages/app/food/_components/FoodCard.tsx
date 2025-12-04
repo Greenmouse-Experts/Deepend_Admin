@@ -27,48 +27,57 @@ export default function FoodCard({
   return (
     <div
       key={item.id}
-      className="card card-compact bg-base-100 shadow-xl card-border"
+      className="card card-compact bg-base-100 shadow-xl rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
     >
-      <figure>
+      <figure className="relative h-48">
         <img
           src={item.imageUrls[0]?.url || "https://picsum.photos/400/225"}
           loading="lazy"
           alt={item.name}
-          className="w-full h-32 object-cover"
+          className="w-full h-full object-cover"
         />
+        <div
+          className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold text-white ${
+            item.isAvailable ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
+          {item.isAvailable ? "Available" : "Unavailable"}
+        </div>
       </figure>
-      <div className="card-body p-4">
-        <h2 className="card-title text-lg">{item.name}</h2>
-        <p className="text-sm line-clamp-2 text-base-content/80">
+      <div className="card-body p-5">
+        <div className="form-control">
+          <label className="label cursor-pointer gap-3">
+            <span className="label-text text-base font-medium">Status</span>
+            <input
+              type="checkbox"
+              className="toggle toggle-primary toggle-md"
+              checked={item.isAvailable}
+              onChange={() =>
+                toast.promise(mutate.mutateAsync(), {
+                  loading: "Updating status...",
+                  success: "Status updated successfully!",
+                  error: extract_message,
+                })
+              }
+            />
+          </label>
+        </div>
+        <h2 className="card-title text-2xl font-extrabold text-base-content leading-tight">
+          {item.name}
+        </h2>
+        <p className="text-sm text-base-content/80 line-clamp-2 mb-3">
           {item.description}
         </p>
-        <div className="flex justify-between items-center mt-4">
-          <span className="text-lg font-extrabold text-primary">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-2xl font-bold text-primary">
             NGN {item.price}
           </span>
-          <div className="form-control">
-            <label className="label cursor-pointer gap-2">
-              <span className="label-text">Available</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-success"
-                checked={item.isAvailable}
-                onChange={() =>
-                  toast.promise(mutate.mutateAsync(), {
-                    loading: "Updating status...",
-                    success: "Status updated successfully!",
-                    error: extract_message,
-                  })
-                }
-              />
-            </label>
-          </div>
         </div>
-        <div className="card-actions justify-end mt-4">
+        <div className="card-actions justify-center mt-auto">
           <Link
             to="/app/food/$id"
             params={{ id: item.id }}
-            className="btn btn-primary btn-sm btn-block"
+            className="btn btn-primary btn-md btn-block rounded-full font-semibold"
           >
             View Details
           </Link>

@@ -112,7 +112,7 @@ const DeliveryForm = ({ item }: { item: Partial<DeliverySettings> }) => {
             required: true,
             valueAsNumber: true,
           })}
-          readOnly
+          disabled
         />
       </div>
       <div className="mb-4">
@@ -122,7 +122,7 @@ const DeliveryForm = ({ item }: { item: Partial<DeliverySettings> }) => {
             required: true,
             valueAsNumber: true,
           })}
-          readOnly
+          disabled
         />
       </div>
       <div className="mb-4">

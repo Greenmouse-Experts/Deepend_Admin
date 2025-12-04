@@ -87,7 +87,7 @@ export default function index() {
       key: "address",
       label: "Address",
       render: (_: any, item: Hotel) => (
-        <p>
+        <p className="line-clamp-1">
           {item.address}, {item.city}, {item.state}, {item.country}
         </p>
       ),

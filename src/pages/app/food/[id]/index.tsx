@@ -32,6 +32,21 @@ export default function index() {
     },
   });
 
+  const toggle_status_mutation = useMutation({
+    mutationFn: async (isAvailable: boolean) => {
+      const status = isAvailable ? "available" : "unavailable";
+      let resp = await apiClient.put(`admins/foods/${id}/${status}`);
+      return resp.data;
+    },
+    onSuccess: () => {
+      query.refetch();
+      toast.success("Status updated successfully");
+    },
+    onError: (error) => {
+      toast.error(extract_message(error as any));
+    },
+  });
+
   const delete_mutation = useMutation({
     mutationFn: async () => {
       let resp = await apiClient.delete("admins/foods/" + id);
@@ -102,7 +117,18 @@ export default function index() {
                         type="checkbox"
                         className="checkbox checkbox-primary checkbox-lg"
                         checked={food.isAvailable}
-                        readOnly
+                        onChange={() =>
+                          toast.promise(
+                            toggle_status_mutation.mutateAsync(
+                              !food.isAvailable,
+                            ),
+                            {
+                              loading: "Updating status...",
+                              success: "Status updated successfully!",
+                              error: extract_message,
+                            },
+                          )
+                        }
                       />
                       <span className="text-lg">
                         {food.isAvailable

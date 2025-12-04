@@ -37,9 +37,9 @@ export default function FoodCard({
           className="w-full h-full object-cover"
         />
         <div
-          className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold text-white ${
-            item.isAvailable ? "bg-green-500" : "bg-red-500"
-          }`}
+          className={`badge absolute top-3 right-3 ${
+            item.isAvailable ? "badge-success" : "badge-error"
+          } text-white`}
         >
           {item.isAvailable ? "Available" : "Unavailable"}
         </div>

@@ -3,10 +3,12 @@ import type { Hotel } from "@/api/types";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import CustomTable from "@/components/tables/CustomTable";
 import { usePagination } from "@/store/pagination";
-import { useQuery } from "@tanstack/react-query";
-import HotelCard from "./_components/HotelCard";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
+import { extract_message } from "@/helpers/auth";
 
 export default function index() {
   const props = usePagination();
@@ -23,6 +25,32 @@ export default function index() {
     },
   });
 
+  const deleteHotelMutation = useMutation({
+    mutationFn: async (hotelId: number) => {
+      let resp = await apiClient.delete("admins/hotels/" + hotelId);
+      return resp.data;
+    },
+    onSuccess: () => {
+      query.refetch();
+    },
+  });
+
+  const toggleAvailabilityMutation = useMutation({
+    mutationFn: async ({
+      hotelId,
+      status,
+    }: {
+      hotelId: number;
+      status: string;
+    }) => {
+      let resp = await apiClient.put(`admins/hotels/${hotelId}/${status}`);
+      return resp.data;
+    },
+    onSuccess: () => {
+      query.refetch();
+    },
+  });
+
   if (query.isLoading) {
     return (
       <>
@@ -32,6 +60,80 @@ export default function index() {
     );
   }
   const items = query.data?.payload || [];
+
+  const columns = [
+    {
+      key: "name",
+      label: "Name",
+    },
+    {
+      key: "address",
+      label: "Address",
+      render: (_: any, item: Hotel) => (
+        <p>
+          {item.address}, {item.city}, {item.state}, {item.country}
+        </p>
+      ),
+    },
+    {
+      key: "rating",
+      label: "Rating",
+      render: (value: number) => `${value} / 5`,
+    },
+    {
+      key: "rooms",
+      label: "Rooms",
+      render: (_: any, item: Hotel) => item.rooms.length,
+    },
+    {
+      key: "isAvailable",
+      label: "Available",
+      render: (value: boolean, item: Hotel) => (
+        <input
+          type="checkbox"
+          className="toggle toggle-success toggle-sm"
+          checked={value}
+          onChange={() => {
+            const status = item.isAvailable ? "unavailable" : "available";
+            toast.promise(
+              toggleAvailabilityMutation.mutateAsync({
+                hotelId: item.id,
+                status,
+              }),
+              {
+                loading: "Updating availability...",
+                success: "Availability updated successfully!",
+                error: extract_message,
+              },
+            );
+          }}
+          // disabled={toggleAvailabilityMutation.isPending}
+        />
+      ),
+    },
+  ];
+
+  const actions = [
+    {
+      key: "view",
+      label: "View",
+      action: (item: Hotel) => {
+        window.location.href = `/app/hotel/${item.id}`;
+      },
+    },
+    {
+      key: "delete",
+      label: "Delete",
+      action: (item: Hotel) => {
+        toast.promise(deleteHotelMutation.mutateAsync(item.id), {
+          loading: "Deleting...",
+          success: extract_message,
+          error: extract_message,
+        });
+      },
+    },
+  ];
+
   return (
     <>
       <SimpleHeader title={"Hotels"}>
@@ -40,11 +142,7 @@ export default function index() {
         </Link>
       </SimpleHeader>
       <div className="container mx-auto ">
-        <div className="space-y-4 md:grid-cols-2 grid gap-2">
-          {items?.map((hotel) => (
-            <HotelCard refetch={query.refetch} hotel={hotel} key={hotel.id} />
-          ))}
-        </div>
+        <CustomTable data={items} columns={columns} actions={actions} />
       </div>
       <div className="mt-4">
         <SimplePaginator {...props} />

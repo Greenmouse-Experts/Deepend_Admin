@@ -47,7 +47,9 @@ export default function index() {
             <>
               <ul className="menu w-full">
                 {payload.map((item) => (
-                  <li key={item.id}>{JSON.stringify(item)}</li>
+                  <li key={item.id}>
+                    <a>{JSON.stringify(item)}</a>
+                  </li>
                 ))}
               </ul>
               <EmptyList list={payload} />

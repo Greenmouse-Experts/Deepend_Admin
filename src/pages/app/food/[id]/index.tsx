@@ -70,8 +70,8 @@ export default function index() {
         return (
           <>
             <div className="container mx-auto p-4">
-              <div className="  space-y-4">
-                <div className="relative h-[420px] rounded-lg overflow-hidden">
+              <div className="space-y-6">
+                <div className="relative h-[420px] rounded-lg overflow-hidden shadow-lg">
                   {food.imageUrls.length > 0 ? (
                     <SimpleCarousel>
                       {food.imageUrls.map((item, index) => (
@@ -92,84 +92,95 @@ export default function index() {
                     </div>
                   )}
                 </div>
-                <div className="card-body p-0">
-                  <h2 className="card-title text-4xl font-bold mb-2 text-secondary">
+
+                <div className="bg-base-100 p-6 rounded-lg shadow-lg">
+                  <h2 className="text-5xl font-extrabold mb-4 text-secondary leading-tight">
                     {food.name}
                   </h2>
-                  <p className="text-lg text-base-content mb-4 leading-relaxed">
+                  <p className="text-lg text-base-content mb-6 leading-relaxed">
                     {food.description}
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl font-semibold text-primary">
-                        Price:
-                      </span>
-                      <span className="text-3xl font-bold text-accent">
-                        NGN {parseFloat(food.price).toFixed(2)}
-                      </span>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+                    <div className="flex items-center gap-4 p-4 bg-base-200 rounded-lg shadow-sm">
+                      <DollarSign className="text-primary" size={32} />
+                      <div>
+                        <span className="text-xl font-semibold text-primary block">
+                          Price:
+                        </span>
+                        <span className="text-3xl font-bold text-accent">
+                          NGN {parseFloat(food.price).toFixed(2)}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <CheckCircle className="text-primary" size={28} />
-                      <span className="text-xl font-semibold text-primary">
-                        Available:
-                      </span>
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary checkbox-lg"
-                        checked={food.isAvailable}
-                        onChange={() =>
-                          toast.promise(
-                            toggle_status_mutation.mutateAsync(
-                              !food.isAvailable,
-                            ),
-                            {
-                              loading: "Updating status...",
-                              success: "Status updated successfully!",
-                              error: extract_message,
-                            },
-                          )
-                        }
-                      />
-                      <span className="text-lg">
-                        {food.isAvailable
-                          ? "Yes, in stock"
-                          : "No, out of stock"}
-                      </span>
+
+                    <div className="flex items-center gap-4 p-4 bg-base-200 rounded-lg shadow-sm">
+                      <CheckCircle className="text-primary" size={32} />
+                      <div>
+                        <span className="text-xl font-semibold text-primary block">
+                          Available:
+                        </span>
+                        <div className="flex items-center gap-2 mt-1">
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-primary toggle-lg"
+                            checked={food.isAvailable}
+                            onChange={() =>
+                              toast.promise(
+                                toggle_status_mutation.mutateAsync(
+                                  !food.isAvailable,
+                                ),
+                                {
+                                  loading: "Updating status...",
+                                  success: "Status updated successfully!",
+                                  error: extract_message,
+                                },
+                              )
+                            }
+                          />
+                          <span className="text-lg font-medium text-base-content">
+                            {food.isAvailable ? "In Stock" : "Out of Stock"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Package className="text-primary" size={28} />
-                      <span className="text-xl font-semibold text-primary">
-                        Quantity:
-                      </span>
-                      <span className="text-xl text-base-content font-medium">
-                        {food.quantity} units
-                      </span>
+
+                    <div className="flex items-center gap-4 p-4 bg-base-200 rounded-lg shadow-sm">
+                      <Package className="text-primary" size={32} />
+                      <div>
+                        <span className="text-xl font-semibold text-primary block">
+                          Quantity:
+                        </span>
+                        <span className="text-2xl text-base-content font-bold mt-1">
+                          {food.quantity} units
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="border-t border-base-200 pt-6 mt-6">
-                    <p className="text-sm text-base-content-secondary mb-2 flex items-center gap-2">
-                      <CalendarPlus size={20} className="text-info" />
-                      <span className="font-medium">Created At:</span>{" "}
+                  <div className="border-t border-base-300 pt-6 mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p className="text-base text-base-content-secondary flex items-center gap-3">
+                      <CalendarPlus size={24} className="text-info" />
+                      <span className="font-semibold">Created At:</span>{" "}
                       {new Date(food.createdAt).toLocaleString()}
                     </p>
-                    <p className="text-sm text-base-content-secondary flex items-center gap-2">
-                      <CalendarClock size={20} className="text-info" />
-                      <span className="font-medium">Last Updated:</span>{" "}
+                    <p className="text-base text-base-content-secondary flex items-center gap-3">
+                      <CalendarClock size={24} className="text-info" />
+                      <span className="font-semibold">Last Updated:</span>{" "}
                       {new Date(food.updatedAt).toLocaleString()}
                     </p>
                   </div>
 
-                  <div className="card-actions justify-end mt-8 gap-4">
+                  <div className="flex justify-end mt-10 gap-4">
                     <Link
                       viewTransition
                       to="/app/food/$id/edit"
                       params={{
                         id: id,
                       }}
-                      className="btn btn-secondary btn-lg shadow-md hover:shadow-lg transition-all duration-200 gap-2"
+                      className="btn btn-secondary btn-lg shadow-md hover:shadow-lg transition-all duration-200 gap-2 px-6"
                     >
-                      <Edit size={20} />
+                      <Edit size={22} />
                       Edit Food
                     </Link>
                     <button
@@ -181,12 +192,12 @@ export default function index() {
                           error: (err) => extract_message(err),
                         });
                       }}
-                      className="btn btn-error btn-lg shadow-md hover:shadow-lg transition-all duration-200 gap-2"
+                      className="btn btn-error btn-lg shadow-md hover:shadow-lg transition-all duration-200 gap-2 px-6"
                     >
                       {delete_mutation.isPending ? (
                         <span className="loading loading-spinner" />
                       ) : (
-                        <Trash2 size={20} />
+                        <Trash2 size={22} />
                       )}
                       Delete Food
                     </button>

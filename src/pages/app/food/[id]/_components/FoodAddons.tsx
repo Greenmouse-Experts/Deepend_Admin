@@ -9,8 +9,9 @@ import CustomTable from "@/components/tables/CustomTable";
 import { extract_message } from "@/helpers/auth";
 import useSelect from "@/helpers/selectors";
 import { useModal } from "@/store/modals";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function FoodAddons({ id }: { id: string }) {
@@ -60,7 +61,7 @@ export default function FoodAddons({ id }: { id: string }) {
   return (
     <section>
       <Modal ref={modal.ref} title="Add Addon">
-        <SelectAddon modalProps={modal}></SelectAddon>
+        <SelectAddon refetch={query.refetch} modalProps={modal}></SelectAddon>
       </Modal>
       <div className="flex gap-2 ">
         <SimpleTitle title="Food Addons" />
@@ -90,10 +91,12 @@ export default function FoodAddons({ id }: { id: string }) {
 
 const SelectAddon = ({
   modalProps,
+  refetch,
   selectProps,
 }: {
   modalProps: ReturnType<typeof useModal>;
   selectProps?: ReturnType<typeof useSelect>;
+  refetch: () => void;
 }) => {
   const [id, setid] = useState<string | null>(null);
   const query = useQuery<ApiResponse<FoodAddon[]>>({
@@ -133,7 +136,7 @@ const SelectAddon = ({
                 })}
               </select>
             </div>
-            <SubCategory id={id} />
+            <SubCategory id={id} modalProps={modalProps} refetch={refetch} />
           </section>
         );
       }}
@@ -141,7 +144,15 @@ const SelectAddon = ({
   );
 };
 
-const SubCategory = ({ id }: { id: string | null }) => {
+const SubCategory = ({
+  id,
+  modalProps,
+  refetch,
+}: {
+  id: string | null;
+  modalProps: ReturnType<typeof useModal>;
+  refetch: () => void;
+}) => {
   const categoryId = id;
   const query = useQuery<
     ApiResponse<
@@ -163,14 +174,37 @@ const SubCategory = ({ id }: { id: string | null }) => {
     },
     enabled: !!categoryId,
   });
-
+  const { id: foodID } = useParams({
+    strict: false,
+  });
   const select = useSelect();
+
+  const mutate = useMutation({
+    mutationFn: (fn: any) => fn(),
+    onSuccess: () => {
+      modalProps.closeModal();
+      refetch();
+    },
+  });
+  useEffect(() => {}, [id]);
+  const add_to = async () => {
+    let resp = await apiClient.post(`admins/foods/${foodID}/addons`, {
+      addons: [
+        ...select.mapped.map((item) => ({
+          addonCategoryId: id,
+          addonItemId: item,
+        })),
+      ],
+    });
+    return resp;
+  };
   return (
     <SuspenseCompLayout query={query}>
       {(data) => {
         let resp = data.payload;
         return (
-          <section>
+          <section className="flex flex-col gap-2">
+            {/*{foodID}*/}
             <ul className="menu w-full space-y-2">
               <label htmlFor="" className="fieldset-label mb-2">
                 Sub Category
@@ -200,6 +234,21 @@ const SubCategory = ({ id }: { id: string | null }) => {
                 );
               })}
             </ul>
+            <button
+              onClick={() => {
+                if (select.mapped.length < 0) {
+                  return toast.error("Please select an addon");
+                }
+                toast.promise(mutate.mutateAsync(add_to), {
+                  loading: "loading",
+                  error: extract_message,
+                  success: "Addon added successfully",
+                });
+              }}
+              className="btn btn-primary btn-sm ml-auto"
+            >
+              Add Addon
+            </button>
           </section>
         );
       }}

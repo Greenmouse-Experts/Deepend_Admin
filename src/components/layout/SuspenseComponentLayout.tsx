@@ -5,7 +5,7 @@ import { extract_message } from "@/helpers/auth";
 import type { AxiosError } from "axios";
 import type { ApiResponse } from "@/api/apiClient";
 import type React from "react";
-import SimpleLoader from "../SimpleLoader";
+import SimpleLoader, { SmallerLoader } from "../SimpleLoader";
 
 interface QueryPageLayoutProps {
   query: QueryObserverResult;
@@ -13,6 +13,7 @@ interface QueryPageLayoutProps {
   headerActions?: React.ReactNode | any;
   children?: React.ReactNode | ((data: any) => React.ReactNode);
   showTitle?: boolean;
+  minHeight?: string;
 }
 
 export default function SuspenseCompLayout(props: QueryPageLayoutProps) {
@@ -23,7 +24,7 @@ export default function SuspenseCompLayout(props: QueryPageLayoutProps) {
         {showTitle && (
           <SimpleHeader title={props.title}>{props.headerActions}</SimpleHeader>
         )}
-        <SimpleLoader />
+        <SmallerLoader />
       </>
     );
 

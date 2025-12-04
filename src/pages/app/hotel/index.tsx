@@ -26,7 +26,7 @@ export default function index() {
   });
 
   const deleteHotelMutation = useMutation({
-    mutationFn: async (hotelId: number) => {
+    mutationFn: async (hotelId: string) => {
       let resp = await apiClient.delete("admins/hotels/" + hotelId);
       return resp.data;
     },
@@ -40,7 +40,7 @@ export default function index() {
       hotelId,
       status,
     }: {
-      hotelId: number;
+      hotelId: string;
       status: string;
     }) => {
       let resp = await apiClient.put(`admins/hotels/${hotelId}/${status}`);
@@ -62,6 +62,23 @@ export default function index() {
   const items = query.data?.payload || [];
 
   const columns = [
+    {
+      key: "image",
+      label: "Image",
+      render: (_: any, item: Hotel) => (
+        <div className="avatar">
+          <div className="mask mask-squircle w-12 h-12">
+            {item.imageUrls && item.imageUrls.length > 0 ? (
+              <img src={item.imageUrls[0].url} alt={`Image of ${item.name}`} />
+            ) : (
+              <div className="w-12 h-12 bg-base-300 grid place-items-center">
+                <span className="text-xs text-base-content/70">No Image</span>
+              </div>
+            )}
+          </div>
+        </div>
+      ),
+    },
     {
       key: "name",
       label: "Name",

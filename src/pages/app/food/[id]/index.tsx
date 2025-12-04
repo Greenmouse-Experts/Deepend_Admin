@@ -15,6 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
+import FoodAddons from "./_components/FoodAddons";
 
 export default function index() {
   const { id } = useParams({
@@ -209,6 +210,7 @@ export default function index() {
             </button>
           </div>
         </div>
+        <FoodAddons id={id} />
       </div>
     </div>
   );

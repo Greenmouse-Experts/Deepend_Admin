@@ -8,7 +8,6 @@ import GameAvail from "./_components/GameAvaliability";
 
 export default function index() {
   const { gameId } = useParams({ strict: false });
-
   const query = useQuery<ApiResponse<Vrgame>>({
     queryKey: ["game", gameId],
     queryFn: async () => {
@@ -17,7 +16,6 @@ export default function index() {
     },
   });
   const item = query.data?.payload;
-
   return (
     <QueryPageLayout
       query={query}

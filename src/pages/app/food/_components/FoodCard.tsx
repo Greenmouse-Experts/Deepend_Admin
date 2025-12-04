@@ -27,7 +27,7 @@ export default function FoodCard({
   return (
     <div
       key={item.id}
-      className="card card-compact bg-base-100 shadow-xl rounded-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+      className="card card-compact bg-base-100 shadow-xl rounded-lg "
     >
       <figure className="relative h-48">
         <img

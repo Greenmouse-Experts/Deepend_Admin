@@ -188,26 +188,38 @@ const SubCategory = ({
       refetch();
     },
   });
-  useEffect(() => {
-    select.clear();
-  }, [id]);
+  // useEffect(() => {
+  //   select.clear();
+  // }, [id]);
   const add_to = async () => {
     let resp = await apiClient.post(`admins/foods/${foodID}/addons`, {
       addons: [
-        ...select.mapped.map((item) => ({
-          addonCategoryId: id,
-          addonItemId: item,
+        ...selected_items.map((item: any) => ({
+          addonCategoryId: id, // Assuming 'id' from SubCategory scope is the categoryId
+          addonItemId: item.id,
         })),
+        // ...select.mapped.map((item) => ({
+        //   addonCategoryId: id,
+        //   addonItemId: item,
+        // })),
       ],
     });
     return resp;
   };
+  const selected_items = Object.values(select.selected);
   return (
     <SuspenseCompLayout query={query}>
       {(data) => {
         let resp = data.payload;
         return (
           <section className="flex flex-col gap-2">
+            <div className="flex gap-2 flex-wrap">
+              {selected_items.map((item) => (
+                <div key={item.id} className="badge badge-sm badge-primary">
+                  {item.name}
+                </div>
+              ))}
+            </div>
             {/*{foodID}*/}
             <ul className="menu w-full space-y-2">
               <label htmlFor="" className="fieldset-label mb-2">

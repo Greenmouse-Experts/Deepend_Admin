@@ -69,7 +69,7 @@ export default function index() {
         let food = data.payload;
         return (
           <>
-            <div className="container mx-auto p-4">
+            <div className="container ">
               <div className="space-y-6">
                 <div className="relative h-[420px] rounded-lg overflow-hidden shadow-lg">
                   {food.imageUrls.length > 0 ? (
@@ -171,7 +171,7 @@ export default function index() {
                     </p>
                   </div>
 
-                  <div className="flex justify-end mt-10 gap-4">
+                  <div className="flex flex-wrap justify-end mt-10 gap-4">
                     <Link
                       viewTransition
                       to="/app/food/$id/edit"

@@ -34,7 +34,7 @@ export default function index() {
 
   return (
     <div>
-      <SimpleHeader title={"Food Addon"}>
+      <SimpleHeader title={"Food Addon Categories"}>
         <Link to="/app/food/addons/new" className="btn btn-primary">
           Add New Addon
         </Link>

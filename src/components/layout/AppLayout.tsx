@@ -70,7 +70,7 @@ const dash_links: {
       },
       {
         path: "/app/food/addons",
-        label: "Food Addons",
+        label: "Addons Category",
         icon: PlusCircle,
       },
     ],

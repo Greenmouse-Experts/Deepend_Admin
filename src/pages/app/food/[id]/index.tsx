@@ -43,7 +43,7 @@ export default function index() {
       toast.success("Food item deleted successfully!");
     },
     onError: (error) => {
-      toast.error(extract_message(error));
+      toast.error(extract_message(error as any));
     },
   });
 

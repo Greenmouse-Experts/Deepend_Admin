@@ -3,7 +3,10 @@ import type { FoodAddon } from "@/api/types";
 import EmptyList from "@/components/EmptyList";
 import SuspenseCompLayout from "@/components/layout/SuspenseComponentLayout";
 import SimpleTitle from "@/components/SimpleTitle";
+import CustomTable from "@/components/tables/CustomTable";
+import { extract_message } from "@/helpers/auth";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function FoodAddons({ id }: { id: string }) {
   let query = useQuery({
@@ -13,6 +16,42 @@ export default function FoodAddons({ id }: { id: string }) {
       return resp.data;
     },
   });
+
+  const columns = [
+    { key: "id", label: "ID" },
+    { key: "name", label: "Name" },
+    { key: "description", label: "Description" },
+  ];
+
+  const remove_addon = async (addonId) => {
+    let resp = await apiClient.delete(`admins/foods/${id}/addons/items`, {
+      data: {
+        addonItemIds: [addonId],
+      },
+    });
+    query.refetch();
+    return resp.data;
+  };
+
+  // const add_addon = async()=>
+  //   {
+  //     le
+  //   }
+  const actions = [
+    {
+      key: "remove",
+      label: "Remove",
+      action: (item: FoodAddon) => {
+        toast.promise(remove_addon(item.id), {
+          loading: "Removing addon...",
+          success: "Addon removed successfully",
+          error: extract_message,
+        });
+        console.log("Remove addon:", item);
+      },
+    },
+  ];
+
   return (
     <section>
       <SimpleTitle title="Food Addons" />
@@ -22,26 +61,7 @@ export default function FoodAddons({ id }: { id: string }) {
           return (
             <div>
               <EmptyList list={payload} />
-              <div className="overflow-x-auto">
-                <table className="table w-full">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {payload.map((addon) => (
-                      <tr key={addon.id}>
-                        <td>{addon.id}</td>
-                        <td>{addon.name}</td>
-                        <td>{addon.description}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <CustomTable data={payload} columns={columns} actions={actions} />
             </div>
           );
         }}

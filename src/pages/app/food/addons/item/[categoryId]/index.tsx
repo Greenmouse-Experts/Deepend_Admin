@@ -1,5 +1,6 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
-import SimpleLoader from "@/components/SimpleLoader";
+import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
+import CustomTable from "@/components/tables/CustomTable";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 
@@ -11,11 +12,15 @@ export default function index() {
     }),
   });
 
-  const query = useQuery<ApiResponse>({
+  const query = useQuery<
+    ApiResponse<
+      { name: string; id: string; description: string; price: number }[]
+    >
+  >({
     queryKey: ["addon-items", categoryId],
     queryFn: async () => {
       let resp = await apiClient.get(
-        "admins/foods/addons/categories/" + categoryId,
+        `admins/foods/addons/categories/${categoryId}/items`,
         {
           params: {
             page: 1,
@@ -27,10 +32,17 @@ export default function index() {
     },
   });
 
-  if (query.isLoading) <SimpleLoader />;
   return (
-    <div>
-      {categoryId} {JSON.stringify(query.data)}
-    </div>
+    <SuspensePageLayout query={query} title={"Food Addon Items"}>
+      {(data) => {
+        const payload = data.payload;
+        const columns = [
+          { key: "name", label: "Name" },
+          { key: "description", label: "Description" },
+          { key: "price", label: "Price" },
+        ];
+        return <CustomTable data={payload} columns={columns} />;
+      }}
+    </SuspensePageLayout>
   );
 }

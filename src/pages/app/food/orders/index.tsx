@@ -59,22 +59,32 @@ export default function index() {
                   { key: "quantity", label: "Quantity" },
                   { key: "foodPrice", label: "Price" },
                   { key: "totalPrice", label: "Total Price" },
+                  { key: "deliveryType", label: "Delivery Type" },
                   {
-                    key: "deliveryType",
-                    label: "Delivery Type",
-                    render: (value) => (
-                      <span
-                        className={`badge capitalize ${
-                          value === "delivery"
-                            ? "badge-primary"
-                            : "badge-secondary"
-                        }`}
-                      >
-                        {value}
-                      </span>
-                    ),
+                    key: "status",
+                    label: "Status",
+                    render: (value) => {
+                      let colorClass = "";
+                      switch (value) {
+                        case "delivered":
+                          colorClass = "text-success";
+                          break;
+                        case "cancelled":
+                          colorClass = "text-error";
+                          break;
+                        case "preparing":
+                          colorClass = "text-warning";
+                          break;
+                        case "confirmed":
+                          colorClass = "text-info";
+                          break;
+                        default:
+                          colorClass = "text-base-content";
+                          break;
+                      }
+                      return <span className={colorClass}>{value}</span>;
+                    },
                   },
-                  { key: "status", label: "Status" },
                 ]}
               />
               <EmptyList list={payload} />

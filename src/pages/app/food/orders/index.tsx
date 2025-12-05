@@ -1,24 +1,30 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
+import type { FoodOrder } from "@/api/types";
 import EmptyList from "@/components/EmptyList";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
+import SimplePaginator from "@/components/SimplePaginator";
 import SimpleTitle from "@/components/SimpleTitle";
+import CustomTable from "@/components/tables/CustomTable";
+import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-type selectedType = "delivered" | "cancelled" | "preparing";
 const status_list = [
   "delivered",
   "cancelled",
   "preparing",
-] satisfies selectedType[];
+  "confirmed",
+] as const;
 export default function index() {
-  const [status, setStatus] = useState<selectedType>("delivered");
-
-  const query = useQuery<ApiResponse>({
+  const [status, setStatus] =
+    useState<(typeof status_list)[number]>("delivered");
+  const paginate = usePagination();
+  const query = useQuery<ApiResponse<FoodOrder[]>>({
     queryKey: ["food-orders", status],
     queryFn: async () => {
       let resp = await apiClient.get("admins/foods/orders", {
         params: {
           status: status,
+          // page: paginate.page,
         },
       });
       return resp.data;
@@ -41,18 +47,24 @@ export default function index() {
         ))}
       </div>
       <SuspensePageLayout query={query} showTitle={false}>
-        {(data: ApiResponse<any[]>) => {
+        {(data: ApiResponse<FoodOrder[]>) => {
           const payload = data.payload;
           return (
             <>
-              <ul className="menu w-full">
-                {payload.map((item) => (
-                  <li key={item.id}>
-                    <a>{JSON.stringify(item)}</a>
-                  </li>
-                ))}
-              </ul>
+              <CustomTable
+                data={payload}
+                columns={[
+                  { key: "orderId", label: "Order ID" },
+                  { key: "foodName", label: "Food Name" },
+                  { key: "quantity", label: "Quantity" },
+                  { key: "foodPrice", label: "Price" },
+                  { key: "totalPrice", label: "Total Price" },
+                  { key: "deliveryType", label: "Delivery Type" },
+                  { key: "status", label: "Status" },
+                ]}
+              />
               <EmptyList list={payload} />
+              <SimplePaginator {...paginate} />
             </>
           );
         }}

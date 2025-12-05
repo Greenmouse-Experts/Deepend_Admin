@@ -388,3 +388,27 @@ export interface MovieBooking {
   currency: string;
   status: string;
 }
+
+export interface FoodOrder {
+  id: string;
+  userId: string;
+  orderId: string;
+  foodId: string;
+  foodName: string;
+  foodImageUrl: string;
+  quantity: number;
+  foodPrice: string;
+  foodAddons: {
+    addonId: number;
+    addonName: string;
+    addonPrice: string;
+  }[];
+  totalPrice: string;
+  currency: string;
+  deliveryType: string;
+  deliveryAddress: string;
+  deliveryLng: string;
+  deliveryLat: string;
+  specialInstructions: string | null;
+  status: string;
+}

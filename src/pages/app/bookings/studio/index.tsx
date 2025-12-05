@@ -7,7 +7,7 @@ import SimplePaginator from "@/components/SimplePaginator";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-type status = "confirmed" | "cancelled" | "completed";
+type status = "confirmed" | "cancelled" | "completed" | "scheduled";
 export default function index() {
   const [status, setStatus] = useState<status>("confirmed");
   const props = usePagination();
@@ -60,6 +60,14 @@ export default function index() {
           onClick={() => setStatus("completed")}
         >
           Completed
+        </a>
+        <a
+          className={`tab tab-lg tab-lifted ${
+            status === "scheduled" ? "tab-active" : ""
+          }`}
+          onClick={() => setStatus("scheduled")}
+        >
+          Scheduled
         </a>
       </div>
       <div className="flex flex-col gap-4 p-4">

@@ -1,6 +1,7 @@
 import SimpleTitle from "@/components/SimpleTitle";
 import { useState } from "react";
 import Delivery from "./_components/Delivery";
+import ProfileSettings from "./_components/ProfileSettings";
 
 export default function index() {
   const tabs = ["profile", "delivery"] as const;
@@ -20,6 +21,7 @@ export default function index() {
         ))}
       </div>
       <div className="">{tab === "delivery" && <Delivery />}</div>
+      <div className="">{tab === "profile" && <ProfileSettings />}</div>
     </div>
   );
 }

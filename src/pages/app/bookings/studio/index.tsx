@@ -175,9 +175,10 @@ export default function index() {
                     </div>
                   </div>
                 ))}
-                <EmptyList list={list} />
                 <div className="mt-4"></div>
               </div>
+              <EmptyList list={list} />
+
               <SimplePaginator {...props} />
             </section>
           );

@@ -92,17 +92,16 @@ const DeliveryForm = ({ item }: { item: Partial<DeliverySettings> }) => {
           className="input w-full"
           apiKey={GOOGLE_MAPS_KEY}
           onPlaceSelected={(place: PlacesService) => {
+            //@ts-expect-error
             form.setValue("originLat", place.geometry.location.lat());
+            //@ts-expect-error
+
             form.setValue("originLng", place.geometry.location.lng());
           }}
           options={{
             types: ["address"], // Restrict to street addresses
           }}
-          defaultValue={
-            item.originLat && item.originLng
-              ? `${item.originLat}, ${item.originLng}`
-              : ""
-          } // You might want to reverse geocode this for a proper address string
+          defaultValue={""} // You might want to reverse geocode this for a proper address string
         />
       </div>
       <div className="mb-4">

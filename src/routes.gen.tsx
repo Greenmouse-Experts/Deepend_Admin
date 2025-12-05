@@ -215,6 +215,18 @@ const appsettingsdeliveryindex = createRoute({
     createLazyRoute("/app/settings/delivery")({ component: m.default }),
   ),
 );
+const appnotifications = createRoute({
+  getParentRoute: () => app,
+  path: "notifications",
+});
+const appnotificationsindex = createRoute({
+  getParentRoute: () => appnotifications,
+  path: "/",
+}).lazy(() =>
+  import("./pages/app/notifications/index").then((m) =>
+    createLazyRoute("/app/notifications")({ component: m.default }),
+  ),
+);
 const appindex = createRoute({ getParentRoute: () => app, path: "/" }).lazy(
   () =>
     import("./pages/app/index").then((m) =>
@@ -682,6 +694,7 @@ const config = root.addChildren([
         appsettingsdeliveryindex,
       ]),
     ]),
+    appnotifications.addChildren([appnotificationsindex]),
     appindex,
     apphotel.addChildren([
       apphotelroom.addChildren([

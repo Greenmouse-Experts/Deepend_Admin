@@ -3,8 +3,8 @@ import { useState } from "react";
 import Delivery from "./_components/Delivery";
 
 export default function index() {
-  const tabs = ["delivery"];
-  const [tab, setTab] = useState<(typeof tabs)[number]>("delivery");
+  const tabs = ["profile", "delivery"] as const;
+  const [tab, setTab] = useState<(typeof tabs)[number]>("profile");
   return (
     <div>
       <SimpleTitle title="Settings" />

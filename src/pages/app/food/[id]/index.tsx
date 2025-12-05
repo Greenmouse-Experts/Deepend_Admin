@@ -176,6 +176,7 @@ export default function index() {
                       viewTransition
                       to="/app/food/$id/edit"
                       params={{
+                        //@ts-ignore
                         id: id,
                       }}
                       className="btn btn-secondary btn-lg shadow-md hover:shadow-lg transition-all duration-200 gap-2 px-6"

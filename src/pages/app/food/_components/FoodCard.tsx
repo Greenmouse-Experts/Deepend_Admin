@@ -76,6 +76,7 @@ export default function FoodCard({
         <div className="card-actions justify-center mt-auto">
           <Link
             to="/app/food/$id"
+            //@ts-ignore
             params={{ id: item.id }}
             className="btn btn-primary btn-md btn-block rounded-full font-semibold"
           >

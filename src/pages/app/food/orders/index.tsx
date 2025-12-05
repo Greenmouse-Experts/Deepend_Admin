@@ -64,7 +64,9 @@ export default function index() {
                 ]}
               />
               <EmptyList list={payload} />
-              <SimplePaginator {...paginate} />
+              <div className="mt-4">
+                <SimplePaginator {...paginate} />
+              </div>
             </>
           );
         }}

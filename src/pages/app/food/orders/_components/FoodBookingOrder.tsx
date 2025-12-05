@@ -96,16 +96,31 @@ export default function FoodBookingCard({
       </figure>
 
       <div className="card-body p-4 space-y-4">
-        <div className="flex flex-col gap-2">
-          <h2 className="card-title text-lg font-semibold">{food.foodName}</h2>
-          <div className="text-sm text-neutral">
-            Qty: <span className="font-semibold">{food.quantity}</span>
-          </div>
-          <div className="inline-flex items-baseline gap-2">
-            <span className="text-lg font-bold">
-              {food.totalPrice} {food.currency}
-            </span>
-            <span className="badge badge-outline">Unit: {food.foodPrice}</span>
+        <div className="flex flex-col gap-3">
+          <h2 className="card-title text-xl font-bold text-base-content mb-2">
+            {food.foodName}
+          </h2>
+          <div className="flex flex-col gap-2 text-base">
+            <div className="flex items-center justify-between">
+              <span className="text-base-content/80">Quantity:</span>{" "}
+              <span className="font-semibold text-base-content">
+                {food.quantity}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-base-content/80">Unit Price:</span>
+              <span className="font-semibold text-base-content">
+                {food.foodPrice} {food.currency}
+              </span>
+            </div>
+            <div className="flex items-center justify-between pt-2 border-t border-base-200">
+              <span className="text-lg font-bold text-base-content">
+                Total Price:
+              </span>
+              <span className="text-xl font-bold text-primary">
+                {food.totalPrice} {food.currency}
+              </span>
+            </div>
           </div>
         </div>
         {food.foodAddons.length > 0 && (

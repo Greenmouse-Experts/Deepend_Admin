@@ -32,7 +32,7 @@ export default function CustomTable(props: CustomTableProps) {
           <thead className="">
             <tr className=" rounded-2xl bg-base-200/50">
               {props.columns &&
-                props.columns.map((column, idx) => (
+                props?.columns?.map((column, idx) => (
                   <th
                     key={idx}
                     className="capitalize text-left   text-xs font-semibold text-base-content/70 "
@@ -53,7 +53,7 @@ export default function CustomTable(props: CustomTableProps) {
           </thead>
           <tbody>
             {props.data &&
-              props.data.map((item, rowIdx) => {
+              props?.data?.map((item, rowIdx) => {
                 const popoverId = `popover-${nanoid()}`;
                 const anchorName = `--anchor-${nanoid()}`;
                 return (

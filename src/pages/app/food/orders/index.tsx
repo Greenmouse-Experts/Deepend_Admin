@@ -15,6 +15,7 @@ const status_list = [
   "cancelled",
   "preparing",
   "confirmed",
+  "on-the-way",
 ] as const;
 
 const allowed_Status_update = (
@@ -22,7 +23,7 @@ const allowed_Status_update = (
 ): (typeof status_list)[number][] => {
   switch (currentStatus) {
     case "confirmed":
-      return ["preparing", "cancelled"];
+      return ["preparing", "cancelled", "on-the-way"];
     case "preparing":
       return ["delivered", "cancelled"];
     case "delivered":
@@ -36,7 +37,7 @@ export default function index() {
   const [status, setStatus] =
     useState<(typeof status_list)[number]>("delivered");
   const paginate = usePagination();
-  const query = useQuery<ApiResponse<FoodOrder[]>>({
+  const query = useQuery<ApiResponse<{ foodOrders: FoodOrder[] }>>({
     queryKey: ["food-orders", status, paginate.page],
     queryFn: async () => {
       let resp = await apiClient.get("admins/foods/orders", {
@@ -91,12 +92,12 @@ export default function index() {
         ))}
       </div>
       <SuspensePageLayout query={query} showTitle={false}>
-        {(data: ApiResponse<FoodOrder[]>) => {
-          const payload = data.payload;
+        {(data) => {
+          const payload = data.payload.foodOrders;
           return (
             <>
               <CustomTable
-                data={payload}
+                data={[]}
                 columns={[
                   { key: "orderId", label: "Order ID" },
                   { key: "foodName", label: "Food Name" },

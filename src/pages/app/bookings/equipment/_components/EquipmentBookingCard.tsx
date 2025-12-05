@@ -60,7 +60,7 @@ export default function EquipmentBookingCard({
     });
   };
 
-  const availableUpdates = allowed_Status_update(item.status);
+  const availableUpdates = allowed_Status_update(item.status as any);
 
   return (
     <div

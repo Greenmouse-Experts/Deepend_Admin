@@ -1,6 +1,7 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
 import type { Dashstats } from "@/api/types";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   LineChart,
   Line,
@@ -9,208 +10,169 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
-type Names =
-  | "Hotel Booking"
-  | "Cinema Ticket"
-  | "VR Game ticket"
-  | "Studio Booking"
-  | "Equipment Booking"
-  | "Hotel Booking";
+
 const stats = [
   {
     title: "Food",
     color: "green",
+    dataKey: "foodSubscriptions",
   },
   {
     title: "Studio Booking",
     color: "#c2410c",
+    dataKey: "studioSubscriptions",
   },
   {
     title: "Hotel Booking",
     color: "#0e7490",
+    dataKey: "hotelSubscriptions",
   },
   {
     title: "Cinema Ticket",
     color: "mediumpurple",
+    dataKey: "movieSubscriptions",
   },
   {
     title: "VR Game ticket",
     color: "blue",
+    dataKey: "vrgameSubscriptions",
   },
   {
     title: "Equipment Booking",
     color: "brown",
+    dataKey: "equipmentSubscriptions",
   },
 ];
-interface Data {
+
+interface SubscriptionData {
+  month: number;
+  totalSubscriptions: number;
+}
+
+interface MonthlyStats {
+  vrgameSubscriptions: SubscriptionData[];
+  movieSubscriptions: SubscriptionData[];
+  equipmentSubscriptions: SubscriptionData[];
+  hotelSubscriptions: SubscriptionData[];
+  studioSubscriptions: SubscriptionData[];
+  foodSubscriptions: SubscriptionData[];
+}
+
+interface TransformedData {
   name: string;
+  Food: number;
+  "Studio Booking": number;
   "Hotel Booking": number;
   "Cinema Ticket": number;
   "VR Game ticket": number;
-  "Studio Booking": number;
   "Equipment Booking": number;
-  Food: number;
-  amount: number;
 }
-const data: Data[] = [
-  {
-    name: "Jan",
-    "Hotel Booking": 1000,
-    "Cinema Ticket": 500,
-    "VR Game ticket": 200,
-    "Studio Booking": 300,
-    "Equipment Booking": 100,
-    Food: 400,
-    amount: 5000,
-  },
-  {
-    name: "Feb",
-    "Hotel Booking": 1200,
-    "Cinema Ticket": 600,
-    "VR Game ticket": 250,
-    "Studio Booking": 350,
-    "Equipment Booking": 120,
-    Food: 450,
-    amount: 5500,
-  },
-  {
-    name: "Mar",
-    "Hotel Booking": 1100,
-    "Cinema Ticket": 550,
-    "VR Game ticket": 220,
-    "Studio Booking": 320,
-    "Equipment Booking": 110,
-    Food: 420,
-    amount: 5200,
-  },
-  {
-    name: "Apr",
-    "Hotel Booking": 1300,
-    "Cinema Ticket": 650,
-    "VR Game ticket": 280,
-    "Studio Booking": 380,
-    "Equipment Booking": 130,
-    Food: 480,
-    amount: 5800,
-  },
-  {
-    name: "May",
-    "Hotel Booking": 1150,
-    "Cinema Ticket": 580,
-    "VR Game ticket": 230,
-    "Studio Booking": 330,
-    "Equipment Booking": 115,
-    Food: 430,
-    amount: 5300,
-  },
-  {
-    name: "Jun",
-    "Hotel Booking": 1400,
-    "Cinema Ticket": 700,
-    "VR Game ticket": 300,
-    "Studio Booking": 400,
-    "Equipment Booking": 140,
-    Food: 500,
-    amount: 6000,
-  },
-  {
-    name: "Jul",
-    "Hotel Booking": 1250,
-    "Cinema Ticket": 620,
-    "VR Game ticket": 260,
-    "Studio Booking": 360,
-    "Equipment Booking": 125,
-    Food: 460,
-    amount: 5600,
-  },
-  {
-    name: "Aug",
-    "Hotel Booking": 1500,
-    "Cinema Ticket": 750,
-    "VR Game ticket": 320,
-    "Studio Booking": 420,
-    "Equipment Booking": 150,
-    Food: 520,
-    amount: 6200,
-  },
-  {
-    name: "Sep",
-    "Hotel Booking": 1350,
-    "Cinema Ticket": 680,
-    "VR Game ticket": 290,
-    "Studio Booking": 390,
-    "Equipment Booking": 135,
-    Food: 490,
-    amount: 5900,
-  },
-  {
-    name: "Oct",
-    "Hotel Booking": 1600,
-    "Cinema Ticket": 800,
-    "VR Game ticket": 340,
-    "Studio Booking": 440,
-    "Equipment Booking": 160,
-    Food: 540,
-    amount: 6400,
-  },
-  {
-    name: "Nov",
-    "Hotel Booking": 1450,
-    "Cinema Ticket": 720,
-    "VR Game ticket": 310,
-    "Studio Booking": 410,
-    "Equipment Booking": 145,
-    Food: 510,
-    amount: 6100,
-  },
-  {
-    name: "Dec",
-    "Hotel Booking": 1700,
-    "Cinema Ticket": 850,
-    "VR Game ticket": 360,
-    "Studio Booking": 460,
-    "Equipment Booking": 170,
-    Food: 560,
-    amount: 6600,
-  },
-];
-const renderLegend = (props: any) => {
-  const { payload } = props;
 
-  return (
-    <ul className="flex flex-wrap justify-center gap-2">
-      {payload.map((entry: any, index: number) => (
-        <li
-          className="text-xs"
-          style={{
-            color: stats[index].color,
-          }}
-          key={`item-${index}`}
-        >
-          {entry.value}
-        </li>
-      ))}
-    </ul>
-  );
-};
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 export default function Example() {
-  const query = useQuery<ApiResponse<Dashstats>>({
-    queryKey: ["dash-stats"],
+  const [year, setYear] = useState("2025");
+  const {
+    data: queryData,
+    isLoading,
+    isError,
+  } = useQuery<ApiResponse<MonthlyStats>>({
+    queryKey: ["bar-chart-data", year],
     queryFn: async () => {
-      let resp = await apiClient.get("admins/dashboard/stats");
+      let resp = await apiClient.get(
+        `admins/services-subscriptions/monthly-stats?year=${year}`,
+      );
       return resp.data;
     },
   });
 
+  const transformedData: TransformedData[] = Array.from(
+    { length: 12 },
+    (_, i) => ({
+      name: monthNames[i],
+      Food: 0,
+      "Studio Booking": 0,
+      "Hotel Booking": 0,
+      "Cinema Ticket": 0,
+      "VR Game ticket": 0,
+      "Equipment Booking": 0,
+    }),
+  );
+
+  if (queryData?.payload) {
+    const payload = queryData.payload;
+
+    Object.keys(payload).forEach((key) => {
+      const statKey = stats.find((s) => s.dataKey === key);
+      if (statKey) {
+        payload[key as keyof MonthlyStats].forEach((item) => {
+          if (item.month >= 1 && item.month <= 12) {
+            transformedData[item.month - 1][
+              statKey.title as keyof TransformedData
+            ] = item.totalSubscriptions;
+          }
+        });
+      }
+    });
+  }
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 2025 + 1 }, (_, i) =>
+    (2025 + i).toString(),
+  );
+
+  if (isLoading) {
+    return (
+      <div className="card h-full bg-base-100 shadow-xl p-4 space-y-2 ring rounded-md ring-current/20 flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="card h-full bg-base-100 shadow-xl p-4 space-y-2 ring rounded-md ring-current/20 flex items-center justify-center text-error">
+        Error loading data.
+      </div>
+    );
+  }
+
   return (
-    <div className=" card h-full bg-base-100 shadow-xl p-4 space-y-2 ring rounded-md ring-current/20">
-      <h2 className="card-title text-2xl font-bold">Subscription Analysis</h2>
+    <div className="card h-full bg-base-100 shadow-xl p-4 space-y-2 ring rounded-md ring-current/20">
+      <div className="flex justify-between items-center">
+        <h2 className="card-title text-2xl font-bold">Subscription Analysis</h2>
+        <select
+          className="select select-bordered w-fit"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+        >
+          {years.map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
+      </div>
       <ul className="join flex-wrap gap-2">
         {stats.map((item) => {
           return (
             <li
-              className="float-left text-sm   badge"
+              className="float-left text-sm badge"
               key={item.title}
               style={{ background: item.color }}
             >
@@ -220,38 +182,34 @@ export default function Example() {
           );
         })}
       </ul>
-      <LineChart
-        style={{
-          width: "100%",
-          // maxWidth: "680px",
-          height: "100%",
-          maxHeight: "70vh",
-          // aspectRatio: 1.618,
-        }}
-        responsive
-        data={data}
-        margin={{
-          top: 5,
-          right: 0,
-          left: 0,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis width="auto" />
-        <Tooltip />
-        {stats.map((item) => {
-          return (
-            <Line
-              type={"monotone"}
-              key={item.title}
-              dataKey={item.title}
-              stroke={item.color}
-            />
-          );
-        })}
-      </LineChart>
+      <ResponsiveContainer width="100%" height="70%">
+        <LineChart
+          data={transformedData}
+          margin={{
+            top: 5,
+            right: 0,
+            left: 0,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis width={80} />
+          <Tooltip />
+          <Legend />
+          {stats.map((item) => {
+            return (
+              <Line
+                type={"monotone"}
+                key={item.title}
+                dataKey={item.title}
+                stroke={item.color}
+                activeDot={{ r: 8 }}
+              />
+            );
+          })}
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }

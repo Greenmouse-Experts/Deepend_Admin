@@ -1,17 +1,23 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
 import type { StudioBooking } from "@/api/types";
 import EmptyList from "@/components/EmptyList";
+import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import SimpleTitle from "@/components/SimpleTitle";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-type status = "confirmed" | "cancelled" | "completed" | "scheduled";
+type status = "cancelled" | "completed" | "scheduled";
 export default function index() {
-  const [status, setStatus] = useState<status>("confirmed");
+  const [status, setStatus] = useState<status>("scheduled");
   const props = usePagination();
-  const query = useQuery<ApiResponse<StudioBooking[]>>({
+  const query = useQuery<
+    ApiResponse<{
+      studioBookings: StudioBooking[];
+    }>
+  >({
     queryKey: ["studio-bookings", status],
     queryFn: async () => {
       let resp = await apiClient.get(`admins/studios/bookings`, {
@@ -24,27 +30,11 @@ export default function index() {
       return resp.data;
     },
   });
-  if (query.isLoading)
-    return (
-      <>
-        <SimpleHeader title={"Studio Bookings"} />
 
-        <SimpleLoader />
-      </>
-    );
   return (
     <div>
-      <SimpleHeader title={"Studio Bookings"} />
+      <SimpleTitle title={"Studio Bookings"} />
       <div className="tabs">
-        <a
-          className={`tab tab-lg tab-lifted ${
-            status === "confirmed" ? "tab-active" : ""
-          }`}
-          onClick={() => setStatus("confirmed")}
-        >
-          Confirmed
-        </a>
-
         <a
           className={`tab tab-lg tab-lifted ${
             status === "cancelled" ? "tab-active" : ""
@@ -70,55 +60,129 @@ export default function index() {
           Scheduled
         </a>
       </div>
-      <div className="flex flex-col gap-4 p-4">
-        {query.data?.payload.map((booking) => (
-          <div key={booking.id} className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title text-xl font-bold">
-                Booking ID:{" "}
-                <span className="text-primary-content">{booking.id}</span>
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-                <p>
-                  <strong>User ID:</strong> {booking.userId}
-                </p>
-                <p>
-                  <strong>Booking Date:</strong> {booking.bookingDate}
-                </p>
-                <p>
-                  <strong>Start Time:</strong> {booking.startTime}
-                </p>
-                <p>
-                  <strong>End Time:</strong> {booking.endTime}
-                </p>
-                <p>
-                  <strong>Total Price:</strong> ${booking.totalPrice}
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span
-                    className={`badge ${
-                      booking.status === "confirmed"
-                        ? "badge-success"
-                        : booking.status === "pending"
-                          ? "badge-warning"
-                          : booking.status === "cancelled"
-                            ? "badge-error"
-                            : "badge-info"
-                    }`}
-                  >
-                    {booking.status}
-                  </span>
-                </p>
+      <SuspensePageLayout query={query} showTitle={false}>
+        {(data) => {
+          let list = data.payload.studioBookings;
+          return (
+            <section className="space-y-4">
+              <div className="grid  gap-4 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+                {list.map((booking) => (
+                  <div key={booking.id} className="card bg-base-100 shadow-xl">
+                    <div className="card-body">
+                      <h2 className="card-title text-2xl font-extrabold text-primary mb-2">
+                        {booking.studioName}
+                      </h2>
+                      <p className="text-base-content text-sm mb-4">
+                        Order ID:{" "}
+                        <span className="font-semibold">{booking.orderId}</span>
+                      </p>
+                      <div className="flex flex-col gap-y-3 text-base-content">
+                        <p className="flex flex-col">
+                          <strong className="text-xs text-base-content/70">
+                            Session Date:
+                          </strong>{" "}
+                          <span className="font-medium text-sm">
+                            {booking.sessionDate}
+                          </span>
+                        </p>
+                        <div className="flex flex-col">
+                          <strong className="text-xs text-base-content/70">
+                            Session Time:
+                          </strong>{" "}
+                          <span className="font-bold text-lg text-accent">
+                            {new Date(
+                              `2000-01-01T${booking.sessionStartTime}`,
+                            ).toLocaleTimeString([], {
+                              hour: "numeric",
+                              minute: "2-digit",
+                              hour12: true,
+                            })}{" "}
+                            -{" "}
+                            {new Date(
+                              `2000-01-01T${booking.sessionEndTime}`,
+                            ).toLocaleTimeString([], {
+                              hour: "numeric",
+                              minute: "2-digit",
+                              hour12: true,
+                            })}
+                          </span>
+                        </div>
+                        <p className="flex flex-col">
+                          <strong className="text-xs text-base-content/70">
+                            Price Per Hour:
+                          </strong>{" "}
+                          <span className="font-medium text-sm">
+                            {booking.currency}
+                            {booking.sessionPricePerHour}
+                          </span>
+                        </p>
+                        <p className="flex flex-col">
+                          <strong className="text-xs text-base-content/70">
+                            Total Price:
+                          </strong>{" "}
+                          <span className="font-semibold text-lg text-success">
+                            {booking.currency}
+                            {booking.totalPrice}
+                          </span>
+                        </p>
+                        <p className="flex flex-col">
+                          <strong className="text-xs text-base-content/70">
+                            User ID:
+                          </strong>{" "}
+                          <span className="font-medium text-sm">
+                            {booking.userId}
+                          </span>
+                        </p>
+                        <div className="flex flex-col">
+                          <strong className="text-xs text-base-content/70">
+                            Status:
+                          </strong>{" "}
+                          <span
+                            className={`badge badge-lg mt-1 ${
+                              booking.status === "verified"
+                                ? "badge-success"
+                                : booking.status === "pending"
+                                  ? "badge-warning"
+                                  : booking.status === "cancelled"
+                                    ? "badge-error"
+                                    : "badge-info"
+                            }`}
+                          >
+                            {booking.status}
+                          </span>
+                        </div>
+                      </div>
+                      {booking.verifiedAt && (
+                        <div className="mt-6 pt-4 border-t border-base-200 text-sm text-base-content space-y-1">
+                          <p className="flex flex-col">
+                            <strong className="text-xs text-base-content/70">
+                              Verified At:
+                            </strong>{" "}
+                            <span className="font-medium">
+                              {new Date(booking.verifiedAt).toLocaleString()}
+                            </span>
+                          </p>
+                          <p className="flex flex-col">
+                            <strong className="text-xs text-base-content/70">
+                              Verified By:
+                            </strong>{" "}
+                            <span className="font-medium">
+                              {booking.verifiedBy}
+                            </span>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                <EmptyList list={list} />
+                <div className="mt-4"></div>
               </div>
-            </div>
-          </div>
-        ))}
-        <EmptyList list={query.data?.payload || []} />
-        <div className="mt-4">
-          <SimplePaginator {...props} />
-        </div>
-      </div>
+              <SimplePaginator {...props} />
+            </section>
+          );
+        }}
+      </SuspensePageLayout>
     </div>
   );
 }

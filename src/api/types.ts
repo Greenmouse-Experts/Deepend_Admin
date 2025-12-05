@@ -50,10 +50,16 @@ export interface FoodAddon {
 export interface StudioBooking {
   id: string;
   userId: string;
-  bookingDate: string;
-  startTime: string;
-  endTime: string;
+  orderId: string;
+  studioName: string;
+  sessionPricePerHour: string;
+  sessionDate: string;
+  sessionStartTime: string;
+  sessionEndTime: string;
   totalPrice: string;
+  currency: string;
+  verifiedAt: string | null;
+  verifiedBy: string | null;
   status: string;
 }
 

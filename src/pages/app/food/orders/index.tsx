@@ -59,7 +59,21 @@ export default function index() {
                   { key: "quantity", label: "Quantity" },
                   { key: "foodPrice", label: "Price" },
                   { key: "totalPrice", label: "Total Price" },
-                  { key: "deliveryType", label: "Delivery Type" },
+                  {
+                    key: "deliveryType",
+                    label: "Delivery Type",
+                    render: (value) => (
+                      <span
+                        className={`badge capitalize ${
+                          value === "delivery"
+                            ? "badge-primary"
+                            : "badge-secondary"
+                        }`}
+                      >
+                        {value}
+                      </span>
+                    ),
+                  },
                   { key: "status", label: "Status" },
                 ]}
               />

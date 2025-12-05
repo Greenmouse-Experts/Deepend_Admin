@@ -3,6 +3,8 @@ import type { FoodBookingOrder } from "@/api/types";
 import { extract_message } from "@/helpers/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Truck, MapPin, Info } from "lucide-react";
+
 const status_list = [
   "delivered",
   "cancelled",
@@ -106,44 +108,63 @@ export default function FoodBookingCard({
             <span className="badge badge-outline">Unit: {food.foodPrice}</span>
           </div>
         </div>
-
         {food.foodAddons.length > 0 && (
-          <div>
-            <p className="font-medium mb-2">Add-ons</p>
-            <div className="flex flex-wrap gap-2">
+          <div className="border-t border-base-200 pt-4 mt-4">
+            <p className="font-medium mb-3 text-base-content">Add-ons</p>
+            <div className="grid grid-cols-1  gap-2">
               {food.foodAddons.map((addon) => (
-                <span
+                <div
                   key={addon.addonId}
-                  className="badge badge-sm badge-outline"
+                  className="flex justify-between items-center bg-base-200 p-3 rounded-md"
                 >
-                  {addon.addonName} · {addon.addonPrice} {food.currency}
-                </span>
+                  <span className="text-sm font-medium text-base-content">
+                    {addon.addonName}
+                  </span>
+                  <span className="text-sm font-semibold text-primary">
+                    {addon.addonPrice} {food.currency}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
         )}
 
-        <div className="space-y-2">
-          <p>
-            <strong>Delivery Type:</strong> {food.deliveryType}
-          </p>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-sm">
+            <Truck className="size-5 text-primary" />
+            <span className="font-semibold">Delivery Type:</span>{" "}
+            <span className="badge capitalize badge-info">
+              {food.deliveryType}
+            </span>
+          </div>
+
           {food.specialInstructions && (
-            <p>
-              <strong>Instructions:</strong> {food.specialInstructions}
-            </p>
+            <div className="flex items-start gap-2 text-sm bg-base-200 p-3 rounded-md">
+              <Info className="size-5 text-warning flex-shrink-0" />
+              <div>
+                <p className="font-semibold">Special Instructions:</p>
+                <p className="text-neutral-content">
+                  {food.specialInstructions}
+                </p>
+              </div>
+            </div>
           )}
+
           {food.deliveryAddress && (
-            <div className="p-3 bg-primary/10 rounded-box">
-              <p className="font-semibold text-info">Delivery Address</p>
-              <p className="text-sm text-info break-words">
-                {food.deliveryAddress}
-              </p>
+            <div className="p-3 bg-primary/10 rounded-box flex items-start gap-2">
+              <MapPin className="size-5 text-info flex-shrink-0" />
+              <div>
+                <p className="font-semibold text-info">Delivery Address</p>
+                <p className="text-sm text-info break-words">
+                  {food.deliveryAddress}
+                </p>
+              </div>
             </div>
           )}
         </div>
 
         {availableUpdates.length > 0 && (
-          <div className="card-actions ml-auto">
+          <div className="card-actions ml-auto mt-auto">
             <div className="dropdown dropdown-top dropdown-end">
               <button
                 disabled={isPending}

@@ -1,5 +1,5 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
-import type { FoodOrder } from "@/api/types";
+import type { FoodBookingOrder, FoodOrder } from "@/api/types";
 import EmptyList from "@/components/EmptyList";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimplePaginator from "@/components/SimplePaginator";
@@ -10,6 +10,7 @@ import { usePagination } from "@/store/pagination";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
+import FoodBookingCard from "./_components/FoodBookingOrder";
 const status_list = [
   "delivered",
   "cancelled",
@@ -18,26 +19,11 @@ const status_list = [
   "on-the-way",
 ] as const;
 
-const allowed_Status_update = (
-  currentStatus: (typeof status_list)[number],
-): (typeof status_list)[number][] => {
-  switch (currentStatus) {
-    case "confirmed":
-      return ["preparing", "cancelled", "on-the-way"];
-    case "preparing":
-      return ["delivered", "cancelled"];
-    case "delivered":
-    case "cancelled":
-      return []; // No further updates allowed for delivered or cancelled orders
-    default:
-      return [];
-  }
-};
 export default function index() {
   const [status, setStatus] =
-    useState<(typeof status_list)[number]>("delivered");
+    useState<(typeof status_list)[number]>("confirmed");
   const paginate = usePagination();
-  const query = useQuery<ApiResponse<{ foodOrders: FoodOrder[] }>>({
+  const query = useQuery<ApiResponse<{ foodOrders: FoodBookingOrder[] }>>({
     queryKey: ["food-orders", status, paginate.page],
     queryFn: async () => {
       let resp = await apiClient.get("admins/foods/orders", {
@@ -49,32 +35,7 @@ export default function index() {
       return resp.data;
     },
   });
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: (fn: any) => fn(),
-    onSuccess: () => {
-      query.refetch();
-    },
-  });
-  const update_status = async (
-    id: string,
-    newStatus: (typeof status_list)[number],
-  ) => {
-    let resp = await apiClient.patch(`admins/orders/foods/${id}/status`, {
-      status: newStatus,
-    });
-    return resp.data;
-  };
 
-  const call_ = async (fn: () => Promise<any>) => {
-    toast.promise(
-      mutateAsync(() => fn()),
-      {
-        loading: "loading",
-        error: extract_message,
-        success: extract_message,
-      },
-    );
-  };
   return (
     <>
       <SimpleTitle title="Food Orders" />
@@ -96,8 +57,15 @@ export default function index() {
           const payload = data.payload.foodOrders;
           return (
             <>
-              <CustomTable
-                data={[]}
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-2">
+                {payload.map((item) => (
+                  <>
+                    <FoodBookingCard food={item} refetch={query.refetch} />
+                  </>
+                ))}
+              </div>
+              {/*<CustomTable
+                data={payload}
                 columns={[
                   { key: "orderId", label: "Order ID" },
                   { key: "foodName", label: "Food Name" },
@@ -140,7 +108,7 @@ export default function index() {
                       call_(() => update_status(item.id, s));
                     },
                   }))}
-              />
+              />*/}
               <EmptyList list={payload} />
               <div className="mt-4">
                 <SimplePaginator {...paginate} />

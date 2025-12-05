@@ -41,6 +41,7 @@ export interface FoodCategory {
 export interface FoodAddon {
   id: number;
   name: string;
+  price?: number | string;
   description: string;
   createdAt: string;
   updatedAt: string;
@@ -411,4 +412,35 @@ export interface FoodOrder {
   deliveryLat: string;
   specialInstructions: string | null;
   status: string;
+}
+const status_list = [
+  "delivered",
+  "cancelled",
+  "preparing",
+  "confirmed",
+  "on-the-way",
+] as const;
+
+export interface FoodBookingOrder {
+  id: string;
+  userId: string;
+  orderId: string;
+  foodId: string;
+  foodName: string;
+  foodImageUrl: string;
+  quantity: number;
+  foodPrice: string;
+  foodAddons: {
+    addonName: string;
+    addonId: string;
+    addonPrice: string;
+  }[];
+  totalPrice: string;
+  currency: string;
+  deliveryType: string;
+  deliveryAddress: string;
+  deliveryLng: string;
+  deliveryLat: string;
+  specialInstructions: string | null;
+  status: (typeof status_list)[number];
 }

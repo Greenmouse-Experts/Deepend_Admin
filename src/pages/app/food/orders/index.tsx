@@ -19,7 +19,7 @@ export default function index() {
     useState<(typeof status_list)[number]>("delivered");
   const paginate = usePagination();
   const query = useQuery<ApiResponse<FoodOrder[]>>({
-    queryKey: ["food-orders", status],
+    queryKey: ["food-orders", status, paginate.page],
     queryFn: async () => {
       let resp = await apiClient.get("admins/foods/orders", {
         params: {

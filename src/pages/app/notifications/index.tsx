@@ -37,6 +37,7 @@ export default function index() {
                   <p>{item.message}</p>
                 </div>
               ))}
+              {/*//@ts-ignore*/}
               <EmptyList list={payload as any}> </EmptyList>
               {/*<SimplePaginator ></SimplePaginator>*/}
             </>

@@ -1,7 +1,7 @@
 import { useAuth } from "@/store/authStore";
 import { Bell, LogOut, Settings, User as UserIcon } from "lucide-react";
 import SideBarMenu from "./menus-buttons/SideBarMenu";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import apiClient from "@/api/apiClient";
 import { toast } from "sonner";
@@ -28,12 +28,12 @@ export default function HeaderBar() {
         <SideBarMenu />
       </div>
       <div className="flex items-center space-x-4">
-        <button className="btn btn-ghost btn-circle">
+        <Link to="/app/notifications" className="btn btn-ghost btn-circle">
           <div className="indicator">
             <Bell size={24} />
             {/*<span className="badge badge-xs badge-primary indicator-item"></span>*/}
           </div>
-        </button>
+        </Link>
 
         <div className="dropdown dropdown-end">
           <div

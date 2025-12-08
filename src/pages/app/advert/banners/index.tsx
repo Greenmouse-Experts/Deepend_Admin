@@ -27,7 +27,9 @@ export default function index() {
       title={"Advert Banners"}
       headerActions={
         <>
-          <Link to="/app/advert/banners/new">Create Banner</Link>
+          <Link className="btn btn-primary" to="/app/advert/banners/new">
+            Create Banner
+          </Link>
         </>
       }
     >

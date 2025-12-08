@@ -5,6 +5,7 @@ import SimplePaginator from "@/components/SimplePaginator";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import Banner from "./_components/AdvertCard";
+import { Link } from "@tanstack/react-router";
 
 export default function index() {
   const props = usePagination();
@@ -21,7 +22,15 @@ export default function index() {
     },
   });
   return (
-    <SuspensePageLayout query={query} title={"Advert Banners"}>
+    <SuspensePageLayout
+      query={query}
+      title={"Advert Banners"}
+      headerActions={
+        <>
+          <Link to="/app/advert/banners/new">Create Banner</Link>
+        </>
+      }
+    >
       {(response: ApiResponse<AdvertBanner[]>) => {
         const banners = response.payload || [];
         return (

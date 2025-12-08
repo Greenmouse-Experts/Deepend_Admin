@@ -642,6 +642,18 @@ const appadvertbanners = createRoute({
   getParentRoute: () => appadvert,
   path: "banners",
 });
+const appadvertbannersnew = createRoute({
+  getParentRoute: () => appadvertbanners,
+  path: "new",
+});
+const appadvertbannersnewindex = createRoute({
+  getParentRoute: () => appadvertbannersnew,
+  path: "/",
+}).lazy(() =>
+  import("./pages/app/advert/banners/new/index").then((m) =>
+    createLazyRoute("/app/advert/banners/new")({ component: m.default }),
+  ),
+);
 const appadvertbannersindex = createRoute({
   getParentRoute: () => appadvertbanners,
   path: "/",
@@ -761,7 +773,10 @@ const config = root.addChildren([
       appbookingsequipment.addChildren([appbookingsequipmentindex]),
     ]),
     appadvert.addChildren([
-      appadvertbanners.addChildren([appadvertbannersindex]),
+      appadvertbanners.addChildren([
+        appadvertbannersnew.addChildren([appadvertbannersnewindex]),
+        appadvertbannersindex,
+      ]),
     ]),
   ]),
   index,

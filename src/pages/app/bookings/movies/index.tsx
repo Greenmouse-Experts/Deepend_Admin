@@ -11,17 +11,19 @@ export default function index() {
   const [status, setStatus] = useState<selectedType>("completed");
 
   // const [selected, setSelected] = useState<selectedType>("cancelled");
-  const query = useSuspenseQuery<ApiResponse<any>>({
-    queryKey: ["movie-bookings", status],
-    queryFn: async () => {
-      let resp = await apiClient.get("admins/movies/purchases", {
-        params: {
-          status: status,
-        },
-      });
-      return resp.data;
+  const query = useSuspenseQuery<ApiResponse<{ movieTickets: MovieBooking[] }>>(
+    {
+      queryKey: ["movie-bookings", status],
+      queryFn: async () => {
+        let resp = await apiClient.get("admins/movies/purchases", {
+          params: {
+            status: status,
+          },
+        });
+        return resp.data;
+      },
     },
-  });
+  );
   return (
     <>
       <SimpleTitle title="Movie Bookings" />
@@ -45,7 +47,7 @@ export default function index() {
       </div>
       <SuspensePageLayout query={query as any} showTitle={false}>
         {(data) => {
-          const bookings: MovieBooking[] = data.payload;
+          const bookings: MovieBooking[] = data.payload.movieTickets;
           return (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">

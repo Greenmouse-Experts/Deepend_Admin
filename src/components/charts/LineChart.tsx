@@ -122,6 +122,8 @@ export default function Example() {
       if (statKey) {
         payload[key as keyof MonthlyStats].forEach((item) => {
           if (item.month >= 1 && item.month <= 12) {
+            //@ts-expect-error
+
             transformedData[item.month - 1][
               statKey.title as keyof TransformedData
             ] = item.totalSubscriptions;
@@ -193,7 +195,7 @@ export default function Example() {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="name" hide={true} />
           <YAxis width={80} />
           <Tooltip />
           <Legend />

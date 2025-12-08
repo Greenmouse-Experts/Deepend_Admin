@@ -81,7 +81,7 @@ const dash_links: {
     type: "submenu",
     icon: MonitorPlay,
     children: [
-      { path: "/app/studio", label: "Studio Bookings", icon: Ticket },
+      // { path: "/app/studio", label: "Studio Bookings", icon: Ticket },
       { path: "/app/studio/all", label: "All Studios", icon: Building },
     ],
   },

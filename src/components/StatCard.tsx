@@ -13,7 +13,7 @@ export default function StatCard(props: StatCardProps) {
   const { Icon } = props;
   return (
     <div
-      className={`flex  gap-2 p-4 rounded-md shadow-xl bg-current/50`}
+      className={`flex flex-col-reverse md:flex-row gap-2 p-4 rounded-md shadow-xl bg-current/50`}
       style={{
         background: props.color,
       }}
@@ -34,8 +34,7 @@ export default function StatCard(props: StatCardProps) {
         {
           <Icon
             className="
-        !size-6
-        md:!size-10"
+!size-10"
           />
         }
       </div>

@@ -47,6 +47,7 @@ export default function index() {
       </div>
       <SuspensePageLayout query={query as any} showTitle={false}>
         {(data) => {
+          //@ts-ignore
           const bookings: MovieBooking[] = data.payload.movieTickets;
           return (
             <>

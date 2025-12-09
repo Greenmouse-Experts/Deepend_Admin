@@ -183,6 +183,18 @@ const appsettings = createRoute({
   getParentRoute: () => app,
   path: "settings",
 });
+const appsettingsprofile = createRoute({
+  getParentRoute: () => appsettings,
+  path: "profile",
+});
+const appsettingsprofileindex = createRoute({
+  getParentRoute: () => appsettingsprofile,
+  path: "/",
+}).lazy(() =>
+  import("./pages/app/settings/profile/index").then((m) =>
+    createLazyRoute("/app/settings/profile")({ component: m.default }),
+  ),
+);
 const appsettingsindex = createRoute({
   getParentRoute: () => appsettings,
   path: "/",
@@ -700,6 +712,7 @@ const config = root.addChildren([
       appstudioid.addChildren([appstudioidindex]),
     ]),
     appsettings.addChildren([
+      appsettingsprofile.addChildren([appsettingsprofileindex]),
       appsettingsindex,
       appsettingsdelivery.addChildren([
         appsettingsdeliverynew.addChildren([appsettingsdeliverynewindex]),

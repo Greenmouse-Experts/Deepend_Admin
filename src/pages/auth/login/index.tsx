@@ -32,11 +32,11 @@ export default function index() {
   });
   return (
     <div className="hero min-h-screen bg-base-200 flex">
-      <div className="flex-1 grid place-items-center m-4 md:m-0 ">
+      <div className="flex-1 grid place-items-center m-4 md:m-0  ">
         <form
           onSubmit={form.handleSubmit(onsubmit)}
           action=""
-          className="w-full p-6 rounded-lg bg-base-100 shadow space-y-4 max-w-xl"
+          className="w-full p-6 rounded-lg bg-base-100 shadow  space-y-4 max-w-xl"
         >
           <img
             className="h-22 mx-auto"

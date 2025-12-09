@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import apiClient from "@/api/apiClient";
 import { toast } from "sonner";
 import { extract_message } from "@/helpers/auth";
+import UserProfile from "./UserDetails";
 
 export default function ProfileSettings() {
   const methods = useForm<{
@@ -29,25 +30,28 @@ export default function ProfileSettings() {
   });
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 p-4 bg-base-100 mt-4 rounded-md"
-      >
-        <SimpleInput
-          label="Current Password"
-          type="password"
-          {...register("currentPassword")}
-        />
-        <SimpleInput
-          label="New Password"
-          type="password"
-          {...register("newPassword")}
-        />
-        <button type="submit" className="btn btn-primary w-full">
-          Change Password
-        </button>
-      </form>
-    </FormProvider>
+    <>
+      <UserProfile />
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 p-4 bg-base-100 mt-4 rounded-md"
+        >
+          <SimpleInput
+            label="Current Password"
+            type="password"
+            {...register("currentPassword")}
+          />
+          <SimpleInput
+            label="New Password"
+            type="password"
+            {...register("newPassword")}
+          />
+          <button type="submit" className="btn btn-primary w-full">
+            Change Password
+          </button>
+        </form>
+      </FormProvider>
+    </>
   );
 }

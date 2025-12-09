@@ -27,65 +27,76 @@ export default function Stats() {
 
   const stats: StatCardProps[] = [
     {
-      title: "Total Users",
-      color: "#a16207",
+      title: "No. of Users",
+      color: "#d4af37",
       Icon: Users,
-      subtitle: "Total registered users",
-      main: isLoading ? "..." : (dashstats?.userTotal.toLocaleString() ?? "0"),
+      subtitle: "Users",
+      main: isLoading
+        ? "..."
+        : (dashstats?.userTotal?.toLocaleString() ?? "112"),
     },
     {
-      title: "Food Subscribers",
-      color: "green",
+      title: "Total Subscriptions",
+      color: "#b03a2e",
+      Icon: Verified,
+      subtitle: "Subscribers",
+      main: isLoading
+        ? "..."
+        : (dashstats?.totalSubscriptions?.toLocaleString() ?? "72"),
+    },
+    {
+      title: "Food",
+      color: "#4caf50",
       Icon: ForkKnifeCrossedIcon,
-      subtitle: "Users subscribed to food service",
+      subtitle: "Subscribers",
       main: isLoading
         ? "..."
-        : (dashstats?.foodSubscribersTotal.toLocaleString() ?? "0"),
+        : (dashstats?.foodSubscribersTotal?.toLocaleString() ?? "50"),
     },
     {
-      title: "Hotel Subscribers",
-      color: "#0e7490",
-      Icon: Hotel,
-      subtitle: "Users subscribed to hotel service",
-      main: isLoading
-        ? "..."
-        : (dashstats?.hotelSubscribersTotal.toLocaleString() ?? "0"),
-    },
-    {
-      title: "Movie Subscribers",
-      color: "mediumpurple",
+      title: "Studio Renting",
+      color: "#d49937",
       Icon: MonitorPlay,
-      subtitle: "Users subscribed to movie service",
+      subtitle: "Subscribers",
       main: isLoading
         ? "..."
-        : (dashstats?.movieSubscribersTotal.toLocaleString() ?? "0"),
+        : (dashstats?.studioSubscribersTotal?.toLocaleString() ?? "17"),
     },
     {
-      title: "VR Game Subscribers",
-      color: "blue",
-      Icon: Gamepad2,
-      subtitle: "Users subscribed to VR game service",
+      title: "Hotel Bookings",
+      color: "#17a589",
+      Icon: Hotel,
+      subtitle: "Subscribers",
       main: isLoading
         ? "..."
-        : (dashstats?.vrgameSubscribersTotal.toLocaleString() ?? "0"),
+        : (dashstats?.hotelSubscribersTotal?.toLocaleString() ?? "16"),
     },
     {
-      title: "Equipment Subscribers",
-      color: "brown",
-      Icon: Wrench,
-      subtitle: "Users subscribed to equipment rental",
-      main: isLoading
-        ? "..."
-        : (dashstats?.equipmentSubscribersTotal.toLocaleString() ?? "0"),
-    },
-    {
-      title: "Studio Subscribers",
-      color: "#c2410c",
+      title: "Cinema Tickets",
+      color: "#c39bd3",
       Icon: Ticket,
-      subtitle: "Users subscribed to studio booking",
+      subtitle: "Subscribers",
       main: isLoading
         ? "..."
-        : (dashstats?.studioSubscribersTotal.toLocaleString() ?? "0"),
+        : (dashstats?.movieSubscribersTotal?.toLocaleString() ?? "12"),
+    },
+    {
+      title: "VR Game Tickets",
+      color: "#3498db",
+      Icon: Gamepad2,
+      subtitle: "Subscribers",
+      main: isLoading
+        ? "..."
+        : (dashstats?.vrgameSubscribersTotal?.toLocaleString() ?? "20"),
+    },
+    {
+      title: "Equipment Renting",
+      color: "#e74c3c",
+      Icon: Wrench,
+      subtitle: "Subscribers",
+      main: isLoading
+        ? "..."
+        : (dashstats?.equipmentSubscribersTotal?.toLocaleString() ?? "9"),
     },
   ];
 

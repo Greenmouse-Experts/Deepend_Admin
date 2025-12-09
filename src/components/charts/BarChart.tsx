@@ -11,30 +11,7 @@ import {
   Legend,
 } from "recharts";
 
-interface SubscriptionData {
-  month: number;
-  totalSubscriptions: number;
-}
-
-interface MonthlyStats {
-  vrgameSubscriptions: SubscriptionData[];
-  movieSubscriptions: SubscriptionData[];
-  equipmentSubscriptions: SubscriptionData[];
-  hotelSubscriptions: SubscriptionData[];
-  studioSubscriptions: SubscriptionData[];
-  foodSubscriptions: SubscriptionData[];
-}
-
 const SimpleBarChart = () => {
-  const query = useQuery<ApiResponse<MonthlyStats>>({
-    queryKey: ["bar-chart-data"],
-    queryFn: async () => {
-      let resp = await apiClient.get(
-        "admins/services-subscriptions/monthly-stats?year=2025",
-      );
-      return resp.data;
-    },
-  });
   const data = [
     {
       name: "Page A",

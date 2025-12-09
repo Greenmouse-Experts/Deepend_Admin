@@ -8,6 +8,8 @@ import { extract_message } from "@/helpers/auth";
 import SimpleTitle from "@/components/SimpleTitle";
 import { useEffect } from "react";
 import ProfilePic from "./ProfilePic";
+import { useImage } from "@/helpers/images";
+import { uploadSingleToCloudinary } from "@/api/cloud";
 
 interface UserProfilePayload {
   email: string;
@@ -37,6 +39,7 @@ export default function UserProfile() {
     if (query.data) {
       console.log(query.data);
       methods.reset(query.data.payload);
+      image.setPrev(query.data.payload.profilePicture as any);
     }
   }, [query.data]);
 
@@ -47,6 +50,11 @@ export default function UserProfile() {
 
   const mutation = useMutation({
     mutationFn: async (data: UserProfilePayload) => {
+      if (image.newImage) {
+        let resp = await uploadSingleToCloudinary(image.newImage);
+        //@ts-ignore
+        data["profilePicture"] = resp;
+      }
       const resp = await apiClient.patch("auth/users/profile", data);
       return resp.data;
     },
@@ -62,7 +70,8 @@ export default function UserProfile() {
   const onSubmit = (data: UserProfilePayload) => {
     mutation.mutate(data);
   };
-
+  //@ts-ignore
+  const image = useImage(query?.data?.payload?.profilePicture || {});
   return (
     <>
       <div className=" bg-base-100 p-4 mt-4">
@@ -73,7 +82,7 @@ export default function UserProfile() {
             return (
               <>
                 <div className="my-4">
-                  <ProfilePic src={query.data.payload.profilePicture} />
+                  <ProfilePic prop={image} />
                 </div>
                 <FormProvider {...methods}>
                   <form

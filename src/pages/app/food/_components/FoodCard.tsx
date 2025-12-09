@@ -62,7 +62,7 @@ export default function FoodCard({
             />
           </label>
         </div>
-        <h2 className="card-title text-2xl font-extrabold text-base-content leading-tight">
+        <h2 className="card-title text-xl font-extrabold text-base-content leading-tight">
           {item.name}
         </h2>
         <p className="text-sm text-base-content/80 line-clamp-2 mb-3">

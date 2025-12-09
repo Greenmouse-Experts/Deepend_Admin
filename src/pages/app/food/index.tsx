@@ -25,7 +25,7 @@ export default function index() {
   if (query.isLoading) {
     return (
       <>
-        <SimpleHeader title={"Food (Orders)"} />
+        <SimpleHeader title={"Food List"} />
         <SimpleLoader />
       </>
     );
@@ -34,7 +34,7 @@ export default function index() {
   return (
     <>
       <div>
-        <SimpleHeader title={"Food (Orders)"}>
+        <SimpleHeader title={"Food List"}>
           <div>
             <Link to="/app/food/new" className="btn btn-primary">
               Add New Food

@@ -69,7 +69,7 @@ export default function FoodCard({
           {item.description}
         </p>
         <div className="flex items-center justify-between mb-4">
-          <span className="text-2xl font-bold text-primary">
+          <span className="text-xl font-bold text-primary">
             NGN {item.price}
           </span>
         </div>

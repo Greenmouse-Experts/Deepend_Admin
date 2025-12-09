@@ -31,14 +31,16 @@ export default function ProfileSettings() {
   });
 
   return (
-    <>
+    <section className="">
       <UserProfile />
+      <div className="mt-8">
+        <SimpleTitle title="Password Settings" />
+      </div>
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4 p-4 bg-base-100 mt-4 rounded-md"
         >
-          <SimpleTitle title="Password Settings" />
           <SimpleInput
             label="Current Password"
             type="password"
@@ -54,6 +56,6 @@ export default function ProfileSettings() {
           </button>
         </form>
       </FormProvider>
-    </>
+    </section>
   );
 }

@@ -5,6 +5,7 @@ import apiClient from "@/api/apiClient";
 import { toast } from "sonner";
 import { extract_message } from "@/helpers/auth";
 import UserProfile from "./UserDetails";
+import SimpleTitle from "@/components/SimpleTitle";
 
 export default function ProfileSettings() {
   const methods = useForm<{
@@ -37,6 +38,7 @@ export default function ProfileSettings() {
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4 p-4 bg-base-100 mt-4 rounded-md"
         >
+          <SimpleTitle title="Password Settings" />
           <SimpleInput
             label="Current Password"
             type="password"

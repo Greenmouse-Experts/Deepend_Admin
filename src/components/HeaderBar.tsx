@@ -50,20 +50,13 @@ export default function HeaderBar() {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content space-y-4 py-4 mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content space-y-2 py-4 mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
-              <a className="justify-between">
-                <UserIcon size={18} />
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>
+              <Link to="/app/settings">
                 <Settings size={18} />
                 Settings
-              </a>
+              </Link>
             </li>
             <li>
               <a

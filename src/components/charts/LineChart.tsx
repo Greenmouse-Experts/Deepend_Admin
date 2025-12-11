@@ -174,7 +174,7 @@ export default function Example() {
         {stats.map((item) => {
           return (
             <li
-              className="float-left text-sm badge"
+              className="float-left  badge badge-sm text-xs"
               key={item.title}
               style={{ background: item.color }}
             >
@@ -184,21 +184,21 @@ export default function Example() {
           );
         })}
       </ul>
-      <ResponsiveContainer width="100%" height="70%">
+      <ResponsiveContainer width="100%" height="70%" className={"p-0"}>
         <LineChart
           data={transformedData}
           margin={{
             top: 5,
             right: 0,
-            left: 0,
+            left: -38,
             bottom: 5,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" hide={true} />
+          <XAxis hide={true} />
           <YAxis width={80} />
           <Tooltip />
-          <Legend />
+          {/*<Legend />*/}
           {stats.map((item) => {
             return (
               <Line

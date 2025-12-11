@@ -53,7 +53,7 @@ export default function index() {
   return (
     <>
       <div className="flex items-center gap-2">
-        <SimpleTitle title="VR Games" />{" "}
+        <SimpleTitle title="Users" />{" "}
         {/*<Lin to="new" className="btn btn-primary">
           Add New Game
         </Lin>*/}

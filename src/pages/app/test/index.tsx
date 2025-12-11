@@ -3,6 +3,7 @@ import {
   useSuspenseQuery,
   QueryClient,
   QueryClientProvider,
+  useQuery,
 } from "@tanstack/react-query";
 
 // A simple "fetcher" function that simulates an API call
@@ -15,7 +16,7 @@ const fetchData = async (): Promise<string> => {
 };
 
 function ApiComponent() {
-  const { data } = useSuspenseQuery<string, Error>({
+  const { data } = useQuery<string, Error>({
     queryKey: ["apiData"],
     queryFn: fetchData,
     staleTime: Infinity, // Data never goes stale for this example

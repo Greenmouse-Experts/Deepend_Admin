@@ -3,7 +3,7 @@ import type { MovieBooking } from "@/api/types";
 import EmptyList from "@/components/EmptyList";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleTitle from "@/components/SimpleTitle";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import MovieBookingCard from "./_components/MovieBookingCard";
 type selectedType = "completed" | "cancelled";
@@ -11,19 +11,17 @@ export default function index() {
   const [status, setStatus] = useState<selectedType>("completed");
 
   // const [selected, setSelected] = useState<selectedType>("cancelled");
-  const query = useSuspenseQuery<ApiResponse<{ movieTickets: MovieBooking[] }>>(
-    {
-      queryKey: ["movie-bookings", status],
-      queryFn: async () => {
-        let resp = await apiClient.get("admins/movies/purchases", {
-          params: {
-            status: status,
-          },
-        });
-        return resp.data;
-      },
+  const query = useQuery<ApiResponse<{ movieTickets: MovieBooking[] }>>({
+    queryKey: ["movie-bookings", status],
+    queryFn: async () => {
+      let resp = await apiClient.get("admins/movies/purchases", {
+        params: {
+          status: status,
+        },
+      });
+      return resp.data;
     },
-  );
+  });
   return (
     <>
       <SimpleTitle title="Movie Bookings" />

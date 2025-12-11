@@ -14,7 +14,7 @@ export default function SimpleSearch({
   });
   return (
     <form
-      className="join my-2"
+      className="join "
       onSubmit={form.handleSubmit((data) => {
         const search = data.search.trim();
         props.setSearch(search);
@@ -24,7 +24,7 @@ export default function SimpleSearch({
         type="text"
         {...form.register("search")}
         className="input join-item"
-        placeholder="search"
+        placeholder="Search here..."
       />
       <button className="btn btn-primary join-item">
         <Search />

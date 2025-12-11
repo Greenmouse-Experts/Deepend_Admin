@@ -8,6 +8,7 @@ import VRGameCard from "../_components/VRGameCard";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import { remove_nulls, useSearchParams } from "@/helpers/client";
 import SimpleSearch from "@/components/SimpleSearch";
+import SimpleTitle from "@/components/SimpleTitle";
 
 export default function index() {
   const props = usePagination();
@@ -28,33 +29,48 @@ export default function index() {
     },
   });
   return (
-    <SuspensePageLayout
-      query={query}
-      showTitle={false}
-      headerActions={
-        <>
-          <Link to="new" className="btn btn-primary">
-            Add New Game
-          </Link>
-        </>
-      }
-    >
-      {(data) => {
-        const payload = data.payload;
-        return (
+    <>
+      <div className="flex items-center gap-2">
+        <SimpleTitle title="VR Games" />{" "}
+        <Link to="new" className="btn btn-primary">
+          Add New Game
+        </Link>
+      </div>
+      <SuspensePageLayout
+        query={query}
+        // title={"VR Games"}
+        showTitle={false}
+        headerActions={
           <>
-            <SimpleSearch props={searchProps} />
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2">
-              {payload.map((game: Vrgame) => (
-                <VRGameCard game={game} key={game.id} refetch={query.refetch} />
-              ))}
-            </div>
-            <div className="mt-4">
-              <SimplePaginator {...props} />
-            </div>
+            <Link to="new" className="btn btn-primary">
+              Add New Game
+            </Link>
           </>
-        );
-      }}
-    </SuspensePageLayout>
+        }
+      >
+        {(data) => {
+          const payload = data.payload;
+          return (
+            <>
+              <div className="flex justify-end">
+                <SimpleSearch props={searchProps} />
+              </div>
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2 mt-4">
+                {payload.map((game: Vrgame) => (
+                  <VRGameCard
+                    game={game}
+                    key={game.id}
+                    refetch={query.refetch}
+                  />
+                ))}
+              </div>
+              <div className="mt-4">
+                <SimplePaginator {...props} />
+              </div>
+            </>
+          );
+        }}
+      </SuspensePageLayout>
+    </>
   );
 }

@@ -5,17 +5,26 @@ import { useQuery } from "@tanstack/react-query";
 import SimplePaginator from "@/components/SimplePaginator";
 import { usePagination } from "@/store/pagination";
 import CustomTable from "@/components/tables/CustomTable";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
+import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
+import SimpleTitle from "@/components/SimpleTitle";
 
 export default function index() {
   const props = usePagination();
+  const searchProps = useSearchParams();
+
   const query = useQuery<ApiResponse<User[]>>({
-    queryKey: ["users", props.page],
+    queryKey: ["users", props.page, searchProps.search],
     queryFn: async () => {
+      const initial = {
+        page: props.page,
+        search: searchProps.search,
+      };
+
+      const params = remove_nulls(initial);
       const response = await apiClient.get("admins/users", {
-        params: {
-          page: props.page,
-          limit: 20,
-        },
+        params: params,
       });
       return response.data;
     },
@@ -42,18 +51,31 @@ export default function index() {
   ];
 
   return (
-    <QueryPageLayout
-      query={query}
-      title={
-        <span>
-          Users <span className="label">({items?.length || 0})</span>
-        </span>
-      }
-    >
-      <CustomTable data={items} columns={columns} />
-      <div className="mt-4">
-        <SimplePaginator {...props} />
+    <>
+      <div className="flex items-center gap-2">
+        <SimpleTitle title="VR Games" />{" "}
+        {/*<Lin to="new" className="btn btn-primary">
+          Add New Game
+        </Lin>*/}
       </div>
-    </QueryPageLayout>
+      <SuspensePageLayout
+        query={query}
+        showTitle={false}
+
+        // title={
+        //   <span>
+        //     Users <span className="label">({items?.length || 0})</span>
+        //   </span>
+        // }
+      >
+        <div className="flex justify-end mb-4">
+          <SimpleSearch props={searchProps} />
+        </div>
+        <CustomTable data={items} columns={columns} />
+        <div className="mt-4">
+          <SimplePaginator {...props} />
+        </div>
+      </SuspensePageLayout>
+    </>
   );
 }

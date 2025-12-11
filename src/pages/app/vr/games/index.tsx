@@ -13,6 +13,7 @@ import SimpleTitle from "@/components/SimpleTitle";
 export default function index() {
   const props = usePagination();
   const searchProps = useSearchParams();
+
   const query = useQuery<ApiResponse<Vrgame[]>>({
     queryKey: ["vrs", props.page, searchProps.search],
     queryFn: async () => {

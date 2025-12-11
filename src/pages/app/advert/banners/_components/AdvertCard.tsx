@@ -38,6 +38,7 @@ function BannerCard({ banner, refetch }: BannerCardProps) {
       modal.closeModal();
     },
     onError: (error) => {
+      //@ts-ignore
       toast.error(extract_message(error));
     },
   });
@@ -58,6 +59,7 @@ function BannerCard({ banner, refetch }: BannerCardProps) {
   const update_banner_action = async (data: Partial<AdvertBanner>) => {
     let imageUrls = [...props.images];
     if (props.newImages && props.newImages.length > 0) {
+      //@ts-ignore
       const newImages = await uploadToCloudinary(props.newImages);
       imageUrls = [...imageUrls, ...newImages];
     }
@@ -170,17 +172,18 @@ function BannerCard({ banner, refetch }: BannerCardProps) {
             </span>
           </p>
           {banner.linkUrl && (
-            <p className="text-sm text-base-content/80">
-              Link:{" "}
+            <div className="flex items-center gap-2 text-sm text-base-content/80">
+              <span>Link:</span>
               <a
                 href={banner.linkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link link-hover text-primary"
+                className="link link-hover text-primary truncate"
+                title={banner.linkUrl} // Add title for full URL on hover
               >
                 {banner.linkUrl}
               </a>
-            </p>
+            </div>
           )}
         </div>
       </div>

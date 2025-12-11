@@ -1,30 +1,36 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
-import QueryPageLayout from "@/components/layout/QueryPageLayout";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import type { Vrgame } from "@/api/types";
 import { Link } from "@tanstack/react-router";
 import { usePagination } from "@/store/pagination";
 import SimplePaginator from "@/components/SimplePaginator";
 import VRGameCard from "../_components/VRGameCard";
-import { Suspense } from "react";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
 
 export default function index() {
   const props = usePagination();
-  const query = useSuspenseQuery<ApiResponse<Vrgame[]>>({
-    queryKey: ["vrs", props.page],
+  const searchProps = useSearchParams();
+  const query = useQuery<ApiResponse<Vrgame[]>>({
+    queryKey: ["vrs", props.page, searchProps.search],
     queryFn: async () => {
+      const initial = {
+        page: props.page,
+        search: searchProps.search,
+      };
+
+      const params = remove_nulls(initial);
       let resp = await apiClient.get("admins/vrgames", {
-        params: { page: props.page },
+        params,
       });
       return resp.data;
     },
   });
-
   return (
     <SuspensePageLayout
-      query={query as any}
-      title={"VR Games"}
+      query={query}
+      showTitle={false}
       headerActions={
         <>
           <Link to="new" className="btn btn-primary">
@@ -33,14 +39,22 @@ export default function index() {
         </>
       }
     >
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2">
-        {query.data.payload.map((game) => (
-          <VRGameCard game={game} key={game.id} refetch={query.refetch} />
-        ))}
-      </div>
-      <div className="mt-4">
-        <SimplePaginator {...props} />
-      </div>
+      {(data) => {
+        const payload = data.payload;
+        return (
+          <>
+            <SimpleSearch props={searchProps} />
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2">
+              {payload.map((game: Vrgame) => (
+                <VRGameCard game={game} key={game.id} refetch={query.refetch} />
+              ))}
+            </div>
+            <div className="mt-4">
+              <SimplePaginator {...props} />
+            </div>
+          </>
+        );
+      }}
     </SuspensePageLayout>
   );
 }

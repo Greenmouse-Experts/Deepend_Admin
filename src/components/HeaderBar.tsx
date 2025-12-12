@@ -23,15 +23,15 @@ export default function HeaderBar() {
     },
   });
   return (
-    <div className="h-20 p-6 flex justify-end items-center bg-base-100 shadow-md">
+    <div className="h-20 px-4 flex justify-end items-center bg-base-100 shadow-md">
       <div className="mr-auto lg:hidden">
         <SideBarMenu />
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center h-full space-x-4">
         <Link to="/app/notifications" className="btn btn-ghost btn-circle">
           <div className="indicator">
-            <Bell size={24} />
-            {/*<span className="badge badge-xs badge-primary indicator-item"></span>*/}
+            <Bell size={23} className="!size-6" />
+            <span className="badge badge-xs badge-primary indicator-item"></span>
           </div>
         </Link>
 

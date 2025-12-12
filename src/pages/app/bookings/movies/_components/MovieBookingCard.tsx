@@ -10,7 +10,7 @@ export default function MovieBookingCard({
   booking: MovieBooking;
   refetch: () => void;
 }) {
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: async () => {
       return (
         await apiClient.patch(
@@ -82,11 +82,11 @@ export default function MovieBookingCard({
             <p>
               Purchased: {new Date(booking.purchaseDate).toLocaleDateString()}
             </p>
-            {booking.isUsed ? (
-              <p className="text-success font-semibold">Used</p>
-            ) : (
-              <p className="text-warning font-semibold">Unused</p>
-            )}
+            <div
+              className={`badge ${booking.isUsed ? "badge-success" : "badge-warning"} badge-soft ring`}
+            >
+              <p className="">Unused</p>
+            </div>
           </div>
           {booking.snackAddOns && booking.snackAddOns.length > 0 && (
             <div className="mt-4">
@@ -108,6 +108,7 @@ export default function MovieBookingCard({
             </div>
           )}
           <button
+            disabled={booking.isUsed || isPending}
             onClick={() => {
               toast_wrapper(mutateAsync);
             }}

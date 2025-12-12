@@ -1,11 +1,13 @@
 import apiClient, { type ApiResponse } from "@/api/apiClient";
+import { toast_wrapper } from "@/api/client";
 import EmptyList from "@/components/EmptyList";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimplePaginator from "@/components/SimplePaginator";
 import SimpleTitle from "@/components/SimpleTitle";
 import { usePagination } from "@/store/pagination";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface NotificationsResponse<T = any> extends ApiResponse {
   payload: {
@@ -39,6 +41,9 @@ export default function index() {
       return resp.data;
     },
   });
+  useEffect(() => {
+    toast.info("Click notification to mark as read  ");
+  }, []);
 
   return (
     <div>
@@ -62,29 +67,20 @@ export default function index() {
           return (
             <>
               <ul className="menu w-full space-y-4 p-0">
-                {payload.map((item) => (
-                  <li key={item.id} className=" shadow-xl ">
-                    <a className="flex-1 flex py-4 ring ring-current/20">
-                      <div className="flex    flex-1">
-                        <div className="space-y-2 flex-1  ">
-                          <h2 className="card-title">{item.title}</h2>
-                          <p>{item.message}</p>
-                        </div>
-                        <div className="ml-auto w-fit ">
-                          {item.isRead ? (
-                            <div className="badge badge-soft badge-info ring">
-                              Read
-                            </div>
-                          ) : (
-                            <div className="badge badge-soft badge-success ring">
-                              Unread
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                ))}
+                {payload.map((item) => {
+                  return (
+                    <>
+                      <li key={item.id} className=" shadow-xl ">
+                        <a className="flex-1 flex py-4 ring ring-current/20">
+                          <NotificationCard
+                            item={item}
+                            refetch={query.refetch}
+                          />
+                        </a>
+                      </li>
+                    </>
+                  );
+                })}
               </ul>
               {/*//@ts-ignore*/}
               <EmptyList list={payload as any}> </EmptyList>
@@ -93,7 +89,47 @@ export default function index() {
           );
         }}
       </SuspensePageLayout>
-      <SimplePaginator {...props} />
+      <div className="mt-4">
+        <SimplePaginator {...props} />
+      </div>
     </div>
   );
 }
+
+const NotificationCard = ({ item, refetch }: { item: any; refetch: any }) => {
+  const mutation = useMutation({
+    mutationFn: async () => {
+      let resp = await apiClient.put(`admins/notifications/${item.id}/read`);
+      return resp.data;
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const call_mark_read = () => toast_wrapper(mutation.mutateAsync);
+
+  return (
+    <div
+      className="flex    flex-1"
+      onClick={() => {
+        call_mark_read();
+      }}
+      // onDoubleClick={() => {
+      //   console.log("ss");
+      // }}
+    >
+      <div className="space-y-2 flex-1  ">
+        <h2 className="card-title">{item.title}</h2>
+        <p>{item.message}</p>
+      </div>
+      <div className="ml-auto w-fit ">
+        {item.isRead ? (
+          <div className="badge badge-soft badge-info ring">Read</div>
+        ) : (
+          <div className="badge badge-soft badge-success ring">Unread</div>
+        )}
+      </div>
+    </div>
+  );
+};

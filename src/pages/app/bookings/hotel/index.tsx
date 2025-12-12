@@ -9,6 +9,7 @@ import SimpleTitle from "@/components/SimpleTitle";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import HotelBookingCard from "./_components";
 // import { StudioBookingCard } from "./_components/StudioBookingCard";
 type status = "pending" | "confirmed" | "cancelled" | "completed";
 export default function index() {
@@ -76,44 +77,7 @@ export default function index() {
             <section className="space-y-4">
               <div className="grid  gap-4 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
                 {list.map((booking) => (
-                  <div
-                    key={booking.id}
-                    className="bg-base-100 shadow-xl rounded-lg overflow-hidden"
-                  >
-                    <figure>
-                      <img
-                        src={booking.hotelImageUrl}
-                        alt={booking.hotelName}
-                        className="w-full h-48 object-cover"
-                      />
-                    </figure>
-                    <div className="p-4">
-                      <h2 className="card-title text-lg font-semibold mb-2">
-                        {booking.hotelName}
-                      </h2>
-                      <p className="text-sm text-gray-500 mb-1">
-                        Room: {booking.hotelRoomName}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        Check-in:{" "}
-                        {new Date(booking.checkInDate).toLocaleDateString()}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        Check-out:{" "}
-                        {new Date(booking.checkOutDate).toLocaleDateString()}
-                      </p>
-                      <p className="text-sm text-gray-500 mb-1">
-                        Price per night: {booking.currency}{" "}
-                        {booking.hotelRoomPricePerNight}
-                      </p>
-                      <p className="text-md font-bold mt-2">
-                        Total: {booking.currency} {booking.totalPrice}
-                      </p>
-                      <div className="badge badge-primary badge-outline mt-2">
-                        {booking.status}
-                      </div>
-                    </div>
-                  </div>
+                  <HotelBookingCard booking={booking} key={booking.id} />
                 ))}
                 <div className="mt-4"></div>
               </div>

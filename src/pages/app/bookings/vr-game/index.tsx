@@ -63,7 +63,11 @@ export default function index() {
               <div className="grid  gap-4 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
                 {list.map((booking) => (
                   <>
-                    <GameBookingCard key={booking.id} booking={booking} />
+                    <GameBookingCard
+                      refetch={query.refetch}
+                      key={booking.orderId}
+                      booking={booking}
+                    />
                   </>
                 ))}
                 <div className="mt-4"></div>

@@ -174,6 +174,11 @@ const dash_links: {
         label: "Hotel Bookings",
         icon: House, // Changed from ToolCase to MonitorPlay for studio bookings
       },
+      {
+        path: "/app/bookings/vr-game",
+        label: "VR Game Bookings",
+        icon: House, // Changed from ToolCase to MonitorPlay for studio bookings
+      },
     ],
 
     type: "submenu",

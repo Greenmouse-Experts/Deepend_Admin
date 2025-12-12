@@ -120,6 +120,7 @@ export default function HotelBookingCard({
               Check-out
             </p>
             <p className="font-medium text-base">
+              {/*{booking.checkOutDate}*/}
               {new Date(booking.checkOutDate).toLocaleDateString()}
             </p>
           </div>

@@ -450,3 +450,20 @@ export interface FoodBookingOrder {
   specialInstructions: string | null;
   status: (typeof status_list)[number];
 }
+
+export interface HotelBooking {
+  id: string;
+  userId: string;
+  orderId: string;
+  hotelName: string;
+  hotelImageUrl: string;
+  hotelId: string;
+  hotelRoomId: string;
+  hotelRoomName: string;
+  hotelRoomPricePerNight: string;
+  checkInDate: string;
+  checkOutDate: string;
+  totalPrice: string;
+  currency: string;
+  status: string;
+}

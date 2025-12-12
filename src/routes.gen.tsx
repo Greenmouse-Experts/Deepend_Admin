@@ -637,6 +637,18 @@ const appbookingsmoviesindex = createRoute({
     createLazyRoute("/app/bookings/movies")({ component: m.default }),
   ),
 );
+const appbookingshotel = createRoute({
+  getParentRoute: () => appbookings,
+  path: "hotel",
+});
+const appbookingshotelindex = createRoute({
+  getParentRoute: () => appbookingshotel,
+  path: "/",
+}).lazy(() =>
+  import("./pages/app/bookings/hotel/index").then((m) =>
+    createLazyRoute("/app/bookings/hotel")({ component: m.default }),
+  ),
+);
 const appbookingsequipment = createRoute({
   getParentRoute: () => appbookings,
   path: "equipment",
@@ -783,6 +795,7 @@ const config = root.addChildren([
     appbookings.addChildren([
       appbookingsstudio.addChildren([appbookingsstudioindex]),
       appbookingsmovies.addChildren([appbookingsmoviesindex]),
+      appbookingshotel.addChildren([appbookingshotelindex]),
       appbookingsequipment.addChildren([appbookingsequipmentindex]),
     ]),
     appadvert.addChildren([

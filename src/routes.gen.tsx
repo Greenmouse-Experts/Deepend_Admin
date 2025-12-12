@@ -613,6 +613,18 @@ const appbookings = createRoute({
   getParentRoute: () => app,
   path: "bookings",
 });
+const appbookingsvrgame = createRoute({
+  getParentRoute: () => appbookings,
+  path: "vr-game",
+});
+const appbookingsvrgameindex = createRoute({
+  getParentRoute: () => appbookingsvrgame,
+  path: "/",
+}).lazy(() =>
+  import("./pages/app/bookings/vr-game/index").then((m) =>
+    createLazyRoute("/app/bookings/vr-game")({ component: m.default }),
+  ),
+);
 const appbookingsstudio = createRoute({
   getParentRoute: () => appbookings,
   path: "studio",
@@ -793,6 +805,7 @@ const config = root.addChildren([
       appcinemaid.addChildren([appcinemaidindex]),
     ]),
     appbookings.addChildren([
+      appbookingsvrgame.addChildren([appbookingsvrgameindex]),
       appbookingsstudio.addChildren([appbookingsstudioindex]),
       appbookingsmovies.addChildren([appbookingsmoviesindex]),
       appbookingshotel.addChildren([appbookingshotelindex]),

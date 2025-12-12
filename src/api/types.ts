@@ -467,3 +467,24 @@ export interface HotelBooking {
   currency: string;
   status: string;
 }
+
+export interface VrgameBooking {
+  ticketId: string;
+  userId: string;
+  orderId: string;
+  vrgameId: string;
+  vrgameName: string;
+  vrgameImageUrl: string;
+  vrgameCategory: string;
+  ticketPrice: string;
+  ticketQuantity: number;
+  scheduledDate: string;
+  scheduledTime: string;
+  purchaseDate: string;
+  totalPrice: string;
+  currency: string;
+  isUsed: boolean;
+  verifiedAt: string | null;
+  verifiedBy: string | null;
+  status: string;
+}

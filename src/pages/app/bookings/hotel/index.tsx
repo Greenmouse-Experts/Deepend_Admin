@@ -6,11 +6,10 @@ import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 // import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
 import SimpleTitle from "@/components/SimpleTitle";
-import CustomTable from "@/components/tables/CustomTable";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import HotelBookingCard from "./_components";
+import HotelBookingCard from "./_components/HotelBookingCard";
 const status_list = ["confirmed", "cancelled", "completed"];
 export default function index() {
   const [status, setStatus] =
@@ -41,8 +40,8 @@ export default function index() {
         {status_list.map((stat) => (
           <a
             key={stat}
-            className={`tab tab-lg tab-lifted capitalize ${
-              status === stat ? "tab-active" : ""
+            className={`tab capitalize tab-lg tab-lifted ${
+              stat === status ? "tab-active" : ""
             }`}
             onClick={() => setStatus(stat)}
           >
@@ -54,21 +53,21 @@ export default function index() {
         {(data) => {
           let list = data.payload.hotelBookings;
           return (
-            <>
-              <CustomTable
-                data={data.payload.hotelBookings}
-                columns={[
-                  { key: "id", label: "ID" },
-                  { key: "hotelName", label: "Hotel Name" },
-                  { key: "hotelRoomName", label: "Room Name" },
-                  { key: "checkInDate", label: "Check-in Date" },
-                  { key: "checkOutDate", label: "Check-out Date" },
-                  { key: "totalPrice", label: "Total Price" },
-                  { key: "currency", label: "Currency" },
-                  { key: "status", label: "Status" },
-                ]}
-              />
-            </>
+            <section className="space-y-4">
+              <div className="grid  gap-4 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+                {list.map((booking) => (
+                  <HotelBookingCard
+                    refetch={query.refetch}
+                    booking={booking}
+                    key={booking.id}
+                  />
+                ))}
+                <div className="mt-4"></div>
+              </div>
+              <EmptyList list={list} />
+
+              <SimplePaginator {...props} />
+            </section>
           );
         }}
       </SuspensePageLayout>

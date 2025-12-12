@@ -465,7 +465,7 @@ export interface HotelBooking {
   checkOutDate: string;
   totalPrice: string;
   currency: string;
-  status: string;
+  status: "confirmed" | "checked-in" | "cancelled" | "completed";
 }
 
 export interface VrgameBooking {

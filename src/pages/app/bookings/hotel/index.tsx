@@ -10,7 +10,6 @@ import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import HotelBookingCard from "./_components";
-// import { StudioBookingCard } from "./_components/StudioBookingCard";
 type status = "pending" | "confirmed" | "cancelled" | "completed";
 export default function index() {
   const [status, setStatus] = useState<status>("confirmed");
@@ -20,7 +19,7 @@ export default function index() {
       hotelBookings: HotelBooking[];
     }>
   >({
-    queryKey: ["studio-bookings", status],
+    queryKey: ["hotel-bookings", status],
     queryFn: async () => {
       let resp = await apiClient.get(`admins/hotels/bookings`, {
         params: {
@@ -35,7 +34,7 @@ export default function index() {
 
   return (
     <div>
-      <SimpleTitle title={"Studio Bookings"} />
+      <SimpleTitle title={"Hotel Bookings"} />
       <div className="tabs">
         <a
           className={`tab tab-lg tab-lifted ${

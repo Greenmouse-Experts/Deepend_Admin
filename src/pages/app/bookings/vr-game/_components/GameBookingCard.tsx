@@ -110,7 +110,7 @@ export default function GameBookingCard({
           </div>
           <div className="flex justify-between items-center">
             <strong className="text-base-content/80">Purchased:</strong>
-            <span>{booking.purchaseDate}</span>
+            <span>{new Date(booking.purchaseDate).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between items-center">
             <strong className="text-base-content/80">Used:</strong>

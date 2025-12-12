@@ -24,7 +24,8 @@ import {
   Hamburger,
   ScreenShare,
   ListCheck,
-  ListChecks, // Changed from Calendar to CalendarDays
+  ListChecks,
+  House, // Changed from Calendar to CalendarDays
 } from "lucide-react";
 import { useLogout } from "@/helpers/auth";
 import SimpleLoader from "../SimpleLoader";
@@ -168,7 +169,13 @@ const dash_links: {
         label: "Studio Bookings",
         icon: MonitorPlay, // Changed from ToolCase to MonitorPlay for studio bookings
       },
+      {
+        path: "/app/bookings/hotel",
+        label: "Hotel Bookings",
+        icon: House, // Changed from ToolCase to MonitorPlay for studio bookings
+      },
     ],
+
     type: "submenu",
     icon: CalendarDays, // Changed from Calendar to CalendarDays
   },

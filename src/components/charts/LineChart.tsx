@@ -155,7 +155,7 @@ export default function Example() {
   }
 
   return (
-    <div className="card h-full bg-base-100 shadow-xl p-4 space-y-2 ring rounded-md ring-current/20">
+    <div className="card h-full bg-base-100 shadow-xl p-4 flex flex-col space-y-2 ring rounded-md ring-current/20">
       <div className="flex justify-between items-center">
         <h2 className="card-title text-2xl font-bold">Subscription Analysis</h2>
         <select
@@ -170,7 +170,7 @@ export default function Example() {
           ))}
         </select>
       </div>
-      <ul className="join flex-wrap gap-2">
+      <ul className="join flex-wrap gap-2 mb-3">
         {stats.map((item) => {
           return (
             <li
@@ -178,13 +178,13 @@ export default function Example() {
               key={item.title}
               style={{ background: item.color }}
             >
-              <span className=""></span>
+              {/*<span className=""></span>*/}
               {item.title}
             </li>
           );
         })}
       </ul>
-      <ResponsiveContainer width="100%" height="70%" className={"p-0"}>
+      <ResponsiveContainer width="100%" className={"flex-1"}>
         <LineChart
           data={transformedData}
           margin={{

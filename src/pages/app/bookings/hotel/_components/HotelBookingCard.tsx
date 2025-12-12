@@ -16,7 +16,7 @@ const allowed_Status_update = (
 ): (typeof status_list)[number][] => {
   switch (currentStatus) {
     case "confirmed":
-      return ["checked-in", "cancelled"];
+      return ["completed", "cancelled"];
     case "checked-in":
       return ["completed"];
     case "completed":
@@ -143,7 +143,7 @@ export default function HotelBookingCard({
 
         {availableUpdates.length > 0 && (
           <div className="card-actions justify-end mt-auto">
-            <div className="dropdown dropdown-top w-full dropdown-end">
+            <div className="dropdown dropdown-top w-full ">
               <button
                 className="btn btn-sm btn-primary btn-block"
                 tabIndex={0}
@@ -153,7 +153,7 @@ export default function HotelBookingCard({
               </button>
               <ul
                 tabIndex={0}
-                className="dropdown-content ring drop-shadow-lg ring-current/10 z-[1] menu shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content ring drop-shadow-lg ring-current/10 z-[1] menu shadow bg-base-100 rounded-box w-52 m-2"
               >
                 {availableUpdates.map((status) => (
                   <li key={status}>

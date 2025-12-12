@@ -98,7 +98,11 @@ export default function GameBookingCard({
           </div>
           <div className="flex justify-between items-center">
             <strong className="text-base-content/80">Scheduled Time:</strong>
-            <span>{booking.scheduledTime}</span>
+            <span>
+              {new Date(
+                `2000-01-01T${booking.scheduledTime}`,
+              ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <strong className="text-base-content/80">Quantity:</strong>

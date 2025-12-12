@@ -77,7 +77,11 @@ export default function index() {
             <section className="space-y-4">
               <div className="grid  gap-4 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
                 {list.map((booking) => (
-                  <HotelBookingCard booking={booking} key={booking.id} />
+                  <HotelBookingCard
+                    refetch={query.refetch}
+                    booking={booking}
+                    key={booking.id}
+                  />
                 ))}
                 <div className="mt-4"></div>
               </div>

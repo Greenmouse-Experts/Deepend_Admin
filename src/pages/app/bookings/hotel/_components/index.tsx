@@ -5,25 +5,20 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const status_list = [
-  "pending",
   "confirmed",
   "cancelled",
   "checked-in",
-  "checked-out",
+  "completed",
 ] as const;
 
 const allowed_Status_update = (
   currentStatus: (typeof status_list)[number],
 ): (typeof status_list)[number][] => {
   switch (currentStatus) {
-    case "pending":
-      return ["confirmed", "cancelled"];
     case "confirmed":
       return ["checked-in", "cancelled"];
     case "checked-in":
-      return ["checked-out"];
-    case "checked-out":
-    case "cancelled":
+      return ["completed"];
       return []; // No further updates allowed for checked-out or cancelled bookings
     default:
       return [];
@@ -32,16 +27,13 @@ const allowed_Status_update = (
 
 const getStatusColor = (status: (typeof status_list)[number]) => {
   switch (status) {
-    case "pending":
-      return "badge-info";
     case "confirmed":
-      return "badge-success";
+      return "badge-info";
     case "cancelled":
       return "badge-error";
     case "checked-in":
       return "badge-warning";
-    case "checked-out":
-      return "badge-neutral";
+
     default:
       return "badge-neutral";
   }
@@ -56,7 +48,7 @@ export default function HotelBookingCard({
 }) {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (newStatus: (typeof status_list)[number]) =>
-      apiClient.patch(`admins/orders/hotels/${booking.id}/status`, {
+      apiClient.patch(`admins/orders/hotel-bookings/${booking.id}/status`, {
         status: newStatus,
       }),
     onSuccess: () => {
@@ -77,16 +69,16 @@ export default function HotelBookingCard({
   const availableUpdates = allowed_Status_update(booking.status as any);
 
   return (
-    <div
-      key={booking.id}
-      className="card w-full bg-base-100 shadow-xl border border-base-200"
-    >
+    <div className="card w-full bg-base-100 shadow-xl border border-base-200">
       <figure className="aspect-video">
-        <img
-          src={booking.hotelImageUrl || "https://picsum.photos/400/200"} // Fallback image
-          alt={booking.hotelName}
-          className="object-cover w-full h-full"
-        />
+        <div className="relative w-full h-full overflow-hidden">
+          <img
+            src={booking.hotelImageUrl || "https://picsum.photos/400/200"} // Fallback image
+            alt={booking.hotelName}
+            className="object-cover w-full h-full transition-transform duration-500 transform-gpu hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-black opacity-20 blur-md"></div>
+        </div>
       </figure>
       <div className="card-body p-4">
         <h2 className="card-title text-lg mb-2 flex flex-wrap items-center gap-2">

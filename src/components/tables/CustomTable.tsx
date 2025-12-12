@@ -28,14 +28,14 @@ export default function CustomTable(props: CustomTableProps) {
   return (
     <div>
       <div className=" relative overflow-x-scroll">
-        <table className="table bg-base-100 shadow   w-full text-xs">
+        <table className="table bg-base-100 shadow   w-full text-md">
           <thead className="">
             <tr className=" rounded-2xl bg-base-200/50">
               {props.columns &&
                 props?.columns?.map((column, idx) => (
                   <th
                     key={idx}
-                    className="capitalize text-left   text-xs font-semibold text-base-content/70 "
+                    className="capitalize text-left   text-md font-semibold text-base-content/70 "
                   >
                     {column.label}
                   </th>
@@ -44,7 +44,7 @@ export default function CustomTable(props: CustomTableProps) {
                 props.actions &&
                 props.actions.length > 0 && (
                   <>
-                    <th className="font-semibold text-xs text-base-content/70 ">
+                    <th className="font-semibold text-md text-base-content/70 ">
                       Action
                     </th>
                   </>

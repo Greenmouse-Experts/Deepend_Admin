@@ -31,7 +31,7 @@ export default function HeaderBar() {
         <Link to="/app/notifications" className="btn btn-ghost btn-circle">
           <div className="indicator">
             <Bell size={23} className="!size-6" />
-            <span className="badge badge-xs badge-primary indicator-item"></span>
+            <span className="status status-primary mr-2 animate-ping badge-primary indicator-item"></span>
           </div>
         </Link>
 

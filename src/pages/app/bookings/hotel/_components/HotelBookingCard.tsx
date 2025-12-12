@@ -134,8 +134,8 @@ export default function HotelBookingCard({
             </span>
           </p>
           <p className="flex justify-between items-center border-t border-base-200 pt-2 mt-2">
-            <span className="text-lg font-bold">Total Price:</span>
-            <span className="text-lg font-bold">
+            <span className="text-lg font-bold">Price:</span>
+            <span className="text-lg font-bold text-primary">
               {booking.currency} {booking.totalPrice}
             </span>
           </p>

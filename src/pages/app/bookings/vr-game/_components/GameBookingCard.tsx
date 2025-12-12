@@ -91,23 +91,29 @@ export default function GameBookingCard({
         <p className="text-sm text-base-content/80 mb-3">
           <strong>Category:</strong> {booking.vrgameCategory}
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          <p>
-            <strong>Scheduled:</strong> {booking.scheduledDate} at{" "}
-            {booking.scheduledTime}
-          </p>
-          <p>
-            <strong>Quantity:</strong> {booking.ticketQuantity}
-          </p>
-          <p>
-            <strong>Price per ticket:</strong> {booking.currency}{" "}
-            {booking.ticketPrice}
-          </p>
-          <p>
-            <strong>Purchase Date:</strong> {booking.purchaseDate}
-          </p>
-          <p>
-            <strong>Used:</strong>{" "}
+        <div className="flex flex-col gap-2 text-sm mb-4">
+          <div className="flex justify-between items-center">
+            <strong className="text-base-content/80">Scheduled:</strong>
+            <span>
+              {booking.scheduledDate} at {booking.scheduledTime}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <strong className="text-base-content/80">Quantity:</strong>
+            <span>{booking.ticketQuantity}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <strong className="text-base-content/80">Ticket Price:</strong>
+            <span>
+              {booking.currency} {booking.ticketPrice}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <strong className="text-base-content/80">Purchased:</strong>
+            <span>{booking.purchaseDate}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <strong className="text-base-content/80">Used:</strong>
             <span
               className={`font-medium ${
                 booking.isUsed ? "text-success" : "text-error"
@@ -115,7 +121,7 @@ export default function GameBookingCard({
             >
               {booking.isUsed ? "Yes" : "No"}
             </span>
-          </p>
+          </div>
         </div>
         <div className="flex justify-between items-center mt-4 pt-4 border-t border-base-200">
           <div className="flex flex-col">

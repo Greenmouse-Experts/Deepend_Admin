@@ -1,10 +1,27 @@
+import apiClient from "@/api/apiClient";
+import { toast_wrapper } from "@/api/client";
 import type { MovieBooking } from "@/api/types";
+import { useMutation } from "@tanstack/react-query";
 
 export default function MovieBookingCard({
   booking,
+  refetch,
 }: {
   booking: MovieBooking;
+  refetch: () => void;
 }) {
+  const { mutateAsync } = useMutation({
+    mutationFn: async () => {
+      return (
+        await apiClient.patch(
+          `admins/orders/movie-tickets/${booking.ticketId}/mark-as-used`,
+        )
+      ).data;
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
   return (
     <div className="w-full">
       <div
@@ -21,14 +38,13 @@ export default function MovieBookingCard({
             {booking.status}
           </div>
         </figure>
-        <div className="card-body flex-grow">
+        <div className=" card-body">
           <h2 className="card-title text-xl font-bold mb-2 overflow-hidden text-ellipsis whitespace-nowrap">
             {booking.movieName}
           </h2>
-          <p className="text-sm opacity-70 mb-4 overflow-hidden text-ellipsis whitespace-nowrap">
+          {/*<p className="text-sm opacity-70 overflow-hidden text-ellipsis whitespace-nowrap">
             {booking.genre}
-          </p>
-
+          </p>*/}
           <div className="grid grid-cols-1  gap-4 w-full mb-4">
             <div
               className="bg-base-200 p-4 rounded-lg shadow tooltip tooltip-top"
@@ -49,7 +65,6 @@ export default function MovieBookingCard({
               <p className="text-xs text-gray-400">{booking.showDate}</p>
             </div>
           </div>
-
           <div className="flex justify-between items-center mb-2">
             <div className="text-sm">
               <p className="font-semibold">Tickets:</p>
@@ -62,9 +77,7 @@ export default function MovieBookingCard({
               </p>
             </div>
           </div>
-
           <div className="divider my-2"></div>
-
           <div className="flex justify-between items-center text-sm text-gray-500">
             <p>
               Purchased: {new Date(booking.purchaseDate).toLocaleDateString()}
@@ -75,7 +88,6 @@ export default function MovieBookingCard({
               <p className="text-warning font-semibold">Unused</p>
             )}
           </div>
-
           {booking.snackAddOns && booking.snackAddOns.length > 0 && (
             <div className="mt-4">
               <h3 className="font-semibold text-md mb-2">Snack Add-ons:</h3>
@@ -95,6 +107,14 @@ export default function MovieBookingCard({
               </ul>
             </div>
           )}
+          <button
+            onClick={() => {
+              toast_wrapper(mutateAsync);
+            }}
+            className="btn btn-primary mt-auto"
+          >
+            Mark Used
+          </button>
         </div>
       </div>
     </div>

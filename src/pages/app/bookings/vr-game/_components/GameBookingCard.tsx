@@ -93,10 +93,12 @@ export default function GameBookingCard({
         </p>
         <div className="flex flex-col gap-2 text-sm mb-4">
           <div className="flex justify-between items-center">
-            <strong className="text-base-content/80">Scheduled:</strong>
-            <span>
-              {booking.scheduledDate} at {booking.scheduledTime}
-            </span>
+            <strong className="text-base-content/80">Scheduled Date:</strong>
+            <span>{booking.scheduledDate}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <strong className="text-base-content/80">Scheduled Time:</strong>
+            <span>{booking.scheduledTime}</span>
           </div>
           <div className="flex justify-between items-center">
             <strong className="text-base-content/80">Quantity:</strong>

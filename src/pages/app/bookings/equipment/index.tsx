@@ -78,4 +78,4 @@ export default function index() {
   );
 }
 
-const Content = () => {};
+// const Content = () => {};

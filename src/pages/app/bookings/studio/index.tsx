@@ -10,23 +10,28 @@ import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { StudioBookingCard } from "./_components/StudioBookingCard";
+import SimpleSearch from "@/components/SimpleSearch";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
 type status = "cancelled" | "completed" | "scheduled";
 export default function index() {
   const [status, setStatus] = useState<status>("scheduled");
+  const searchProps = useSearchParams();
   const props = usePagination();
   const query = useQuery<
     ApiResponse<{
       studioBookings: StudioBooking[];
     }>
   >({
-    queryKey: ["studio-bookings", status],
+    queryKey: ["studio-bookings", status, props.page, searchProps.search],
     queryFn: async () => {
+      const params = {
+        status,
+        page: props.page,
+        limit: 10,
+        search: searchProps.search,
+      };
       let resp = await apiClient.get(`admins/studios/bookings`, {
-        params: {
-          status,
-          page: props.page,
-          limit: 10,
-        },
+        params: remove_nulls(params),
       });
       return resp.data;
     },
@@ -61,6 +66,7 @@ export default function index() {
           Scheduled
         </a>
       </div>
+      <SimpleSearch props={searchProps} />
       <SuspensePageLayout query={query} showTitle={false}>
         {(data) => {
           let list = data.payload.studioBookings;

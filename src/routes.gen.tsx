@@ -150,6 +150,9 @@ const appstudio = createRoute({ getParentRoute: () => app, path: "studio" });
 const appstudioindex = createRoute({
   getParentRoute: () => appstudio,
   path: "/",
+  // @ts-ignore
+  loader: (...args) =>
+    import("./pages/app/studio/index").then((m) => m.Loader(...args)),
 }).lazy(() =>
   import("./pages/app/studio/index").then((m) =>
     createLazyRoute("/app/studio")({ component: m.default }),

@@ -17,7 +17,8 @@ export default function SimpleSearch({
       className="join "
       onSubmit={form.handleSubmit((data) => {
         const search = data.search.trim();
-        props.setSearch(search);
+
+        props.setSearch(search || null);
       })}
     >
       <input

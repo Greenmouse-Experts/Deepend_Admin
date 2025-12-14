@@ -7,17 +7,23 @@ import FoodCard from "./_components/FoodCard";
 import { Link } from "@tanstack/react-router";
 import SimplePaginator from "@/components/SimplePaginator";
 import { usePagination } from "@/store/pagination";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
 
 export default function index() {
+  const searchProps = useSearchParams();
   const props = usePagination();
   const query = useQuery<ApiResponse<FoodProps[]>>({
-    queryKey: ["food", props.page],
+    queryKey: ["food", props.page, searchProps.search],
     queryFn: async () => {
+      const _initial = {
+        page: props.page,
+        limit: 10,
+        search: searchProps.search,
+      };
+
       let resp = await apiClient.get("admins/foods", {
-        params: {
-          page: props.page,
-          limit: 10,
-        },
+        params: remove_nulls(_initial),
       });
       return resp.data;
     },
@@ -41,6 +47,9 @@ export default function index() {
             </Link>
           </div>
         </SimpleHeader>
+      </div>
+      <div className="flex justify-end">
+        <SimpleSearch props={searchProps} />
       </div>
       <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {items?.map((item) => {

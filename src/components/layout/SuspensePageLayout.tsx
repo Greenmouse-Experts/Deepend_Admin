@@ -29,7 +29,9 @@ export default function SuspensePageLayout<TData>(
         {showTitle && (
           <SimpleHeader title={props.title}>{props.headerActions}</SimpleHeader>
         )}
-        <SimpleLoader />
+        <div className="mt-2">
+          <SimpleLoader />
+        </div>
       </>
     );
 

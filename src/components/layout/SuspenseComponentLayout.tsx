@@ -24,7 +24,9 @@ export default function SuspenseCompLayout(props: QueryPageLayoutProps) {
         {showTitle && (
           <SimpleHeader title={props.title}>{props.headerActions}</SimpleHeader>
         )}
-        <SmallerLoader />
+        <div className="mt-2">
+          <SmallerLoader />
+        </div>
       </>
     );
 

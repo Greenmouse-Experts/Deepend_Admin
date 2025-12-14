@@ -2,13 +2,16 @@ import apiClient, { type ApiResponse } from "@/api/apiClient";
 import { uploadToCloudinary } from "@/api/cloud";
 import type { Studio } from "@/api/types";
 import Modal from "@/components/dialogs-modals/SimpleModal";
+import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleCarousel from "@/components/SimpleCarousel";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleInput from "@/components/SimpleInput";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import SimpleSearch from "@/components/SimpleSearch";
 import UpdateImages from "@/components/UpdateImages";
 import { extract_message } from "@/helpers/auth";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
 import { useImages } from "@/helpers/images";
 import { useModal } from "@/store/modals";
 import { usePagination } from "@/store/pagination";
@@ -20,14 +23,19 @@ import { toast } from "sonner";
 export default function index() {
   const props = usePagination();
   const img_props = useImages();
+  const searchProps = useSearchParams();
 
   const query = useQuery<ApiResponse<Studio[]>>({
-    queryKey: ["all-studios", props.page],
+    queryKey: ["all-studios", props.page, searchProps.search],
     queryFn: async () => {
+      const params = {
+        page: props.page,
+        limit: 10,
+        search: searchProps.search,
+      };
       let resp = await apiClient.get("admins/studios", {
         params: {
-          page: props.page,
-          limit: 10,
+          ...remove_nulls(params),
         },
       });
       return resp.data;
@@ -58,14 +66,14 @@ export default function index() {
     });
   };
   const { ref, showModal, closeModal } = useModal();
-  if (query.isLoading) {
-    return (
-      <>
-        <SimpleHeader title={"All Studios"} />
-        <SimpleLoader />
-      </>
-    );
-  }
+  // if (query.isLoading) {
+  //   return (
+  //     <>
+  //       <SimpleHeader title={"All Studios"} />
+  //       <SimpleLoader />
+  //     </>
+  //   );
+  // }
 
   const items = query.data?.payload;
   return (
@@ -75,34 +83,47 @@ export default function index() {
           Add Studio
         </button>
       </SimpleHeader>
-      <div className="">
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items?.map((studio) => (
-            <StudioCard
-              refetch={query.refetch}
-              studio={studio}
-              key={studio.id}
-            />
-          ))}
-        </ul>
-        <div className="mt-6">
-          <SimplePaginator {...props} />
-        </div>
-      </div>
-      <Modal ref={ref}>
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="text-xl font-bold">Add new Studio</h2>
-          <UpdateImages {...img_props} />
-          <SimpleInput {...register("name")} label="Name" />
-          <SimpleInput {...register("location")} label="Location" />
-          <SimpleInput
-            {...register("hourlyRate")}
-            type="number"
-            label="Hourly Rate"
-          />
-          <button className="btn btn-primary btn-block">Submit</button>
-        </form>
-      </Modal>
+      <SimpleSearch props={searchProps} />
+      <SuspensePageLayout query={query} showTitle={false}>
+        {(data) => {
+          return (
+            <>
+              <>
+                <div className="">
+                  <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {items?.map((studio) => (
+                      <StudioCard
+                        refetch={query.refetch}
+                        studio={studio}
+                        key={studio.id}
+                      />
+                    ))}
+                  </ul>
+                  <div className="mt-6">
+                    <SimplePaginator {...props} />
+                  </div>
+                </div>
+                <Modal ref={ref}>
+                  <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                    <h2 className="text-xl font-bold">Add new Studio</h2>
+                    <UpdateImages {...img_props} />
+                    <SimpleInput {...register("name")} label="Name" />
+                    <SimpleInput {...register("location")} label="Location" />
+                    <SimpleInput
+                      {...register("hourlyRate")}
+                      type="number"
+                      label="Hourly Rate"
+                    />
+                    <button className="btn btn-primary btn-block">
+                      Submit
+                    </button>
+                  </form>
+                </Modal>
+              </>
+            </>
+          );
+        }}
+      </SuspensePageLayout>
     </>
   );
 }

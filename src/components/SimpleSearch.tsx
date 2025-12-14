@@ -17,7 +17,6 @@ export default function SimpleSearch({
       className="join  w-full p-4 bg-base-100 drop-shadow-md my-2 rounded-box"
       onSubmit={form.handleSubmit((data) => {
         const search = data.search.trim();
-
         props.setSearch(search || null);
       })}
     >

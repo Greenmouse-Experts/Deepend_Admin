@@ -5,13 +5,17 @@ import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import SimpleSearch from "@/components/SimpleSearch";
 import SimpleTitle from "@/components/SimpleTitle";
+import { useSearchParams } from "@/helpers/client";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 type status = "confirmed" | "pending" | "cancelled" | "completed";
 export default function index() {
   const [status, setStatus] = useState<status>("confirmed");
+  const searchProps = useSearchParams();
+
   const props = usePagination();
   const query = useQuery<ApiResponse<StudioBooking[]>>({
     queryKey: ["studio-bookings", status],
@@ -26,13 +30,7 @@ export default function index() {
       return resp.data;
     },
   });
-  if (query.isLoading)
-    return (
-      <>
-        <SimpleHeader title={"Studio Bookings"} />
-        <SimpleLoader />
-      </>
-    );
+
   return (
     <div>
       <SimpleTitle title={"Studio Bookings"} />
@@ -70,6 +68,7 @@ export default function index() {
           Completed
         </a>
       </div>
+      <SimpleSearch props={searchProps} />
       <div className="flex flex-col gap-4 p-4">
         <SuspensePageLayout query={query}>
           {(data) => {

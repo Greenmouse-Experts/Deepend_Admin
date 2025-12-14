@@ -10,24 +10,30 @@ import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import HotelBookingCard from "./_components/HotelBookingCard";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
 const status_list = ["confirmed", "cancelled", "completed"];
 export default function index() {
   const [status, setStatus] =
     useState<(typeof status_list)[number]>("confirmed");
   const props = usePagination();
+  const searchProps = useSearchParams();
+
   const query = useQuery<
     ApiResponse<{
       hotelBookings: HotelBooking[];
     }>
   >({
-    queryKey: ["hotel-bookings", status],
+    queryKey: ["hotel-bookings", status, props.page, searchProps.search],
     queryFn: async () => {
+      const params = {
+        status,
+        page: props.page,
+        limit: 10,
+        search: searchProps.search,
+      };
       let resp = await apiClient.get(`admins/hotels/bookings`, {
-        params: {
-          status,
-          page: props.page,
-          limit: 10,
-        },
+        params: remove_nulls(params),
       });
       return resp.data;
     },
@@ -49,6 +55,7 @@ export default function index() {
           </a>
         ))}
       </div>
+      <SimpleSearch props={searchProps} />
       <SuspensePageLayout query={query} showTitle={false}>
         {(data) => {
           let list = data.payload.hotelBookings;

@@ -7,19 +7,29 @@ import SimpleTitle from "@/components/SimpleTitle";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import EquipmentBookingCard from "./_components/EquipmentBookingCard";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
+import { usePagination } from "@/store/pagination";
+import SimplePaginator from "@/components/SimplePaginator";
 type selectedType = "ongoing" | "completed" | "cancelled";
 const equipment_params: selectedType[] = ["ongoing", "completed", "cancelled"];
 export default function index() {
   const [selected, setSelected] = useState<selectedType>("ongoing");
+  const searchProps = useSearchParams();
+  const props = usePagination();
+
   const query = useQuery<
     ApiResponse<{ equipmentRentalBookings: EquipmentBooking[] }>
   >({
-    queryKey: ["equipments-bookings", selected],
+    queryKey: ["equipments-bookings", selected, searchProps.search, props.page],
     queryFn: async () => {
+      const params = {
+        status: selected,
+        search: searchProps.search,
+        page: props.page,
+      };
       let resp = await apiClient.get("admins/equipments/bookings", {
-        params: {
-          status: selected,
-        },
+        params: remove_nulls(params),
       });
       return resp.data;
     },
@@ -39,6 +49,7 @@ export default function index() {
           </span>
         ))}
       </div>
+      <SimpleSearch props={searchProps} />
       <SuspensePageLayout query={query} showTitle={false}>
         {(resp) => {
           const data = resp.payload.equipmentRentalBookings;
@@ -60,6 +71,9 @@ export default function index() {
           );
         }}
       </SuspensePageLayout>
+      <div className="mt-2">
+        <SimplePaginator {...props} />
+      </div>
     </>
   );
 }

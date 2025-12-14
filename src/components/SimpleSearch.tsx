@@ -14,7 +14,7 @@ export default function SimpleSearch({
   });
   return (
     <form
-      className="join "
+      className="join  w-full p-4 bg-base-100 drop-shadow-md my-2 rounded-box"
       onSubmit={form.handleSubmit((data) => {
         const search = data.search.trim();
 
@@ -24,7 +24,7 @@ export default function SimpleSearch({
       <input
         type="text"
         {...form.register("search")}
-        className="input join-item"
+        className="input join-item w-full"
         placeholder="Search here..."
       />
       <button className="btn btn-primary join-item">

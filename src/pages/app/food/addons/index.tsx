@@ -5,8 +5,10 @@ import SimpleHeader from "@/components/SimpleHeader";
 import SimpleInput from "@/components/SimpleInput";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import SimpleSearch from "@/components/SimpleSearch";
 import SimpleTextArea from "@/components/SimpleTextArea";
 import { extract_message } from "@/helpers/auth";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
 import { useModal } from "@/store/modals";
 import { usePagination } from "@/store/pagination";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -16,14 +18,19 @@ import { toast } from "sonner";
 
 export default function index() {
   const props = usePagination();
+  const searchProps = useSearchParams();
+
   const query = useQuery<ApiResponse<FoodAddon[]>>({
-    queryKey: ["foodAddons", props.page],
+    queryKey: ["foodAddons", props.page, searchProps.search],
     queryFn: async () => {
+      const params = {
+        page: props.page,
+        limit: 10,
+        search: searchProps.search,
+      };
+
       const response = await apiClient.get("/admins/foods/addons/categories", {
-        params: {
-          page: props.page,
-          limit: 10,
-        },
+        params: remove_nulls(params),
       });
       return response.data;
     },
@@ -39,6 +46,9 @@ export default function index() {
           Add New Addon
         </Link>
       </SimpleHeader>
+      <div className="flex justify-end ">
+        <SimpleSearch props={searchProps} />
+      </div>
       <div className="">
         {query.data?.payload.map((addon, index) => (
           <AddonCard
@@ -123,6 +133,7 @@ const AddonCard = ({
         <div className="ml-auto space-x-2">
           <Link
             to={`/app/food/addons/item/$categoryId`}
+            //@ts-ignore
             params={{ categoryId: String(addon.id) }}
             className="btn btn-accent"
             onClick={showModal}

@@ -11,6 +11,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import FoodBookingCard from "./_components/FoodBookingOrder";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
 const status_list = [
   "delivered",
   "cancelled",
@@ -23,14 +25,18 @@ export default function index() {
   const [status, setStatus] =
     useState<(typeof status_list)[number]>("confirmed");
   const paginate = usePagination();
+  const searchProps = useSearchParams();
+
   const query = useQuery<ApiResponse<{ foodOrders: FoodBookingOrder[] }>>({
-    queryKey: ["food-orders", status, paginate.page],
+    queryKey: ["food-orders", status, paginate.page, searchProps.search],
     queryFn: async () => {
+      const params = {
+        status: status,
+        page: paginate.page,
+        search: searchProps.search,
+      };
       let resp = await apiClient.get("admins/foods/orders", {
-        params: {
-          status: status,
-          // page: paginate.page,
-        },
+        params: remove_nulls(params),
       });
       return resp.data;
     },
@@ -39,6 +45,9 @@ export default function index() {
   return (
     <>
       <SimpleTitle title="Food Orders" />
+      <div className="flex justify-end mb-4">
+        <SimpleSearch props={searchProps} />
+      </div>
       <div className="tabs bg-base-100 capitalize">
         {status_list.map((item) => (
           <a
@@ -52,6 +61,7 @@ export default function index() {
           </a>
         ))}
       </div>
+
       <SuspensePageLayout query={query} showTitle={false}>
         {(data) => {
           const payload = data.payload.foodOrders;

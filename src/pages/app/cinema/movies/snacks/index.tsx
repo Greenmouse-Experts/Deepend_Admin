@@ -4,7 +4,10 @@ import Modal from "@/components/dialogs-modals/SimpleModal";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleInput from "@/components/SimpleInput";
+import SimpleSearch from "@/components/SimpleSearch";
+import SimpleTitle from "@/components/SimpleTitle";
 import { extract_message } from "@/helpers/auth";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
 import { useModal } from "@/store/modals";
 import { usePagination } from "@/store/pagination";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -14,17 +17,19 @@ import { toast } from "sonner";
 
 export default function index() {
   const props = usePagination();
+  const searchProps = useSearchParams();
   const query = useQuery<ApiResponse<any[]>>({
-    queryKey: ["movie-snacks", props.page],
-    queryFn: async () =>
-      (
-        await apiClient.get("admins/movies/snacks", {
-          params: {
-            page: props.page,
-            limit: 20,
-          },
-        })
-      ).data,
+    queryKey: ["movie-snacks", props.page, searchProps.search],
+    queryFn: async () => {
+      let resp = await apiClient.get("admins/movies/snacks", {
+        params: remove_nulls({
+          page: props.page,
+          limit: 20,
+          search: searchProps.search,
+        }),
+      });
+      return resp.data;
+    },
   });
   const { register, handleSubmit } = useForm();
   const add_new_snack = async (snack) => {
@@ -40,59 +45,78 @@ export default function index() {
     },
   });
   return (
-    <SuspensePageLayout
-      query={query}
-      title={"Snacks"}
-      headerActions={
-        <>
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              modal.showModal();
-            }}
-          >
-            Add Snack
-          </button>
-        </>
-      }
-    >
-      {(data) => {
-        return (
+    <>
+      <SimpleHeader title="Snacks">
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            modal.showModal();
+          }}
+        >
+          Add Snack
+        </button>
+      </SimpleHeader>
+
+      <SimpleSearch props={searchProps} />
+      <SuspensePageLayout
+        query={query}
+        title={"Snacks"}
+        showTitle={false}
+        headerActions={
           <>
-            {" "}
-            <Modal ref={modal.ref}>
-              <form
-                className="space-y-4"
-                onSubmit={handleSubmit((data) => {
-                  toast.promise(
-                    mutate.mutateAsync(() => add_new_snack(data)),
-                    {
-                      loading: "Adding...",
-                      success: "Added!",
-                      error: extract_message,
-                    },
-                  );
-                })}
-              >
-                <h2 className="text-2xl">Add New Snack</h2>
-                <SimpleInput {...register("name")} label="Name" />
-                <SimpleInput {...register("price")} label="Price" />
-                <button className="btn btn-primary float-right">Submit</button>
-              </form>
-            </Modal>
-            <ul className="menu w-full bg-base-100 rounded-box p-2">
-              {data.payload.map((snack: any) => (
-                <li key={snack.id}>
-                  <a href="#" className="flex items-center justify-between">
-                    <SnackCard snack={snack} refetch={query.refetch} />
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                modal.showModal();
+              }}
+            >
+              Add Snack
+            </button>
           </>
-        );
-      }}
-    </SuspensePageLayout>
+        }
+      >
+        {(data) => {
+          return (
+            <>
+              <Modal ref={modal.ref}>
+                <form
+                  className="space-y-4"
+                  onSubmit={handleSubmit((data) => {
+                    toast.promise(
+                      mutate.mutateAsync(() => add_new_snack(data)),
+                      {
+                        loading: "Adding...",
+                        success: "Added!",
+                        error: extract_message,
+                      },
+                    );
+                  })}
+                >
+                  <h2 className="text-2xl">Add New Snack</h2>
+                  <SimpleInput {...register("name")} label="Name" />
+                  <SimpleInput {...register("price")} label="Price" />
+                  <button className="btn btn-primary float-right">
+                    Submit
+                  </button>
+                </form>
+              </Modal>
+              <ul className="menu w-full  rounded-box p-0">
+                {data.payload.map((snack: any) => (
+                  <li key={snack.id} className="mb-2">
+                    <a
+                      href="#"
+                      className="flex items-center justify-between bg-base-100 p-2 ring ring-current/10"
+                    >
+                      <SnackCard snack={snack} refetch={query.refetch} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          );
+        }}
+      </SuspensePageLayout>
+    </>
   );
 }
 
@@ -149,7 +173,7 @@ const SnackCard = ({
           <button className="btn btn-primary float-right">Submit</button>
         </form>
       </Modal>
-      <div className="flex w-full flex-1">
+      <div className="flex w-full flex-1 ">
         <div>
           {" "}
           <div className="flex items-center gap-2">

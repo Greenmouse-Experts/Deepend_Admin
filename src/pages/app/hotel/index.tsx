@@ -9,17 +9,22 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { extract_message } from "@/helpers/auth";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
 
 export default function index() {
   const props = usePagination();
+  const searchProps = useSearchParams();
   const query = useQuery<ApiResponse<Hotel[]>>({
-    queryKey: ["hotels", props.page],
+    queryKey: ["hotels", props.page, searchProps.search],
     queryFn: async () => {
+      const params = {
+        page: props.page,
+        limit: 10,
+        search: searchProps.search,
+      };
       let resp = await apiClient.get("admins/hotels", {
-        params: {
-          page: props.page,
-          limit: 10,
-        },
+        params: remove_nulls(params),
       });
       return resp.data;
     },
@@ -158,6 +163,7 @@ export default function index() {
           Add New Hotel
         </Link>
       </SimpleHeader>
+      <SimpleSearch props={searchProps} />
       <div className="container mx-auto ">
         <CustomTable data={items} columns={columns} actions={actions} />
       </div>

@@ -11,24 +11,29 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import VRGameCard from "../../vr/_components/VRGameCard";
 import GameBookingCard from "./_components/GameBookingCard";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
 // import HotelBookingCard from "./_components";
 type status = "cancelled" | "completed";
 export default function index() {
   const [status, setStatus] = useState<status>("completed");
   const props = usePagination();
+  const searchProps = useSearchParams();
   const query = useQuery<
     ApiResponse<{
       vrgameTickets: VrgameBooking[];
     }>
   >({
-    queryKey: ["vrgame-bookings", status],
+    queryKey: ["vrgame-bookings", status, props.page, searchProps.search],
     queryFn: async () => {
+      const params = {
+        status,
+        search: searchProps.search,
+        page: props.page,
+        limit: 10,
+      };
       let resp = await apiClient.get(`admins/vrgames/purchases`, {
-        params: {
-          status,
-          page: props.page,
-          limit: 10,
-        },
+        params: remove_nulls(params),
       });
       return resp.data;
     },
@@ -55,6 +60,7 @@ export default function index() {
           Completed
         </a>
       </div>
+      <SimpleSearch props={searchProps} />
       <SuspensePageLayout query={query} showTitle={false}>
         {(data) => {
           let list = data.payload.vrgameTickets;

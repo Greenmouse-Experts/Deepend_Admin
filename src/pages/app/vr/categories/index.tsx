@@ -13,6 +13,7 @@ import SimpleInput from "@/components/SimpleInput";
 import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
 import SimpleSearch from "@/components/SimpleSearch";
 import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleHeader from "@/components/SimpleHeader";
 
 export default function index() {
   const props = usePagination();
@@ -46,32 +47,50 @@ export default function index() {
   const modal = useModal();
   return (
     <>
+      <SimpleHeader title={"Vr Categories"}>
+        <>
+          <button className="btn btn-primary" onClick={() => modal.showModal()}>
+            Add New Category
+          </button>
+        </>
+      </SimpleHeader>
+      <SimpleSearch props={searchProps} />
       <SuspensePageLayout
+        showTitle={false}
         query={query}
         title={"VR Categories"}
         headerActions={
           <>
-            <button
+            {/*<button
               className="btn btn-primary"
               onClick={() => modal.showModal()}
             >
               Add New Category
-            </button>
+            </button>*/}
           </>
         }
       >
-        <SimpleSearch props={searchProps} />
-
-        <ul className="space-y-4">
-          {query.data.payload.map((item, index) => {
-            return (
-              <VRCategoryCard item={item} key={index} refetch={query.refetch} />
-            );
-          })}
-        </ul>
-        <div className="mt-4">
-          <SimplePaginator {...props} />
-        </div>
+        {(data) => {
+          const payload = data.payload;
+          return (
+            <>
+              <ul className="space-y-4">
+                {payload.map((item, index) => {
+                  return (
+                    <VRCategoryCard
+                      item={item}
+                      key={index}
+                      refetch={query.refetch}
+                    />
+                  );
+                })}
+              </ul>
+              <div className="mt-4">
+                <SimplePaginator {...props} />
+              </div>
+            </>
+          );
+        }}
       </SuspensePageLayout>
       <Modal ref={modal.ref}>
         <form

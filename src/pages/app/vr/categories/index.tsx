@@ -10,14 +10,23 @@ import Modal from "@/components/dialogs-modals/SimpleModal";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import SimpleInput from "@/components/SimpleInput";
+import SuspensePageLayout from "@/components/layout/SuspensePageLayout";
+import SimpleSearch from "@/components/SimpleSearch";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
 
 export default function index() {
   const props = usePagination();
-  const query = useSuspenseQuery<ApiResponse>({
-    queryKey: ["vr-categories", props.page],
+  const searchProps = useSearchParams();
+
+  const query = useQuery<ApiResponse>({
+    queryKey: ["vr-categories", props.page, searchProps.search],
     queryFn: async () => {
       let resp = await apiClient.get("admins/vrgames/categories", {
-        params: { page: props.page, limit: 20 },
+        params: remove_nulls({
+          page: props.page,
+          limit: 20,
+          search: searchProps.search,
+        }),
       });
       return resp.data;
     },
@@ -36,17 +45,34 @@ export default function index() {
   const { register, handleSubmit } = useForm();
   const modal = useModal();
   return (
-    <QueryPageLayout
-      query={query}
-      title={"VR Categories"}
-      headerActions={
-        <>
-          <button className="btn btn-primary" onClick={() => modal.showModal()}>
-            Add New Category
-          </button>
-        </>
-      }
-    >
+    <>
+      <SuspensePageLayout
+        query={query}
+        title={"VR Categories"}
+        headerActions={
+          <>
+            <button
+              className="btn btn-primary"
+              onClick={() => modal.showModal()}
+            >
+              Add New Category
+            </button>
+          </>
+        }
+      >
+        <SimpleSearch props={searchProps} />
+
+        <ul className="space-y-4">
+          {query.data.payload.map((item, index) => {
+            return (
+              <VRCategoryCard item={item} key={index} refetch={query.refetch} />
+            );
+          })}
+        </ul>
+        <div className="mt-4">
+          <SimplePaginator {...props} />
+        </div>
+      </SuspensePageLayout>
       <Modal ref={modal.ref}>
         <form
           action=""
@@ -71,16 +97,6 @@ export default function index() {
           </button>
         </form>
       </Modal>
-      <ul className="space-y-4">
-        {query.data.payload.map((item, index) => {
-          return (
-            <VRCategoryCard item={item} key={index} refetch={query.refetch} />
-          );
-        })}
-      </ul>
-      <div className="mt-4">
-        <SimplePaginator {...props} />
-      </div>
-    </QueryPageLayout>
+    </>
   );
 }

@@ -6,18 +6,27 @@ import SimpleTitle from "@/components/SimpleTitle";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import MovieBookingCard from "./_components/MovieBookingCard";
+import { usePagination } from "@/store/pagination";
+import SimplePaginator from "@/components/SimplePaginator";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
+import SimpleSearch from "@/components/SimpleSearch";
 type selectedType = "completed" | "cancelled";
 export default function index() {
   const [status, setStatus] = useState<selectedType>("completed");
+  const props = usePagination();
+  const searchProps = useSearchParams();
 
   // const [selected, setSelected] = useState<selectedType>("cancelled");
   const query = useQuery<ApiResponse<{ movieTickets: MovieBooking[] }>>({
-    queryKey: ["movie-bookings", status],
+    queryKey: ["movie-bookings", status, searchProps.search, props.page],
     queryFn: async () => {
+      const params = {
+        status: status,
+        page: props.page,
+        search: searchProps.search,
+      };
       let resp = await apiClient.get("admins/movies/purchases", {
-        params: {
-          status: status,
-        },
+        params: remove_nulls(params),
       });
       return resp.data;
     },
@@ -43,6 +52,7 @@ export default function index() {
           Completed
         </a>
       </div>
+      <SimpleSearch props={searchProps} />
       <SuspensePageLayout query={query as any} showTitle={false}>
         {(data) => {
           //@ts-ignore
@@ -63,6 +73,9 @@ export default function index() {
           );
         }}
       </SuspensePageLayout>
+      <div className="mt-2">
+        <SimplePaginator {...props} />
+      </div>
     </>
   );
 }

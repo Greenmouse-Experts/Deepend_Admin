@@ -48,10 +48,8 @@ export default function index() {
           </div>
         </SimpleHeader>
       </div>
-      <div className="flex justify-end">
-        <SimpleSearch props={searchProps} />
-      </div>
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <SimpleSearch props={searchProps} />
+      <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {items?.map((item) => {
           return <FoodCard refetch={query.refetch} item={item} key={item.id} />;
         })}

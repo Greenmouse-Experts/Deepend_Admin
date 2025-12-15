@@ -47,10 +47,8 @@ export default function index() {
           </Link>
         </div>
       </SimpleHeader>
-      <div className="flex justify-end">
-        <SimpleSearch props={searchProps} />
-      </div>
-      <div className="p-4">
+      <SimpleSearch props={searchProps} />
+      <div className="">
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {items?.map((category) => (
             <FoodCategoryCard

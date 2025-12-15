@@ -45,9 +45,6 @@ export default function index() {
   return (
     <>
       <SimpleTitle title="Food Orders" />
-      <div className="flex justify-end mb-4">
-        <SimpleSearch props={searchProps} />
-      </div>
       <div className="tabs bg-base-100 capitalize">
         {status_list.map((item) => (
           <a
@@ -61,6 +58,7 @@ export default function index() {
           </a>
         ))}
       </div>
+      <SimpleSearch props={searchProps} />
 
       <SuspensePageLayout query={query} showTitle={false}>
         {(data) => {

@@ -88,11 +88,24 @@ export default function EquipmentBookingCard({
         <p className="text-sm text-base-content/80 mb-2">
           <strong>Address:</strong> {item.address}
         </p>
+        <div className="">
+          <h2 className="font-bold">Rental Period</h2>
+          <div className="stats ring  mt-2">
+            <div className="stat space-y-2">
+              <p className="stat-title">Rental Start </p>
+              <p className="stat-value text-sm">{item.rentalStartDate}</p>
+            </div>
+            <div className="stat space-y-2">
+              <p className="stat-title">Rental End </p>
+              <p className="stat-value text-sm">{item.rentalEndDate}</p>
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col gap-1 text-sm">
-          <p>
+          {/*<p>
             <strong>Rental Period:</strong> {item.rentalStartDate} to{" "}
             {item.rentalEndDate}
-          </p>
+          </p>*/}
           <p>
             <strong>Quantity:</strong> {item.quantity}
           </p>
@@ -105,13 +118,13 @@ export default function EquipmentBookingCard({
           </p>
         </div>
         {availableUpdates.length > 0 && (
-          <div className="card-actions ml-auto mt-auto">
-            <div className="dropdown dropdown-top dropdown-end">
+          <div className="card-actions mt-auto w-full ">
+            <div className="dropdown  dropdown-top w-full dropdown-end">
               <button
                 disabled={isPending}
                 tabIndex={0}
                 role="button"
-                className={`btn btn-sm btn-primary`}
+                className={`btn btn-sm btn-block btn-primary`}
                 aria-haspopup="true"
               >
                 {isPending ? "Updating..." : "Update Status"}

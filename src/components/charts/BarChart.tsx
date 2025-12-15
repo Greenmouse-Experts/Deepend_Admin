@@ -18,7 +18,11 @@ const SimpleBarChart = () => {
     queryFn: async () => {
       // In a real scenario, you would fetch actual data here.
       // For this example, we'll simulate an empty response to trigger dummy data.
-      return { data: [] };
+      const resp = await apiClient.get(
+        "admins/revenue/monthly-stats?year=2025",
+      );
+      return resp.data;
+      // return { data: [] };
     },
   });
 

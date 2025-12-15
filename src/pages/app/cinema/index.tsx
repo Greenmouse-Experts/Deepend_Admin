@@ -29,13 +29,6 @@ export default function index() {
     },
   });
 
-  // if (query.isLoading)
-  //   return (
-  //     <>
-  //       <SimpleHeader title={"Cinemas"} />
-  //       <SimpleLoader />
-  //     </>
-  //   );
   return (
     <>
       <SimpleHeader title={"Cinemas"}>

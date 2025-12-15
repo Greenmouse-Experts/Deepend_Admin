@@ -3,22 +3,28 @@ import type { Cinema } from "@/api/types";
 import SimpleHeader from "@/components/SimpleHeader";
 import SimpleLoader from "@/components/SimpleLoader";
 import SimplePaginator from "@/components/SimplePaginator";
+import SimpleSearch from "@/components/SimpleSearch";
+import { remove_nulls, useSearchParams } from "@/helpers/client";
 import { usePagination } from "@/store/pagination";
 import { useQuery } from "@tanstack/react-query";
 
 export default function index() {
   const props = usePagination();
+  const searchProps = useSearchParams();
+
   const query = useQuery<ApiResponse<Cinema[]>>({
     queryKey: ["cinemas-halls", props.page],
-    queryFn: async () =>
-      (
-        await apiClient.get("admins/cinemas/halls", {
-          params: {
-            page: props.page,
-            limit: 10,
-          },
-        })
-      ).data,
+    queryFn: async () => {
+      const params = {
+        page: props.page,
+        limit: 10,
+        search: searchProps.search,
+      };
+      let resp = await apiClient.get("admins/cinemas/halls", {
+        params: remove_nulls(params),
+      });
+      return resp.data;
+    },
   });
   if (query.isLoading)
     return (
@@ -31,6 +37,7 @@ export default function index() {
   return (
     <>
       <SimpleHeader title={"Cinema Halls"} />
+      <SimpleSearch props={searchProps} />
       <div className="flex flex-col gap-2 ">
         {items.map((item) => (
           <div

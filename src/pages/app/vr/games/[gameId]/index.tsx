@@ -87,7 +87,7 @@ export default function index() {
                       Ticket Price
                     </span>
                     <span className="text-lg font-semibold">
-                      ${item.ticketPrice}
+                      NGN {item.ticketPrice}
                     </span>
                   </div>
                   <div className="flex flex-col">
@@ -181,7 +181,7 @@ export default function index() {
             </div>
             <section className="space-y-4 mt-8">
               <GameAvail gameId={gameId} />
-              <GamePurchases gameId={gameId} />
+              {/*<GamePurchases gameId={gameId} />*/}
             </section>
           </div>
         </>

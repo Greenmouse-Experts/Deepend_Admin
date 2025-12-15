@@ -56,6 +56,7 @@ export default function index() {
       <SimpleSearch props={searchProps} />
 
       <SuspensePageLayout
+        showTitle={false}
         query={query}
         title={"Equipment Categories"}
         headerActions={

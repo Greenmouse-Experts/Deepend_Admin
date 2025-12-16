@@ -3,6 +3,7 @@ import type { VrgameBooking } from "@/api/types";
 import { extract_message } from "@/helpers/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import UserBook from "../../_components/UserBook";
 
 const status_list = ["pending", "confirmed", "cancelled"] as const;
 
@@ -129,6 +130,7 @@ export default function GameBookingCard({
             </span>
           </div>
         </div>
+        <UserBook item={booking.user} />
         <div className="flex justify-between items-center mt-4 pt-4 border-t border-base-200">
           <div className="flex flex-col">
             <span className="text-sm text-base-content/80">Total Price:</span>

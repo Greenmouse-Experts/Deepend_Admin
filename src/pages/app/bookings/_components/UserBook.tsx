@@ -2,7 +2,7 @@ import type { BookUser } from "@/api/types";
 
 export default function UserBook({ item }: { item: BookUser }) {
   return (
-    <div className="card bg-base-200 shadow-md p-4 rounded-box mt-4">
+    <div className="card bg-base-200 shadow-md p-2 ring ring-current/10 rounded-box mt-4">
       <div className="flex items-center space-x-4">
         {/*<div className="flex-shrink-0">
           <div className="avatar">

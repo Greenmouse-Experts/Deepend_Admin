@@ -14,6 +14,7 @@ interface QueryPageLayoutProps {
   children?: React.ReactNode | ((data: any) => React.ReactNode);
   showTitle?: boolean;
   minHeight?: string;
+  fillHeight?: boolean;
 }
 
 export default function SuspenseCompLayout(props: QueryPageLayoutProps) {
@@ -60,7 +61,7 @@ export default function SuspenseCompLayout(props: QueryPageLayoutProps) {
         {showTitle && (
           <SimpleHeader title={props.title}>{props.headerActions}</SimpleHeader>
         )}
-        <div className="mt-4 ">
+        <div className={`mt-4 ${props.fillHeight ? "h-full flex-1" : ""}`}>
           {/*//@ts-ignore*/}
           {props.children && typeof props.children === "function"
             ? props.children(props.query.data)

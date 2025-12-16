@@ -1,79 +1,120 @@
-import apiClient, { type ApiResponse } from "@/api/apiClient";
+import type { ApiResponse } from "@/api/apiClient";
+import apiClient from "@/api/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import {
   BarChart,
-  Bar,
-  Rectangle,
+  Legend,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-  ResponsiveContainer,
+  Bar,
 } from "recharts";
+import SuspenseCompLayout from "../layout/SuspenseComponentLayout";
+import { useState } from "react";
 
-const SimpleBarChart = () => {
-  const query = useQuery({
-    queryKey: ["total-income-expense"],
+// #region Sample data
+const data = [
+  {
+    name: "Page A",
+    uv: 4000,
+  },
+  {
+    name: "Page B",
+    uv: 3000,
+  },
+  {
+    name: "Page C",
+    uv: 2000,
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+  },
+];
+
+// #endregion
+const SimpleBarChart = ({ isAnimationActive = true }) => {
+  const [year, setYear] = useState("2025");
+  const query = useQuery<
+    ApiResponse<{ month: number; totalRevenue: string }[]>
+  >({
+    queryKey: ["total-income"],
     queryFn: async () => {
-      // In a real scenario, you would fetch actual data here.
-      // For this example, we'll simulate an empty response to trigger dummy data.
       const resp = await apiClient.get(
         "admins/revenue/monthly-stats?year=2025",
       );
       return resp.data;
-      // return { data: [] };
     },
   });
-
-  const dummyData = [
-    { name: "Total", income: 78700, expense: 38700 }, // Sum of all months from original dummyData
-  ];
-
-  // Use dummyData if query.data is empty or not yet loaded
-  const data =
-    query.data && query.data.data && query.data.data.length > 0
-      ? query.data.data
-      : dummyData;
-
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 2025 + 1 }, (_, i) =>
+    (2025 + i).toString(),
+  );
+  const new_data = query.data?.payload || data;
   return (
-    <div className="h-full flex flex-col   p-4 bg-base-100 shadow ring rounded-md ring-current/20">
-      <h2 className="mb-2 text-2xl font-bold">Income Analysis</h2>
-      <ResponsiveContainer style={{ flex: 1 }} className={""}>
-        <BarChart
-          // style={{
-          //   width: "100%",
-          //   maxWidth: "700px",
-          //   height: "100%",
-          //   aspectRatio: 1.618,
-          // }}
-          responsive
-          data={data}
-          margin={{
-            top: 5,
-            right: 0,
-            left: 0,
-            bottom: 5,
+    <>
+      <div className="h-full flex flex-col   p-4 bg-base-100 shadow ring rounded-md ring-current/20">
+        <div className="flex justify-between items-center">
+          {" "}
+          <h2 className="mb-2 text-2xl font-bold">Income Analysis</h2>
+          <select
+            className="select select-bordered w-fit"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+          >
+            {years.map((y) => (
+              <option key={y} value={y}>
+                {y}
+              </option>
+            ))}
+          </select>
+        </div>
+        <SuspenseCompLayout query={query} fillHeight>
+          {(data) => {
+            let payload = data?.payload || data;
+            return (
+              <>
+                <BarChart
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    maxWidth: "700px",
+                    // maxHeight: "70vh",
+                    aspectRatio: 1.618,
+                  }}
+                  responsive
+                  data={payload}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  {/*<YAxis width="auto" />*/}
+                  <Tooltip />
+                  {/*<Legend />*/}
+                  <Bar
+                    dataKey="totalRevenue"
+                    className=" fill-primary rounded-box"
+                    isAnimationActive={isAnimationActive}
+                  />
+                </BarChart>
+              </>
+            );
           }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis width="auto" />
-          <Tooltip />
-          <Legend />
-          <Bar
-            dataKey="income"
-            fill="#8884d8"
-            activeBar={<Rectangle fill="pink" stroke="blue" />}
-          />
-          <Bar
-            dataKey="expense"
-            fill="#82ca9d"
-            activeBar={<Rectangle fill="gold" stroke="purple" />}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+        </SuspenseCompLayout>
+      </div>
+    </>
   );
 };
 

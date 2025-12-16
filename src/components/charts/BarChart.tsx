@@ -44,6 +44,20 @@ const data = [
     uv: 3490,
   },
 ];
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 // #endregion
 const SimpleBarChart = ({ isAnimationActive = true }) => {
@@ -84,7 +98,12 @@ const SimpleBarChart = ({ isAnimationActive = true }) => {
         </div>
         <SuspenseCompLayout query={query} fillHeight>
           {(data) => {
-            let payload = data?.payload || data;
+            let payload =
+              data?.payload.map((item) => ({
+                ...item,
+                month: monthNames[item.month - 1],
+              })) || data;
+            console.log(payload, data.payload);
             return (
               <>
                 <BarChart
@@ -99,7 +118,7 @@ const SimpleBarChart = ({ isAnimationActive = true }) => {
                   data={payload}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
+                  <XAxis dataKey="month" xlinkTitle="" />
                   {/*<YAxis width="auto" />*/}
                   <Tooltip />
                   {/*<Legend />*/}

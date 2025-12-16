@@ -185,7 +185,7 @@ const dash_links: {
     type: "submenu",
     icon: CalendarDays, // Changed from Calendar to CalendarDays
   },
-  { label: "privacy", path: "/privacy", icon: LockIcon, type: "menu" },
+  { label: "Privacy Policy", path: "/privacy", icon: LockIcon, type: "menu" },
 ];
 export default function AppLayout(props: PropsWithChildren) {
   const { logout } = useLogout();

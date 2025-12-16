@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 const content_arry = [
   {
     title: "1. Information We Collect",
@@ -135,6 +137,13 @@ const content_arry = [
 export default function index() {
   return (
     <div className="">
+      <div className="h-20 bg-base-300 ">
+        <div className="size-full flex container mx-auto items-center">
+          <Link to="/auth/login" className="btn btn-primary ml-auto">
+            Login
+          </Link>
+        </div>
+      </div>
       <div className="h-[240px] bg-base-300 mb-8  relative isolate">
         <img
           src="bg.png"

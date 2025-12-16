@@ -3,6 +3,7 @@ import type { EquipmentBooking } from "@/api/types";
 import { extract_message } from "@/helpers/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import UserBook from "../../_components/UserBook";
 
 const status_list = ["ongoing", "completed", "cancelled"] as const;
 
@@ -117,8 +118,9 @@ export default function EquipmentBookingCard({
             <strong>Total Price:</strong> {item.currency} {item.totalPrice}
           </p>
         </div>
+        <UserBook item={item.user} />
         {availableUpdates.length > 0 && (
-          <div className="card-actions mt-auto w-full ">
+          <div className="card-actions  w-full ">
             <div className="dropdown  dropdown-top w-full dropdown-end">
               <button
                 disabled={isPending}

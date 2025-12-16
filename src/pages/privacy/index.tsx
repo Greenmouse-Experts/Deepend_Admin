@@ -160,14 +160,12 @@ export default function index() {
           className="container px-4 flex items-center mx-auto   h-full"
           style={{}}
         >
-          <img
+          {/*<img
             src="https://deependapp.com.ng/assets/images/deep.png"
             alt=""
             className="md:h-[120px] h-[90px]"
-          />
-          <div className="mx-auto font-bold text-lg md:text-4xl">
-            Privacy Policy
-          </div>
+          />*/}
+          <div className="mx-auto font-bold text-4xl">Privacy Policy</div>
         </div>
       </div>
       <div className="container px-4 mx-auto">

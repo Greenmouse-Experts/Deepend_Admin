@@ -149,9 +149,11 @@ export default function index() {
           <img
             src="https://deependapp.com.ng/assets/images/deep.png"
             alt=""
-            className="h-[120px]"
+            className="md:h-[120px] h-[90px]"
           />
-          <div className="mx-auto font-bold text-4xl">Privacy Policy</div>
+          <div className="mx-auto font-bold text-lg md:text-4xl">
+            Privacy Policy
+          </div>
         </div>
       </div>
       <div className="container px-4 mx-auto">

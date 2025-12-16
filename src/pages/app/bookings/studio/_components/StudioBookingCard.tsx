@@ -1,4 +1,5 @@
 import type { StudioBooking } from "@/api/types";
+import UserBook from "../../_components/UserBook";
 
 export function StudioBookingCard({ booking }: { booking: StudioBooking }) {
   return (
@@ -97,6 +98,7 @@ export function StudioBookingCard({ booking }: { booking: StudioBooking }) {
               </p>
             </div>
           )}
+          <UserBook item={booking.user} />
         </div>
       </div>
     </>

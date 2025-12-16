@@ -20,7 +20,7 @@ export default function UserBook({ item }: { item: BookUser }) {
           <p className="font-semibold text-base">{`${item.firstName} ${item.lastName}`}</p>
           <div className="opacity-80">
             <p className="text-sm">
-              <span className="font-medium">Email:</span> {item.email}
+              <span className="font-medium ">Email:</span> {item.email}
             </p>
             <p className="text-sm">
               <span className="font-medium">Phone:</span> {item.phone}

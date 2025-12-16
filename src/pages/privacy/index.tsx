@@ -165,7 +165,7 @@ export default function index() {
             alt=""
             className="md:h-[120px] h-[90px]"
           />*/}
-          <div className="mx-auto font-bold text-4xl">Privacy Policy</div>
+          <div className="mr-auto font-bold text-5xl">Privacy Policy</div>
         </div>
       </div>
       <div className="container px-4 mx-auto">

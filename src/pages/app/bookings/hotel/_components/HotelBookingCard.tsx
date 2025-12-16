@@ -3,6 +3,7 @@ import type { HotelBooking } from "@/api/types";
 import { extract_message } from "@/helpers/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import UserBook from "../../_components/UserBook";
 
 export const status_list = [
   "confirmed",
@@ -96,7 +97,6 @@ export default function HotelBookingCard({
             {booking.hotelName}
           </h2>
         </div>
-
         <div className="text-sm text-base-content/80 mb-3 flex flex-col gap-1">
           <p>
             <strong>Order ID:</strong> {booking.orderId}
@@ -105,7 +105,6 @@ export default function HotelBookingCard({
             <strong>Room:</strong> {booking.hotelRoomName}
           </p>
         </div>
-
         <div className="grid grid-cols-2 gap-x-2 border border-base-300 rounded-lg p-3 mb-4">
           <div>
             <p className="text-xs font-semibold text-base-content/70 uppercase mb-1">
@@ -125,7 +124,6 @@ export default function HotelBookingCard({
             </p>
           </div>
         </div>
-
         <div className="flex flex-col gap-1 text-sm mb-4">
           <p className="flex justify-between items-center">
             <span className="text-base-content/80">Price per night:</span>
@@ -140,9 +138,9 @@ export default function HotelBookingCard({
             </span>
           </p>
         </div>
-
+        <UserBook item={booking.user} />
         {availableUpdates.length > 0 && (
-          <div className="card-actions justify-end mt-auto">
+          <div className="card-actions justify-end">
             <div className="dropdown dropdown-top w-full ">
               <button
                 className="btn btn-sm btn-primary btn-block"

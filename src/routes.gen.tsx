@@ -17,6 +17,15 @@ const _404 = createRoute({
   path: "*",
   component: Fragment,
 });
+const privacy = createRoute({ getParentRoute: () => root, path: "privacy" });
+const privacyindex = createRoute({
+  getParentRoute: () => privacy,
+  path: "/",
+}).lazy(() =>
+  import("./pages/privacy/index").then((m) =>
+    createLazyRoute("/privacy")({ component: m.default }),
+  ),
+);
 const auth = createRoute({ getParentRoute: () => root, path: "auth" }).lazy(
   () =>
     import("./pages/auth/_layout").then((m) =>
@@ -713,6 +722,7 @@ const index = createRoute({
 );
 
 const config = root.addChildren([
+  privacy.addChildren([privacyindex]),
   auth.addChildren([authlogin.addChildren([authloginindex])]),
   app.addChildren([
     appvr.addChildren([

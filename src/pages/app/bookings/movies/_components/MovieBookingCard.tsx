@@ -2,6 +2,7 @@ import apiClient from "@/api/apiClient";
 import { toast_wrapper } from "@/api/client";
 import type { MovieBooking } from "@/api/types";
 import { useMutation } from "@tanstack/react-query";
+import UserBook from "../../_components/UserBook";
 
 export default function MovieBookingCard({
   booking,
@@ -107,12 +108,14 @@ export default function MovieBookingCard({
               </ul>
             </div>
           )}
+          <UserBook item={booking.user} />
+
           <button
             disabled={booking.isUsed || isPending}
             onClick={() => {
               toast_wrapper(mutateAsync);
             }}
-            className="btn btn-primary mt-auto"
+            className="btn btn-primary "
           >
             Mark Used
           </button>

@@ -1,6 +1,7 @@
 import apiClient from "@/api/apiClient";
 import type { MovieCinema } from "@/api/types";
 import { extract_message } from "@/helpers/auth";
+import UserBook from "@/pages/app/bookings/_components/UserBook";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
@@ -65,6 +66,7 @@ export default function MovieCard({
             </div>
           ))}
         </div>
+        {/*<div className=""></div>*/}
         <div className="dropdown dropdown-top  mt-4">
           <div tabIndex={0} role="button" className="btn btn-sm  btn-primary">
             <Menu /> Menu

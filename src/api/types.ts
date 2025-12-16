@@ -466,6 +466,7 @@ export interface HotelBooking {
   totalPrice: string;
   currency: string;
   status: "confirmed" | "checked-in" | "cancelled" | "completed";
+  user: BookUser;
 }
 
 export interface VrgameBooking {
@@ -487,4 +488,17 @@ export interface VrgameBooking {
   verifiedAt: string | null;
   verifiedBy: string | null;
   status: string;
+  user: BookUser;
+}
+
+export interface BookUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  profilePicture: {
+    url: string;
+    path: string;
+  };
+  phone: string;
+  id: string;
 }

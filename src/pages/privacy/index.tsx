@@ -1,6 +1,6 @@
 const content_arry = [
   {
-    title: "Information We Collect",
+    title: "1. Information We Collect",
     content: [
       {
         subtitle: "1.1 Personal Information You Provide",
@@ -155,10 +155,10 @@ export default function index() {
         </div>
       </div>
       <div className="container px-4 mx-auto">
-        <div className="space-y-6">
+        <div className="">
           {content_arry.map((section, index) => (
-            <div key={index} className="mb-4">
-              <h2 className="text-xl font-bold mb-2">{section.title}</h2>
+            <div key={index} className="mb-10">
+              <h2 className="text-3xl font-bold mb-2">{section.title}</h2>
               {Array.isArray(section.content) ? (
                 <ul>
                   {section.content.map((item, itemIndex) =>
@@ -167,10 +167,12 @@ export default function index() {
                     ) : (
                       <div key={itemIndex} className="my-4">
                         {item.subtitle && (
-                          <h3 className="font-semibold">{item.subtitle}</h3>
+                          <h3 className="font-semibold text-lg">
+                            {item.subtitle}
+                          </h3>
                         )}
                         {item.details && (
-                          <ul>
+                          <ul className="list-disc ml-2 space-y-2 list-inside">
                             {item.details.map((detail, detailIndex) => (
                               <li key={detailIndex}>{detail}</li>
                             ))}

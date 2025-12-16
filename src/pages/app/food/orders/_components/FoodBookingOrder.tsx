@@ -4,6 +4,7 @@ import { extract_message } from "@/helpers/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Truck, MapPin, Info } from "lucide-react";
+import UserBook from "@/pages/app/bookings/_components/UserBook";
 
 const status_list = [
   "delivered",
@@ -178,6 +179,7 @@ export default function FoodBookingCard({
           )}
         </div>
 
+        <UserBook item={food.user} />
         {availableUpdates.length > 0 && (
           <div className="card-actions ml-auto mt-auto">
             <div className="dropdown dropdown-top dropdown-end">

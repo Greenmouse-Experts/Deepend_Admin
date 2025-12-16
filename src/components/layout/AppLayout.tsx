@@ -25,7 +25,8 @@ import {
   ScreenShare,
   ListCheck,
   ListChecks,
-  House, // Changed from Calendar to CalendarDays
+  House,
+  LockIcon, // Changed from Calendar to CalendarDays
 } from "lucide-react";
 import { useLogout } from "@/helpers/auth";
 import SimpleLoader from "../SimpleLoader";
@@ -184,6 +185,7 @@ const dash_links: {
     type: "submenu",
     icon: CalendarDays, // Changed from Calendar to CalendarDays
   },
+  { label: "privacy", path: "/privacy", icon: LockIcon, type: "menu" },
 ];
 export default function AppLayout(props: PropsWithChildren) {
   const { logout } = useLogout();

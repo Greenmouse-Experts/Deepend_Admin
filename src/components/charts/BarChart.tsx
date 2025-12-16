@@ -3,12 +3,11 @@ import apiClient from "@/api/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import {
   BarChart,
-  Legend,
   XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
   Bar,
+  ResponsiveContainer,
 } from "recharts";
 import SuspenseCompLayout from "../layout/SuspenseComponentLayout";
 import { useState } from "react";
@@ -65,10 +64,10 @@ const SimpleBarChart = ({ isAnimationActive = true }) => {
   const query = useQuery<
     ApiResponse<{ month: number; totalRevenue: string }[]>
   >({
-    queryKey: ["total-income"],
+    queryKey: ["total-income", year],
     queryFn: async () => {
       const resp = await apiClient.get(
-        "admins/revenue/monthly-stats?year=2025",
+        `admins/revenue/monthly-stats?year=${year}`,
       );
       return resp.data;
     },
@@ -77,7 +76,6 @@ const SimpleBarChart = ({ isAnimationActive = true }) => {
   const years = Array.from({ length: currentYear - 2025 + 1 }, (_, i) =>
     (2025 + i).toString(),
   );
-  const new_data = query.data?.payload || data;
   return (
     <>
       <div className="h-full flex flex-col   p-4 bg-base-100 shadow ring rounded-md ring-current/20">
@@ -99,36 +97,35 @@ const SimpleBarChart = ({ isAnimationActive = true }) => {
         <SuspenseCompLayout query={query} fillHeight>
           {(data) => {
             let payload =
-              data?.payload.map((item) => ({
-                ...item,
-                month: monthNames[item.month - 1],
-              })) || data;
-            console.log(payload, data.payload);
+              data?.payload.map(
+                (item: { month: number; totalRevenue: string }) => ({
+                  ...item,
+                  month: monthNames[item.month - 1],
+                }),
+              ) || data;
             return (
-              <>
+              <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    maxWidth: "700px",
-                    // maxHeight: "70vh",
-                    aspectRatio: 1.618,
-                  }}
-                  responsive
                   data={payload}
+                  margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                  }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" xlinkTitle="" />
-                  {/*<YAxis width="auto" />*/}
+                  <XAxis dataKey="month" />
+                  {/* <YAxis /> */}
                   <Tooltip />
-                  {/*<Legend />*/}
                   <Bar
                     dataKey="totalRevenue"
-                    className=" fill-primary rounded-box"
+                    className="fill-primary"
                     isAnimationActive={isAnimationActive}
+                    radius={[10, 10, 0, 0]} // Apply border radius to the top corners
                   />
                 </BarChart>
-              </>
+              </ResponsiveContainer>
             );
           }}
         </SuspenseCompLayout>

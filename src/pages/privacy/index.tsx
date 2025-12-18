@@ -1,3 +1,4 @@
+import { useAuth } from "@/store/authStore";
 import { Link } from "@tanstack/react-router";
 
 const content_arry = [
@@ -135,6 +136,8 @@ const content_arry = [
   },
 ];
 export default function index() {
+  const [user] = useAuth();
+  const url = user ? "/app/dashboard" : "/auth/login";
   return (
     <div className="">
       <div className="h-20 z-20 bg-base-300/20 backdrop-blur-sm absolute w-full top-0">
@@ -144,8 +147,8 @@ export default function index() {
             className="h-14"
             alt=""
           />
-          <Link to="/auth/login" className="btn btn-primary ml-auto">
-            Login
+          <Link to={url} className="btn btn-primary ml-auto">
+            {user ? "Dashboard" : "Login"}
           </Link>
         </div>
       </div>

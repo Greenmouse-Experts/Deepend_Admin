@@ -27,6 +27,7 @@ export default function HeaderBar() {
       <div className="mr-auto lg:hidden">
         <SideBarMenu />
       </div>
+      <h2 className="mr-auto text-xl font-bold">Admin Dashboard</h2>
       <div className="flex items-center h-full space-x-4">
         <Link to="/app/notifications" className="btn btn-ghost btn-circle">
           <div className="indicator">

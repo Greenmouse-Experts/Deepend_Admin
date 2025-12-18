@@ -149,7 +149,7 @@ export default function index() {
           </Link>
         </div>
       </div>
-      <div className="h-[320px] bg-base-300 mb-8  relative isolate">
+      <div className="h-[320px] bg-base-300   relative isolate">
         <img
           src="bg.png"
           className="absolute inset-0  -z-10 h-full w-full"
@@ -168,39 +168,41 @@ export default function index() {
           <div className="mr-auto font-bold text-5xl">Privacy Policy</div>
         </div>
       </div>
-      <div className="container px-4 mx-auto">
-        <div className="">
-          {content_arry.map((section, index) => (
-            <div key={index} className="mb-10">
-              <h2 className="text-3xl font-bold mb-2">{section.title}</h2>
-              {Array.isArray(section.content) ? (
-                <ul>
-                  {section.content.map((item, itemIndex) =>
-                    typeof item === "string" ? (
-                      <li key={itemIndex}>{item}</li>
-                    ) : (
-                      <div key={itemIndex} className="my-4">
-                        {item.subtitle && (
-                          <h3 className="font-semibold text-lg">
-                            {item.subtitle}
-                          </h3>
-                        )}
-                        {item.details && (
-                          <ul className="list-disc ml-2 space-y-2 list-inside">
-                            {item.details.map((detail, detailIndex) => (
-                              <li key={detailIndex}>{detail}</li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ),
-                  )}
-                </ul>
-              ) : (
-                <p>{section.content}</p>
-              )}
-            </div>
-          ))}
+      <div className="bg-white text-black py-12">
+        <div className="container px-4 mx-auto">
+          <div className="">
+            {content_arry.map((section, index) => (
+              <div key={index} className="mb-10">
+                <h2 className="text-3xl font-bold mb-2">{section.title}</h2>
+                {Array.isArray(section.content) ? (
+                  <ul>
+                    {section.content.map((item, itemIndex) =>
+                      typeof item === "string" ? (
+                        <li key={itemIndex}>{item}</li>
+                      ) : (
+                        <div key={itemIndex} className="my-4">
+                          {item.subtitle && (
+                            <h3 className="font-semibold text-lg">
+                              {item.subtitle}
+                            </h3>
+                          )}
+                          {item.details && (
+                            <ul className="list-disc ml-2 space-y-2 list-inside">
+                              {item.details.map((detail, detailIndex) => (
+                                <li key={detailIndex}>{detail}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ),
+                    )}
+                  </ul>
+                ) : (
+                  <p>{section.content}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

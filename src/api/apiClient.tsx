@@ -11,8 +11,10 @@ import axios from "axios";
 import { get_user_value, set_user_value, clear_user } from "@/store/authStore";
 import { toast } from "sonner";
 
+const new_url = "https://app.deependapp.com.ng/api/v1";
+const old_url = "https://deepend-api.onrender.com/api/v1/";
 const apiClient = axios.create({
-  baseURL: "https://deepend-api.onrender.com/api/v1/",
+  baseURL: new_url,
   withCredentials: true,
 });
 
